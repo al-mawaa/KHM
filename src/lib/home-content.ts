@@ -45,22 +45,6 @@ export const HERO_SLIDES: HeroSlideConfig[] = [
   { id: "waste-water", title: "Waste Water Treatment", items: HERO_WASTE_ITEMS, theme: "blue" },
 ];
 
-/** 4×3 manufacturing grid (WTE reference). */
-export const MANUFACTURING_PRODUCTS = [
-  { title: "Clarifier", image: siteImages.etp, to: "/products/clarifier-system" },
-  { title: "Filtration", image: siteImages.waterRecycle, to: "/products/water-filtration-plant" },
-  { title: "Softener", image: siteImages.rainwater, to: "/products/water-softening-plant" },
-  { title: "DM Plant", image: siteImages.waterRecycle, to: "/products/demineralization-plant" },
-  { title: "Reverse Osmosis", image: siteImages.iot, to: "/products/reverse-osmosis-plant" },
-  { title: "Ultra Filtration", image: siteImages.heroPlant, to: "/products/ultra-filtration-plant" },
-  { title: "Condensate Polishing", image: siteImages.engineers, to: "/products/condensate-polishing-unit" },
-  { title: "Sewage Treatment Plant", image: siteImages.govt, to: "/products/sewage-treatment-plant" },
-  { title: "Effluent Treatment Plant", image: siteImages.etp, to: "/products/effluent-treatment-plant" },
-  { title: "Oil & Grease Separator", image: siteImages.smartCity, to: "/products/oil-water-separator" },
-  { title: "Evaporator", image: siteImages.waterTreatmentB },
-  { title: "ZLD System", image: siteImages.smartCity, to: "/products/zero-liquid-discharge-system" },
-] as const;
-
 export const KEY_ASSETS = [
   { value: 19, suffix: "+", label: "Years Industry Experience", color: "#17a2b8" },
   { value: 5500, suffix: "+", label: "Projects Installed Worldwide", color: "#e83e8c" },

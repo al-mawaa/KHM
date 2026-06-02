@@ -22,12 +22,6 @@ export const GALLERY_ITEMS: Record<GallerySectionId, GalleryItem[]> = {
     { src: govt, caption: "Shell Welding", alt: "Shell welding inside cylindrical vessel" },
     { src: iot, caption: "CNC Cutting", alt: "CNC cutting machine operation" },
   ],
-  products: [
-    { src: heroPlant, caption: "Water Treatment Plant", alt: "Installed water treatment plant" },
-    { src: waterRecycle, caption: "Recycling System", alt: "Water recycling system" },
-    { src: rainwater, caption: "Filtration Module", alt: "Filtration plant module" },
-    { src: smartCity, caption: "Smart City Project", alt: "Smart city water infrastructure" },
-  ],
   festivals: [
     { src: engineers, caption: "Team Celebration", alt: "Team at corporate event" },
     { src: smartCity, caption: "Annual Day", alt: "Annual day celebration" },

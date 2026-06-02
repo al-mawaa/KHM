@@ -465,7 +465,7 @@ export function Navbar() {
                 >
                   <div className="bg-gradient-to-r from-[#1a5276] via-[#1e6091] to-[#154360] px-8 py-4">
                     <p className="text-sm font-semibold text-white">Our Gallery</p>
-                    <p className="mt-0.5 text-xs text-white/75">Infrastructure, products &amp; festivals</p>
+                    <p className="mt-0.5 text-xs text-white/75">Infrastructure &amp; festivals</p>
                   </div>
                   <div className="bg-gradient-to-b from-[#f8fbfd] to-white">
                     <div className="grid gap-0 sm:grid-cols-3 sm:divide-x sm:divide-gray-100">

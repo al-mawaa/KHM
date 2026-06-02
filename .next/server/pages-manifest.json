@@ -2,5 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/infrastructure": "pages/infrastructure.js",
+  "/products/clarifier-system": "pages/products/clarifier-system.js",
+  "/products/sewage-treatment-plant": "pages/products/sewage-treatment-plant.js",
   "/": "pages/index.js"
 }

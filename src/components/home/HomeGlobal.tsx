@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Counter } from "@/components/Counter";
 import { KEY_ASSETS } from "@/lib/home-content";
-import { siteImages } from "@/lib/site-images";
 
 export function HomeGlobal() {
   return (
@@ -16,7 +15,7 @@ export function HomeGlobal() {
             className="relative mx-auto mt-8 max-w-4xl"
           >
             <img
-              src={siteImages.worldMap}
+              src="/images/Hero1.png"
               alt="Global presence map"
               className="w-full rounded-lg opacity-90 mix-blend-screen"
               loading="lazy"

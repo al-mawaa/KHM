@@ -28,7 +28,7 @@ import {
 } from "@/lib/site-contact";
 import { cn } from "@/lib/utils";
 
-type MenuKey = "company" | "product" | "gallery";
+type MenuKey = "company" | "gallery";
 
 const SOCIAL = [
   { href: "https://facebook.com", label: "Facebook", Icon: Facebook, className: "bg-[#1877F2] hover:bg-[#166fe0]" },
@@ -44,65 +44,6 @@ const SOCIAL = [
   { href: SITE_WHATSAPP_URL, label: "WhatsApp", Icon: MessageCircle, className: "bg-[#25D366] hover:bg-[#20bd5a]" },
 ] as const;
 
-/** Product mega-menu — matches site IA (water treatment, wastewater, manufacturing, O&M). */
-const PRODUCT_MENU_COLUMNS: {
-  sections: { title: string; items: { label: string; to: string }[] }[];
-}[] = [
-  {
-    sections: [
-      {
-        title: "Water Treatment Plant",
-        items: [
-          { label: "Clarifier System", to: "/products/clarifier-system" },
-          { label: "Water Filtration Plant", to: "/products/water-filtration-plant" },
-          { label: "Water Softener Plant", to: "/products/water-softening-plant" },
-          { label: "Ultra Filtration Plant", to: "/products/ultra-filtration-plant" },
-          { label: "Reverse Osmosis Plant", to: "/products/reverse-osmosis-plant" },
-          { label: "Seawater Desalination Plant", to: "/products/seawater-desalination-plant" },
-          { label: "Demineralization Plant", to: "/products/demineralization-plant" },
-        ],
-      },
-      {
-        title: "Services",
-        items: [
-          { label: "Our Services", to: "/services" },
-          { label: "Operation & Maintenance", to: "/services#om-amc" },
-        ],
-      },
-      {
-        title: "Technology & Tools",
-        items: [{ label: "Technology & Tools", to: "/products/technology-tools" }],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: "Waste Water Treatment",
-        items: [
-          { label: "Sewage Treatment Plant", to: "/products/sewage-treatment-plant" },
-          { label: "Effluent Treatment Plant", to: "/products/effluent-treatment-plant" },
-          { label: "Condensate Polishing Unit", to: "/products/condensate-polishing-unit" },
-          { label: "Zero Liquid Discharge System", to: "/products/zero-liquid-discharge-system" },
-          { label: "Oil Water Separator (OWS)", to: "/products/oil-water-separator" },
-        ],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: "Manufacturing",
-        items: [
-          { label: "Surge Vessel", to: "/products/surge-vessel" },
-          { label: "ASME Vessels U & R Stamp", to: "/products/asme-vessels" },
-          { label: "Pressure Vessel", to: "/products/pressure-vessels" },
-          { label: "Electrical Control Panels", to: "/products/electrical-control-panels" },
-        ],
-      },
-    ],
-  },
-];
 
 /** Company mega-menu — same layout as product; labels and routes unchanged. */
 const COMPANY_MENU_COLUMNS: {
@@ -396,10 +337,6 @@ export function Navbar() {
       active && "text-[#1a5276] font-semibold bg-gray-50/80",
     );
 
-  const isProductActive =
-    pathname.startsWith("/services") ||
-    pathname.startsWith("/products/") ||
-    pathname === "/technology";
 
   const isCompanyActive =
     pathname.startsWith("/about") || pathname.startsWith("/infrastructure") || pathname.startsWith("/sectors-we-serve");
@@ -508,49 +445,6 @@ export function Navbar() {
                 </SimpleDropdown>
               </div>
 
-              <div className="relative" onMouseEnter={() => openDesktop("product")} onMouseLeave={scheduleCloseDesktop}>
-                <button
-                  type="button"
-                  className={navLink(isProductActive)}
-                  aria-expanded={desktopOpen === "product"}
-                  onClick={() => setDesktopOpen((v) => (v === "product" ? null : "product"))}
-                >
-                  Product <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-                </button>
-                <SimpleDropdown
-                  open={desktopOpen === "product"}
-                  className="min-w-[min(100vw-2rem,900px)] max-w-[940px] overflow-hidden rounded-xl border border-gray-100 p-0 py-0 shadow-2xl shadow-[#1a5276]/10"
-                >
-                  <div className="bg-gradient-to-r from-[#1a5276] via-[#1e6091] to-[#154360] px-8 py-4">
-                    <p className="text-sm font-semibold text-white">Our Product Range</p>
-                    <p className="mt-0.5 text-xs text-white/75">Water treatment, wastewater solutions &amp; manufacturing</p>
-                  </div>
-                  <div className="bg-gradient-to-b from-[#f8fbfd] to-white">
-                    <div className="grid gap-0 sm:grid-cols-3 sm:divide-x sm:divide-gray-100">
-                      {PRODUCT_MENU_COLUMNS.map((col, colIdx) => (
-                        <div key={colIdx} className="min-w-0 space-y-7 px-7 py-7">
-                          {col.sections.map((section) => (
-                            <MegaMenuSection
-                              key={section.title}
-                              title={section.title}
-                              items={section.items}
-                              onNavigate={() => setDesktopOpen(null)}
-                            />
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                    <Link
-                      to="/services"
-                      onClick={() => setDesktopOpen(null)}
-                      className="group flex items-center justify-between border-t border-gray-100 bg-white px-8 py-3.5 text-sm font-semibold text-[#1a5276] transition-colors hover:bg-[#1a5276]/[0.04]"
-                    >
-                      <span>View all products &amp; services</span>
-                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-                </SimpleDropdown>
-              </div>
 
               <Link to="/clients" className={navLink(isActive("/clients"))}>
                 Client
@@ -670,29 +564,6 @@ export function Navbar() {
                       className="group flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-4 py-3 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.01] active:scale-[0.99]"
                     >
                       About Us
-                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </Link>
-                  </div>
-                </MobileAccordion>
-                <MobileAccordion title="Product" defaultOpen={isProductActive}>
-                  <div className="space-y-3 px-4 pb-2">
-                    {PRODUCT_MENU_COLUMNS.flatMap((col) =>
-                      col.sections.map((section) => (
-                        <MegaMenuSection
-                          key={section.title}
-                          title={section.title}
-                          items={section.items}
-                          onNavigate={() => setMobileOpen(false)}
-                          variant="mobile"
-                        />
-                      )),
-                    )}
-                    <Link
-                      to="/services"
-                      onClick={() => setMobileOpen(false)}
-                      className="group flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-4 py-3 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.01] active:scale-[0.99]"
-                    >
-                      View all products &amp; services
                       <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </Link>
                   </div>

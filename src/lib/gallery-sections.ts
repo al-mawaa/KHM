@@ -1,11 +1,10 @@
-export type GallerySectionId = "infrastructure" | "products" | "festivals";
+export type GallerySectionId = "infrastructure" | "festivals";
 
 export const GALLERY_SECTIONS: {
   id: GallerySectionId;
   label: string;
 }[] = [
   { id: "infrastructure", label: "Infrastructure" },
-  { id: "products", label: "Products" },
   { id: "festivals", label: "Festivals" },
 ];
 

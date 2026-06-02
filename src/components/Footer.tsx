@@ -16,7 +16,7 @@ import { SITE_ADDRESS, SITE_EMAIL, SITE_PHONES, SITE_WHATSAPP_URL } from "@/lib/
 const QUICK_LINKS = [
   ["/", "Home"],
   ["/about", "Company"],
-  ["/services", "Product"],
+  ["/services", "Services"],
   ["/clients", "Client"],
   ["/sectors-we-serve", "Industries We Serve"],
   ["/gallery", "Gallery"],
@@ -24,23 +24,6 @@ const QUICK_LINKS = [
   ["/contact", "Contact Us"],
 ] as const;
 
-const PRODUCTS_A = [
-  "Clarifier",
-  "Filter Press",
-  "Aeration",
-  "Sewage Treatment Plant",
-  "Effluent Treatment Plant",
-  "Zero Liquid Discharge",
-] as const;
-
-const PRODUCTS_B = [
-  "Reverse Osmosis",
-  "Pressure Vessel",
-  "Water Softener",
-  "DM Plant",
-  "Rain Water Harvesting",
-  "AMC & Maintenance",
-] as const;
 
 const SOCIAL = [
   { Icon: Facebook, href: "https://facebook.com", label: "Facebook" },
@@ -90,31 +73,6 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-[#f5c518]">Products</h4>
-          <ul className="mt-4 space-y-2 text-sm text-white/80">
-            {PRODUCTS_A.map((p) => (
-              <li key={p}>
-                <Link to="/services" className="hover:text-[#f5c518] transition-colors">
-                  {p}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-sm font-bold uppercase tracking-wider text-[#f5c518]">Products</h4>
-          <ul className="mt-4 space-y-2 text-sm text-white/80">
-            {PRODUCTS_B.map((p) => (
-              <li key={p}>
-                <Link to="/services" className="hover:text-[#f5c518] transition-colors">
-                  {p}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
 
         <div>
           <h4 className="text-sm font-bold uppercase tracking-wider text-[#f5c518]">Contact Us</h4>

@@ -2,16 +2,9 @@ import { useEffect } from "react";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Counter } from "@/components/Counter";
-import { ABOUT_US, OUR_VISION } from "@/lib/about-content";
+import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { engineers, heroPlant } from "@/lib/images";
 import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles } from "lucide-react";
-
-const timeline = [
-  { y: "2026", t: "Incorporation", d: "KHM Infra Innovations Pvt Ltd founded in Pune." },
-  { y: "2026", t: "First Government Project", d: "Awarded municipal STP design and execution." },
-  { y: "2026", t: "Industrial Expansion", d: "Delivered ETPs for pharma and chemical clients." },
-  { y: "2027", t: "Smart Monitoring Platform", d: "Launched proprietary IoT water analytics suite." },
-];
 
 export default function AboutPage() {
   useEffect(() => {
@@ -97,6 +90,28 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section id="mission" className="scroll-mt-32 border-t border-border bg-white py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-card">
+              <h3 className="font-display text-lg font-semibold text-[#1a5276]">What we deliver</h3>
+              <ul className="mt-6 space-y-4">
+                {OUR_MISSION.highlights.map((item) => (
+                  <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-aqua" aria-hidden />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <SectionHeader align="left" eyebrow="Company" title={OUR_MISSION.title} />
+              <p className="mt-6 text-base font-medium leading-relaxed text-foreground">{OUR_MISSION.lead}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 bg-surface">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <SectionHeader eyebrow="Leadership" title="Meet the directors" />
@@ -114,22 +129,6 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="py-24">
-        <div className="mx-auto max-w-5xl px-4 lg:px-8">
-          <SectionHeader eyebrow="Our Journey" title="Milestones that shaped us" />
-          <ol className="relative mt-12 border-l-2 border-aqua/40 pl-6 space-y-8">
-            {timeline.map((m) => (
-              <li key={m.t} className="relative">
-                <span className="absolute -left-[34px] top-1 grid h-6 w-6 place-items-center rounded-full bg-gradient-aqua text-primary-foreground text-[10px] font-bold shadow-glow">●</span>
-                <div className="text-xs font-semibold uppercase tracking-wider text-aqua-foreground">{m.y}</div>
-                <div className="mt-1 font-display text-lg font-semibold">{m.t}</div>
-                <p className="text-sm text-muted-foreground">{m.d}</p>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
 

@@ -1,5 +1,52 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Build artifacts
+dist/
+dist-ssr/
+build/
+.next/
+.turbo/
+.output/
+.vinxi/
+.nitro/
+*.local
+.lovable
+.tanstack
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+# IDE / Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,27 +54,52 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-.output
-.vinxi
-.nitro
-*.local
-.lovable
-.tanstack
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+tmp/
+temp/
+cache/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+jest.config.js.bak
+
+# Build tools
+.turbo/
+.cache/
 
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+.miniflare.js
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# TypeScript
+*.tsbuildinfo
+
+# Vite
+.vite/
+
+# Storybook
+storybook-static/
+
+# Vercel
+.vercel/
+
+# macOS
+.AppleDouble
+.LSOverride

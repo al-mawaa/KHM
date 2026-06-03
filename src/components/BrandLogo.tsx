@@ -45,7 +45,7 @@ export function BrandLogoLink({
     <Link
       to={to}
       onClick={onClick}
-      className={cn("inline-flex shrink-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-aqua/60", className)}
+      className={cn("inline-flex shrink-0 focus:outline-none focus:ring-2 focus:ring-aqua/60", className)}
       aria-label={`${LOGO_ALT} — Home`}
     >
       <BrandLogo imageClassName={imageClassName} withBackground={withBackground} />

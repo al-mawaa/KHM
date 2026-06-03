@@ -12,7 +12,7 @@ export function HomeGlobal() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative mx-auto mt-8 max-w-4xl"
+            className="relative mx-auto mt-8 max-w-6xl"
           >
             <img
               src="/images/Hero1.png"

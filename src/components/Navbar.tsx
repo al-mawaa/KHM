@@ -2,8 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ChevronDown,
-  ChevronRight,
   Facebook,
   Instagram,
   Linkedin,
@@ -19,7 +17,6 @@ import {
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BrandLogoLink } from "@/components/BrandLogo";
 import { addLead } from "@/lib/admin-store";
-import { GALLERY_SECTIONS, galleryHash } from "@/lib/gallery-sections";
 import {
   SITE_EMAIL,
   SITE_PHONE_DISPLAY,
@@ -28,7 +25,6 @@ import {
 } from "@/lib/site-contact";
 import { cn } from "@/lib/utils";
 
-type MenuKey = "company" | "gallery";
 
 const SOCIAL = [
   { href: "https://facebook.com", label: "Facebook", Icon: Facebook, className: "bg-[#1877F2] hover:bg-[#166fe0]" },
@@ -45,119 +41,7 @@ const SOCIAL = [
 ] as const;
 
 
-/** Company mega-menu — same layout as product; labels and routes unchanged. */
-const COMPANY_MENU_COLUMNS: {
-  sections: { title: string; items: { label: string; to: string }[] }[];
-}[] = [
-  {
-    sections: [
-      {
-        title: "About Us",
-        items: [
-          { label: "About Us", to: "/about#about-us" },
-          { label: "Our Vision", to: "/about#vision" },
-          { label: "Our Mission", to: "/about" },
-          { label: "Leadership Team", to: "/about" },
-        ],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: "Infrastructure",
-        items: [
-          { label: "Infrastructure", to: "/infrastructure" },
-          { label: "Industries We Serve", to: "/sectors-we-serve" },
-        ],
-      },
-    ],
-  },
-  {
-    sections: [
-      {
-        title: "Certifications",
-        items: [{ label: "Certifications", to: "/about" }],
-      },
-      {
-        title: "CSR Activities",
-        items: [{ label: "CSR Activities", to: "/about" }],
-      },
-    ],
-  },
-];
 
-/** Gallery mega-menu — same layout as product; labels and routes from GALLERY_SECTIONS. */
-const GALLERY_MENU_COLUMNS: {
-  sections: { title: string; items: { label: string; to: string }[] }[];
-}[] = GALLERY_SECTIONS.map((s) => ({
-  sections: [
-    {
-      title: s.label,
-      items: [{ label: s.label, to: galleryHash(s.id) }],
-    },
-  ],
-}));
-
-function MegaMenuSection({
-  title,
-  items,
-  onNavigate,
-  variant = "desktop",
-}: {
-  title: string;
-  items: { label: string; to: string }[];
-  onNavigate: () => void;
-  variant?: "desktop" | "mobile";
-}) {
-  if (variant === "mobile") {
-    return (
-      <div className="rounded-lg bg-gradient-to-br from-[#f8fbfd] to-white px-3 py-3 ring-1 ring-[#1a5276]/8">
-        <div className="flex items-center gap-2">
-          <span className="h-3.5 w-1 shrink-0 rounded-full bg-gradient-to-b from-[#f5c518] to-[#e6b800]" aria-hidden />
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#1a5276]">{title}</p>
-        </div>
-        <ul className="mt-2.5 space-y-0.5">
-          {items.map((item) => (
-            <li key={item.label}>
-              <Link
-                to={item.to}
-                onClick={onNavigate}
-                className="group flex items-center gap-2 rounded-md px-2.5 py-2 text-[13px] font-medium leading-snug text-gray-600 transition-all hover:bg-white hover:pl-3 hover:text-[#1a5276] hover:shadow-sm"
-              >
-                <span className="min-w-0 flex-1">{item.label}</span>
-                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#1a5276]/40 transition-transform group-hover:translate-x-0.5 group-hover:text-[#1a5276]" />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <div className="flex items-center gap-2.5">
-        <span className="h-4 w-1 shrink-0 rounded-full bg-gradient-to-b from-[#f5c518] to-[#e6b800]" aria-hidden />
-        <p className="text-[13px] font-bold uppercase tracking-[0.1em] text-[#1a5276]">{title}</p>
-      </div>
-      <ul className="mt-3 space-y-0.5 border-l border-[#1a5276]/10 pl-3">
-        {items.map((item) => (
-          <li key={item.label}>
-            <Link
-              to={item.to}
-              onClick={onNavigate}
-              className="group flex items-center gap-2 rounded-md border-l-2 border-transparent px-2.5 py-2 text-[13px] font-medium leading-snug text-gray-600 transition-all duration-200 hover:border-[#1a5276] hover:bg-[#1a5276]/[0.04] hover:text-[#1a5276]"
-            >
-              <span className="min-w-0 flex-1">{item.label}</span>
-              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[#1a5276]/0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-[#1a5276]/70" />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
 
 function QuoteInquiryDialog({
   open,
@@ -233,34 +117,6 @@ function QuoteInquiryDialog({
   );
 }
 
-function SimpleDropdown({
-  open,
-  children,
-  className,
-}: {
-  open: boolean;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 4 }}
-          transition={{ duration: 0.15 }}
-          className={cn(
-            "absolute left-0 top-full z-50 min-w-[220px] border border-gray-100 bg-white py-2 shadow-lg",
-            className,
-          )}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
 
 function syncSiteHeaderHeight(el: HTMLElement) {
   const h = el.offsetHeight;
@@ -272,8 +128,6 @@ export function Navbar() {
   const { pathname } = useLocation();
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [desktopOpen, setDesktopOpen] = useState<MenuKey | null>(null);
-  const closeTimer = useRef<number | null>(null);
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [quoteService, setQuoteService] = useState("Consultation");
   const [scrolled, setScrolled] = useState(false);
@@ -317,14 +171,6 @@ export function Navbar() {
     return () => window.removeEventListener("khm-open-quote", handler);
   }, []);
 
-  const openDesktop = (key: MenuKey) => {
-    if (closeTimer.current) window.clearTimeout(closeTimer.current);
-    setDesktopOpen(key);
-  };
-  const scheduleCloseDesktop = () => {
-    if (closeTimer.current) window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(() => setDesktopOpen(null), 140);
-  };
 
   const isActive = (to: string) => {
     if (to === "/") return pathname === "/";
@@ -333,13 +179,14 @@ export function Navbar() {
 
   const navLink = (active: boolean) =>
     cn(
-      "inline-flex items-center gap-1 px-3 lg:px-4 py-6 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[#1a5276]",
-      active && "text-[#1a5276] font-semibold bg-gray-50/80",
+      "inline-flex items-center gap-1 px-4 lg:px-5 py-6 text-sm font-medium text-gray-600 transition-all duration-300 hover:text-[#1a5276] relative group",
+      active && "text-[#1a5276] font-semibold",
+      "after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-0.5 after:bg-[#1a5276] after:transition-all after:duration-300 group-hover:after:w-full",
+      active && "after:w-full",
     );
 
 
-  const isCompanyActive =
-    pathname.startsWith("/about") || pathname.startsWith("/infrastructure") || pathname.startsWith("/sectors-we-serve");
+  const isCompanyActive = pathname.startsWith("/about");
 
   const openQuote = useCallback((service: string) => {
     setQuoteService(service);
@@ -388,12 +235,11 @@ export function Navbar() {
       </div>
 
       {/* Main navbar */}
-      <div className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 lg:px-6">
-          <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-8">
+      <div className="border-b border-gray-100 bg-white">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 lg:px-8">
+          <div className="flex min-w-0 flex-1 items-center gap-8 lg:gap-12">
             <BrandLogoLink
-              withBackground
-              imageClassName="h-16 w-auto max-w-[260px] py-1 sm:h-[4.5rem] sm:max-w-[300px] lg:h-20 lg:max-w-[360px]"
+              imageClassName="h-14 w-auto max-w-[220px] py-1 sm:h-[4rem] sm:max-w-[280px] lg:h-16 lg:max-w-[320px]"
             />
 
             <nav className="hidden flex-wrap items-center lg:flex" aria-label="Main">
@@ -401,107 +247,38 @@ export function Navbar() {
                 Home
               </Link>
 
-              <div className="relative" onMouseEnter={() => openDesktop("company")} onMouseLeave={scheduleCloseDesktop}>
-                <button
-                  type="button"
-                  className={navLink(isCompanyActive)}
-                  aria-expanded={desktopOpen === "company"}
-                  onClick={() => setDesktopOpen((v) => (v === "company" ? null : "company"))}
-                >
-                  Company <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-                </button>
-                <SimpleDropdown
-                  open={desktopOpen === "company"}
-                  className="min-w-[min(100vw-2rem,900px)] max-w-[940px] overflow-hidden rounded-xl border border-gray-100 p-0 py-0 shadow-2xl shadow-[#1a5276]/10"
-                >
-                  <div className="bg-gradient-to-r from-[#1a5276] via-[#1e6091] to-[#154360] px-8 py-4">
-                    <p className="text-sm font-semibold text-white">Our Company</p>
-                    <p className="mt-0.5 text-xs text-white/75">Profile, infrastructure &amp; corporate responsibility</p>
-                  </div>
-                  <div className="bg-gradient-to-b from-[#f8fbfd] to-white">
-                    <div className="grid gap-0 sm:grid-cols-3 sm:divide-x sm:divide-gray-100">
-                      {COMPANY_MENU_COLUMNS.map((col, colIdx) => (
-                        <div key={colIdx} className="min-w-0 space-y-7 px-7 py-7">
-                          {col.sections.map((section) => (
-                            <MegaMenuSection
-                              key={section.title}
-                              title={section.title}
-                              items={section.items}
-                              onNavigate={() => setDesktopOpen(null)}
-                            />
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                    <Link
-                      to="/about"
-                      onClick={() => setDesktopOpen(null)}
-                      className="group flex items-center justify-between border-t border-gray-100 bg-white px-8 py-3.5 text-sm font-semibold text-[#1a5276] transition-colors hover:bg-[#1a5276]/[0.04]"
-                    >
-                      <span>About Us</span>
-                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-                </SimpleDropdown>
-              </div>
+              <Link to="/about" className={navLink(isCompanyActive)}>
+                About Us
+              </Link>
 
+              <Link to="/our-services" className={navLink(isActive("/our-services"))}>
+                Our Services
+              </Link>
 
               <Link to="/clients" className={navLink(isActive("/clients"))}>
                 Client
               </Link>
 
-              <div className="relative" onMouseEnter={() => openDesktop("gallery")} onMouseLeave={scheduleCloseDesktop}>
-                <button
-                  type="button"
-                  className={navLink(pathname.startsWith("/gallery"))}
-                  aria-expanded={desktopOpen === "gallery"}
-                  onClick={() => setDesktopOpen((v) => (v === "gallery" ? null : "gallery"))}
-                >
-                  Gallery <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-                </button>
-                <SimpleDropdown
-                  open={desktopOpen === "gallery"}
-                  className="min-w-[min(100vw-2rem,900px)] max-w-[940px] overflow-hidden rounded-xl border border-gray-100 p-0 py-0 shadow-2xl shadow-[#1a5276]/10"
-                >
-                  <div className="bg-gradient-to-r from-[#1a5276] via-[#1e6091] to-[#154360] px-8 py-4">
-                    <p className="text-sm font-semibold text-white">Our Gallery</p>
-                    <p className="mt-0.5 text-xs text-white/75">Infrastructure &amp; festivals</p>
-                  </div>
-                  <div className="bg-gradient-to-b from-[#f8fbfd] to-white">
-                    <div className="grid gap-0 sm:grid-cols-3 sm:divide-x sm:divide-gray-100">
-                      {GALLERY_MENU_COLUMNS.map((col, colIdx) => (
-                        <div key={colIdx} className="min-w-0 space-y-7 px-7 py-7">
-                          {col.sections.map((section) => (
-                            <MegaMenuSection
-                              key={section.title}
-                              title={section.title}
-                              items={section.items}
-                              onNavigate={() => setDesktopOpen(null)}
-                            />
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                    <Link
-                      to="/gallery"
-                      onClick={() => setDesktopOpen(null)}
-                      className="group flex items-center justify-between border-t border-gray-100 bg-white px-8 py-3.5 text-sm font-semibold text-[#1a5276] transition-colors hover:bg-[#1a5276]/[0.04]"
-                    >
-                      <span>View All Gallery</span>
-                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-                </SimpleDropdown>
-              </div>
+              <Link to="/gallery" className={navLink(isActive("/gallery"))}>
+                Gallery
+              </Link>
 
               <Link to="/blog" className={navLink(isActive("/blog"))}>
                 Blog
               </Link>
-
-              <Link to="/contact" className={navLink(isActive("/contact"))}>
-                Contact Us
-              </Link>
             </nav>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-4">
+            <Link
+              to="/contact"
+              className={cn(
+                "inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-[#1a5276] rounded-lg transition-all duration-300 hover:bg-[#154360] hover:shadow-lg hover:shadow-[#1a5276]/20 hover:-translate-y-0.5",
+                isActive("/contact") && "bg-[#154360]",
+              )}
+            >
+              Contact Us
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
@@ -532,76 +309,38 @@ export function Navbar() {
               transition={{ type: "tween", duration: 0.25 }}
               className="absolute right-0 top-0 flex h-full w-[min(100%,320px)] flex-col bg-white shadow-xl"
             >
-              <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+              <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
                 <BrandLogoLink
-                  withBackground
-                  imageClassName="h-14 w-auto max-w-[240px] sm:h-16"
+                  imageClassName="h-12 w-auto max-w-[200px] sm:h-14"
                   onClick={() => setMobileOpen(false)}
                 />
-                <button type="button" onClick={() => setMobileOpen(false)} aria-label="Close menu" className="p-2">
-                  <X className="h-5 w-5" />
+                <button type="button" onClick={() => setMobileOpen(false)} aria-label="Close menu" className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                  <X className="h-5 w-5 text-gray-600" />
                 </button>
               </div>
 
               <div className="flex-1 overflow-y-auto py-2">
                 <MobileNavLink to="/" label="Home" onNavigate={() => setMobileOpen(false)} active={isActive("/")} />
-                <MobileAccordion title="Company" defaultOpen={isCompanyActive}>
-                  <div className="space-y-3 px-4 pb-2">
-                    {COMPANY_MENU_COLUMNS.flatMap((col) =>
-                      col.sections.map((section) => (
-                        <MegaMenuSection
-                          key={section.title}
-                          title={section.title}
-                          items={section.items}
-                          onNavigate={() => setMobileOpen(false)}
-                          variant="mobile"
-                        />
-                      )),
-                    )}
-                    <Link
-                      to="/about"
-                      onClick={() => setMobileOpen(false)}
-                      className="group flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-4 py-3 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.01] active:scale-[0.99]"
-                    >
-                      About Us
-                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </Link>
-                  </div>
-                </MobileAccordion>
+                <MobileNavLink to="/about" label="About Us" onNavigate={() => setMobileOpen(false)} active={isCompanyActive} />
+                <MobileNavLink to="/our-services" label="Our Services" onNavigate={() => setMobileOpen(false)} active={isActive("/our-services")} />
                 <MobileNavLink to="/clients" label="Client" onNavigate={() => setMobileOpen(false)} active={isActive("/clients")} />
-                <MobileAccordion title="Gallery" defaultOpen={pathname.startsWith("/gallery")}>
-                  <div className="space-y-3 px-4 pb-2">
-                    {GALLERY_MENU_COLUMNS.flatMap((col) =>
-                      col.sections.map((section) => (
-                        <MegaMenuSection
-                          key={section.title}
-                          title={section.title}
-                          items={section.items}
-                          onNavigate={() => setMobileOpen(false)}
-                          variant="mobile"
-                        />
-                      )),
-                    )}
-                    <Link
-                      to="/gallery"
-                      onClick={() => setMobileOpen(false)}
-                      className="group flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-4 py-3 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.01] active:scale-[0.99]"
-                    >
-                      View All Gallery
-                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </Link>
-                  </div>
-                </MobileAccordion>
+                <MobileNavLink to="/gallery" label="Gallery" onNavigate={() => setMobileOpen(false)} active={isActive("/gallery")} />
                 <MobileNavLink to="/blog" label="Blog" onNavigate={() => setMobileOpen(false)} active={isActive("/blog")} />
-                <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} />
+                <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} cta />
               </div>
 
-              <div className="space-y-2 border-t border-gray-200 p-4">
-                <a href={SITE_PHONE_TEL} className="flex items-center gap-2 text-sm text-gray-600">
-                  <Phone className="h-4 w-4 text-[#1a5276]" /> {SITE_PHONE_DISPLAY}
+              <div className="space-y-3 border-t border-gray-100 p-5">
+                <a href={SITE_PHONE_TEL} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a5276]/10">
+                    <Phone className="h-4 w-4 text-[#1a5276]" />
+                  </div>
+                  {SITE_PHONE_DISPLAY}
                 </a>
-                <a href={`mailto:${SITE_EMAIL}`} className="flex items-center gap-2 text-sm text-gray-600">
-                  <Mail className="h-4 w-4 text-[#1a5276]" /> {SITE_EMAIL}
+                <a href={`mailto:${SITE_EMAIL}`} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a5276]/10">
+                    <Mail className="h-4 w-4 text-[#1a5276]" />
+                  </div>
+                  {SITE_EMAIL}
                 </a>
                 <button
                   type="button"
@@ -609,7 +348,7 @@ export function Navbar() {
                     setMobileOpen(false);
                     openQuote("Consultation");
                   }}
-                  className="mt-2 w-full rounded bg-[#1a5276] py-2.5 text-sm font-semibold text-white"
+                  className="mt-3 w-full rounded-lg bg-[#1a5276] py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#154360] hover:shadow-lg hover:shadow-[#1a5276]/20"
                 >
                   Get Free Consultation
                 </button>
@@ -629,19 +368,24 @@ function MobileNavLink({
   label,
   onNavigate,
   active,
+  cta = false,
 }: {
   to: string;
   label: string;
   onNavigate: () => void;
   active: boolean;
+  cta?: boolean;
 }) {
   return (
     <Link
       to={to}
       onClick={onNavigate}
       className={cn(
-        "block border-b border-gray-100 px-4 py-3.5 text-sm font-medium text-gray-800",
-        active && "bg-gray-50 text-[#1a5276]",
+        "block border-b border-gray-50 px-5 py-4 text-sm font-medium transition-all duration-200",
+        cta
+          ? "bg-[#1a5276] text-white border-transparent hover:bg-[#154360]"
+          : "text-gray-700 hover:bg-gray-50 hover:text-[#1a5276]",
+        active && !cta && "bg-gray-50 text-[#1a5276] font-semibold",
       )}
     >
       {label}
@@ -649,28 +393,3 @@ function MobileNavLink({
   );
 }
 
-function MobileAccordion({
-  title,
-  children,
-  defaultOpen,
-}: {
-  title: string;
-  children: ReactNode;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen ?? false);
-  return (
-    <div className="border-b border-gray-100">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-sm font-medium text-gray-800"
-        aria-expanded={open}
-      >
-        {title}
-        <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
-      </button>
-      {open && <div className="pb-2">{children}</div>}
-    </div>
-  );
-}

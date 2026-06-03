@@ -16,7 +16,7 @@ const heroSlides = [
 
 export function HomeHero() {
   return (
-    <section className="relative h-[70vh] w-full overflow-hidden" aria-label="Hero">
+    <section className="relative h-[85vh] w-full overflow-hidden" aria-label="Hero">
       <Swiper
         className="h-full w-full"
         modules={[Autoplay, EffectFade, Navigation, Pagination]}
@@ -44,7 +44,7 @@ export function HomeHero() {
         {heroSlides.map((slide) => (
           <SwiperSlide key={slide}>
             <div
-              className="relative h-[70vh] w-full bg-cover bg-center"
+              className="relative h-[85vh] w-full bg-cover bg-center"
               style={{
                 backgroundImage: `url(${slide})`,
               }}

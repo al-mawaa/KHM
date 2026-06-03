@@ -12,11 +12,7 @@ export const ABOUT_US = {
 export const OUR_VISION = {
   title: "Our Vision",
   lead: "To be a nationally trusted infrastructure company, pioneering innovative and sustainable engineering solutions in water, civil infrastructure, real estate, and power sectors — transforming communities and enhancing quality of life across India. ",
-  paragraphs: [
-    // "We envision a nation where industries, municipalities and institutions no longer struggle with unreliable treatment plants, regulatory non-compliance or rising operational costs. KHM Infra Innovations aims to lead that change by combining proven process engineering, in-house manufacturing at our Chakan facility, and smart monitoring so every project delivers safe, efficient and long-lasting performance.",
-    // "Our vision extends beyond equipment supply. We see ourselves as lifecycle partners—from design and fabrication to installation, commissioning and operation & maintenance—helping clients focus on their core business while we safeguard water quality and environmental standards.",
-    // "Through continual investment in people, technology and quality systems, we strive to set the benchmark for integrity, innovation and customer satisfaction in the water and environmental infrastructure sector across India and global markets.",
-  ],
+  paragraphs: [] as string[],
   highlights: [
     "Sustainable, compliant water and wastewater solutions",
     "Engineering excellence backed by in-house manufacturing",

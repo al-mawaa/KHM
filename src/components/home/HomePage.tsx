@@ -4,6 +4,7 @@ import { HomeGlobal } from "@/components/home/HomeGlobal";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeProject } from "@/components/home/HomeProject";
 import { HomeTestimonials } from "@/components/home/HomeTestimonials";
+import { HomeWhyChoose } from "@/components/home/HomeWhyChoose";
 
 /** WTE-style long-scroll home flow for KHM Infra Innovations. */
 export function HomePage() {
@@ -14,6 +15,7 @@ export function HomePage() {
       <HomeProject />
       <HomeGlobal />
       <HomeTestimonials />
+      <HomeWhyChoose />
       <HomeCta />
     </>
   );

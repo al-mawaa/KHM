@@ -1,105 +1,9 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Cpu, Map, Wrench } from "lucide-react";
+import { CheckCircle2, Cpu, Map, Wrench, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
-
-const services = [
-  {
-    title: "WATER SUPPLY & DRINKING WATER",
-    items: [
-      "Feasibility Studies & Master Planning",
-      "Hydraulic Network Modelling (WaterGEMS / EPANET)",
-      "Detailed Project Reports (DPRs)",
-      "Water Treatment Plant (WTP) Design",
-      "Pumping Station & Distribution Network Design",
-      "24×7 Water Supply System Design",
-      "Jal Jeevan Mission & AMRUT 2.0 Projects",
-    ],
-  },
-  {
-    title: "SEWERAGE & WASTEWATER MANAGEMENT",
-    items: [
-      "Sewerage Network Planning & Design",
-      "Sewage Treatment Plant (STP) Design",
-      "Effluent Treatment Plant (ETP) Design",
-      "Used Water Management under SBM 2.0",
-      "Sewer Network Modelling (SewerGEMS)",
-      "Industrial Wastewater Solutions",
-      "River Pollution Abatement Studies",
-    ],
-  },
-  {
-    title: "CIVIL INFRASTRUCTURE",
-    items: [
-      "Roads, Bridges & Flyover DPR Design",
-      "Structural Design & Detailing",
-      "Solid Waste Management Systems",
-      "Park, Lake & Riverfront Development",
-      "Drainage & Stormwater Management",
-      "Urban Development & Smart City Projects",
-      "Industrial Infrastructure Planning",
-    ],
-  },
-  {
-    title: "IRRIGATION ENGINEERING",
-    items: [
-      "Irrigation Canal & Distribution Network Design",
-      "Command Area Survey & Planning",
-      "Lift Irrigation Schemes",
-      "Dam Survey & DPR Preparation",
-      "Pipeline Distribution Network (PDN)",
-      "Underground Pipeline Systems (UGPL)",
-      "Water Resource Master Plans",
-    ],
-  },
-  {
-    title: "REAL ESTATE DEVELOPMENT",
-    items: [
-      "Residential Township Planning & Design",
-      "Commercial Complex Development",
-      "Integrated Township Infrastructure Services",
-      "Water & Sanitation Services for Housing",
-      "Site Development & Layout Planning",
-      "Building Services & MEP Design",
-      "RERA Compliance & Documentation",
-    ],
-  },
-  {
-    title: "POWER SECTOR",
-    items: [
-      "Solar & Renewable Energy Project DPRs",
-      "Power Distribution Network Design",
-      "Electrical Infrastructure for Industrial Areas",
-      "Captive Power Plant Planning",
-      "Energy Audit & Conservation Studies",
-      "Street Lighting & Smart Grid Design",
-      "Industrial Power Infrastructure",
-    ],
-  },
-  {
-    title: "PROJECT MANAGEMENT (PMC)",
-    items: [
-      "PMC — Concept to Commissioning",
-      "Tender Documentation & Bid Management",
-      "Construction Supervision & Monitoring",
-      "Contract Administration",
-      "Third-Party Inspection (TPIA)",
-      "Quality Control & Energy Audits",
-      "Statutory Compliance Management",
-    ],
-  },
-  {
-    title: "O&M & AMC SERVICES",
-    items: [
-      "Water Supply System O&M",
-      "Sewerage & STP Operation",
-      "Infrastructure Asset Management",
-      "Preventive & Corrective Maintenance",
-      "Performance Monitoring & Benchmarking",
-      "Staff Training & Capacity Building",
-      "Smart Monitoring System Integration",
-    ],
-  },
-];
+import { ServiceCard } from "@/components/services/ServiceCard";
+import { IService } from "@/lib/models/Service";
+import { useState, useEffect } from "react";
 
 const expertise = [
   {
@@ -210,6 +114,27 @@ const technologies = [
 ];
 
 export default function OurServicesPage() {
+  const [services, setServices] = useState<IService[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch('/api/services');
+        const data = await res.json();
+        if (data.success) {
+          setServices(data.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch services:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   return (
     <>
       <PageHero
@@ -239,34 +164,17 @@ export default function OurServicesPage() {
             </p>
           </motion.div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="group relative rounded-xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#1a5276] to-[#25a244] rounded-l-xl" />
-                <h3 className="text-[24px] font-bold text-[#1a5276] mb-6 pr-4 leading-tight">
-                  {service.title}
-                </h3>
-                <ul className="space-y-3">
-                  {service.items.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-start gap-3 text-[15px] leading-7 text-slate-600"
-                    >
-                      <CheckCircle2 className="h-5 w-5 shrink-0 text-[#25a244] mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
+              {services.map((service, index) => (
+                <ServiceCard key={service._id?.toString()} service={service} index={index} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

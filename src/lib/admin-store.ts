@@ -8,7 +8,6 @@ const AUTH_KEY = "khm_admin_auth_v1";
 
 export type Service = { id: string; title: string; icon: string; description: string; image?: string };
 export type Project = { id: string; title: string; category: "Government" | "Residential" | "Industrial" | "Commercial"; location: string; description: string; image?: string };
-export type GalleryItem = { id: string; album: string; caption: string; image: string };
 export type BlogPost = { id: string; title: string; slug: string; excerpt: string; content: string; image?: string; tags: string; seoTitle?: string; seoDescription?: string; createdAt: number };
 export type Testimonial = { id: string; name: string; role: string; quote: string; rating: number };
 export type TeamMember = { id: string; name: string; role: string; bio: string; image?: string };
@@ -33,7 +32,6 @@ export type Settings = {
 type Schema = {
   services: Service[];
   projects: Project[];
-  gallery: GalleryItem[];
   blog: BlogPost[];
   testimonials: Testimonial[];
   team: TeamMember[];
@@ -57,7 +55,6 @@ const defaults: Schema = {
     { id: uid(), title: "Township Recycling — Wakad", category: "Residential", location: "Pune, MH", description: "Greywater recycling for landscaping & flushing." },
     { id: uid(), title: "Industrial ZLD — Chakan", category: "Industrial", location: "Pune, MH", description: "Zero liquid discharge for automotive cluster." },
   ],
-  gallery: [],
   blog: [
     { id: uid(), title: "Why STPs Matter for Smart Cities", slug: "stp-smart-cities", excerpt: "How decentralized sewage treatment is reshaping urban India.", content: "Detailed article content goes here.", tags: "STP, Smart City", createdAt: Date.now() - 86400000 * 4 },
   ],

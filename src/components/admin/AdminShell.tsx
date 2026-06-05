@@ -2,8 +2,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  LayoutDashboard, Wrench, FolderKanban, Image as ImageIcon, FileText,
-  Users, MessageSquare, UsersRound, Settings as SettingsIcon, LogOut, Menu, X,
+  LayoutDashboard, Wrench, FolderKanban, FileText,
+  Users, MessageSquare, UsersRound, Settings as SettingsIcon, LogOut, Menu, X, Image,
 } from "lucide-react";
 import { BrandLogoLink } from "@/components/BrandLogo";
 import { isAuthed, logout } from "@/lib/admin-store";
@@ -12,8 +12,8 @@ const menu = [
   { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/services", label: "Services", icon: Wrench },
   { to: "/admin/projects", label: "Projects", icon: FolderKanban },
-  { to: "/admin/gallery", label: "Gallery", icon: ImageIcon },
   { to: "/admin/blog", label: "Blog", icon: FileText },
+  { to: "/admin/gallery", label: "Gallery", icon: Image },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
   { to: "/admin/leads", label: "Contact Leads", icon: Users },
   { to: "/admin/team", label: "Team Members", icon: UsersRound },

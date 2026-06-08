@@ -2,10 +2,8 @@ import mongoose, { Schema, Model, Document } from 'mongoose';
 
 export interface IGallery extends Document {
   title: string;
-  category: string;
-  image: string;
-  albumName: string;
-  description: string;
+  imageUrl: string;
+  description?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,19 +15,9 @@ const GallerySchema = new Schema<IGallery>(
       required: [true, 'Title is required'],
       trim: true,
     },
-    category: {
+    imageUrl: {
       type: String,
-      required: [true, 'Category is required'],
-      trim: true,
-    },
-    image: {
-      type: String,
-      required: [true, 'Image is required'],
-      trim: true,
-    },
-    albumName: {
-      type: String,
-      required: [true, 'Album name is required'],
+      required: [true, 'Image URL is required'],
       trim: true,
     },
     description: {

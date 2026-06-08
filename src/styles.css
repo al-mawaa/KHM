@@ -464,59 +464,6 @@
   }
 }
 
-/* Gallery page — hero banner */
-.gallery-page-hero {
-  width: 100%;
-  background: linear-gradient(135deg, #f8fbfd 0%, #eef6fc 45%, #fff 100%);
-  border-bottom: 1px solid rgba(26, 82, 118, 0.08);
-}
-
-.gallery-page-hero__inner {
-  min-height: 300px;
-}
-
-.gallery-page-hero__visual {
-  min-height: 220px;
-}
-
-.gallery-page-hero__img {
-  height: auto;
-  min-height: 200px;
-  max-height: 320px;
-}
-
-.gallery-card-img {
-  height: 260px;
-}
-
-@media (min-width: 640px) {
-  .gallery-page-hero__inner {
-    min-height: 340px;
-  }
-
-  .gallery-page-hero__img {
-    max-height: 360px;
-  }
-
-  .gallery-card-img {
-    height: 280px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .gallery-page-hero__inner {
-    min-height: 380px;
-  }
-
-  .gallery-page-hero__img {
-    max-height: 400px;
-  }
-
-  .gallery-card-img {
-    height: 300px;
-  }
-}
-
 /* Infrastructure page — full-width hero banner */
 .infrastructure-page-hero {
   position: relative;

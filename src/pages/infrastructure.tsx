@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 const STAT_ICONS = [Ruler, Building2, Factory, Truck, Package, Gauge] as const;
 
-const GALLERY_IMAGES = {
+const INFRA_IMAGES = {
   teamWork: [engineers, etp, govt, smartCity],
   manufacturing: [waterRecycle, smartCity, iot, etp],
   testing: [iot, engineers, waterRecycle, etp],
@@ -96,7 +96,7 @@ export default function InfrastructurePage() {
             viewport={{ once: true }}
             className="grid grid-cols-2 gap-2"
           >
-            {GALLERY_IMAGES.teamWork.map((src, idx) => (
+            {INFRA_IMAGES.teamWork.map((src, idx) => (
               <img
                 key={src}
                 src={src}
@@ -154,7 +154,7 @@ export default function InfrastructurePage() {
             viewport={{ once: true }}
             className="grid grid-cols-2 gap-2"
           >
-            {GALLERY_IMAGES.manufacturing.map((src, idx) => (
+            {INFRA_IMAGES.manufacturing.map((src, idx) => (
               <img
                 key={src}
                 src={src}
@@ -191,7 +191,7 @@ export default function InfrastructurePage() {
             viewport={{ once: true }}
             className="grid grid-cols-2 gap-2"
           >
-            {GALLERY_IMAGES.testing.map((src) => (
+            {INFRA_IMAGES.testing.map((src) => (
               <img key={src} src={src} alt="" className="h-36 w-full rounded-lg object-cover shadow-md" loading="lazy" />
             ))}
           </motion.div>

@@ -259,12 +259,12 @@ export function Navbar() {
                 Projects
               </Link>
 
-              <Link to="/clients" className={navLink(isActive("/clients"))}>
-                Client
-              </Link>
-
               <Link to="/gallery" className={navLink(isActive("/gallery"))}>
                 Gallery
+              </Link>
+
+              <Link to="/clients" className={navLink(isActive("/clients"))}>
+                Client
               </Link>
 
               <Link to="/blog" className={navLink(isActive("/blog"))}>
@@ -328,8 +328,8 @@ export function Navbar() {
                 <MobileNavLink to="/about" label="About Us" onNavigate={() => setMobileOpen(false)} active={isCompanyActive} />
                 <MobileNavLink to="/our-services" label="Our Services" onNavigate={() => setMobileOpen(false)} active={isActive("/our-services")} />
                 <MobileNavLink to="/projects" label="Projects" onNavigate={() => setMobileOpen(false)} active={isActive("/projects")} />
-                <MobileNavLink to="/clients" label="Client" onNavigate={() => setMobileOpen(false)} active={isActive("/clients")} />
                 <MobileNavLink to="/gallery" label="Gallery" onNavigate={() => setMobileOpen(false)} active={isActive("/gallery")} />
+                <MobileNavLink to="/clients" label="Client" onNavigate={() => setMobileOpen(false)} active={isActive("/clients")} />
                 <MobileNavLink to="/blog" label="Blog" onNavigate={() => setMobileOpen(false)} active={isActive("/blog")} />
                 <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} cta />
               </div>

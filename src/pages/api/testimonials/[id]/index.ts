@@ -1,0 +1,94 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import connectDB from '@/lib/mongodb';
+import Testimonial, { ITestimonial } from '@/lib/models/Testimonial';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  await connectDB();
+
+  try {
+    console.log(`API ${req.method} /api/testimonials/[id]`);
+
+    const { id } = req.query;
+
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid testimonial ID is required'
+      });
+    }
+
+    if (req.method === 'PATCH') {
+      console.log(`Updating testimonial ${id}`);
+      const { isFeatured, companyName, designation, city, profileImage } = req.body;
+
+      const testimonial = await Testimonial.findById(id);
+
+      if (!testimonial) {
+        return res.status(404).json({
+          success: false,
+          message: 'Testimonial not found'
+        });
+      }
+
+      // Update only provided fields
+      if (typeof isFeatured === 'boolean') {
+        testimonial.isFeatured = isFeatured;
+      }
+      if (companyName !== undefined) {
+        testimonial.companyName = companyName;
+      }
+      if (designation !== undefined) {
+        testimonial.designation = designation;
+      }
+      if (city !== undefined) {
+        testimonial.city = city;
+      }
+      if (profileImage !== undefined) {
+        testimonial.profileImage = profileImage;
+      }
+
+      await testimonial.save();
+
+      console.log('Testimonial updated successfully:', testimonial);
+      return res.status(200).json({
+        success: true,
+        message: 'Testimonial updated successfully',
+        data: testimonial
+      });
+    }
+
+    if (req.method === 'DELETE') {
+      console.log(`Deleting testimonial ${id}`);
+
+      const testimonial = await Testimonial.findByIdAndDelete(id);
+
+      if (!testimonial) {
+        return res.status(404).json({
+          success: false,
+          message: 'Testimonial not found'
+        });
+      }
+
+      console.log('Testimonial deleted successfully:', testimonial);
+      return res.status(200).json({
+        success: true,
+        message: 'Testimonial deleted successfully'
+      });
+    }
+
+    console.log(`Method ${req.method} not allowed`);
+    return res.status(405).json({ success: false, message: 'Method not allowed' });
+  } catch (error: any) {
+    console.error('API error:', error);
+    
+    // Handle invalid ObjectId
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid testimonial ID format'
+      });
+    }
+    
+    return res.status(500).json({ success: false, message: error.message || 'Internal server error' });
+  }
+}

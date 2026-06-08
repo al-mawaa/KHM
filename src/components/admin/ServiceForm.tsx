@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { IService } from '@/lib/models/Service';
 import { Button, Field, Input, Textarea } from '@/components/admin/ui';
+import { Loader2, Upload, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ServiceFormProps {
   service?: IService;
@@ -18,9 +20,15 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
     category: '',
     points: [],
     image: '',
+    imagePublicId: '',
   });
 
   const [pointsText, setPointsText] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (service) {
@@ -32,8 +40,10 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         category: service.category,
         points: service.points,
         image: service.image || '',
+        imagePublicId: service.imagePublicId || '',
       });
       setPointsText(service.points?.join('\n') || '');
+      setPreviewImage(service.image || null);
     }
   }, [service]);
 
@@ -44,18 +54,144 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
       .replace(/(^-|-$)/g, '');
   };
 
+  const handleFileSelect = (file: File | null) => {
+    if (!file) {
+      setSelectedFile(null);
+      setPreviewImage(null);
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Invalid file type. Please upload JPG, JPEG, PNG, or WebP images.');
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error('File size exceeds 5MB limit.');
+      return;
+    }
+
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileSelect(file);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    handleFileSelect(file);
+  };
+
+  const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const xhr = new XMLHttpRequest();
+
+      return new Promise((resolve, reject) => {
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            const progress = Math.round((e.loaded / e.total) * 100);
+            setUploadProgress(progress);
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+              resolve({ url: response.filePath, publicId: response.publicId });
+            } else {
+              reject(new Error(response.message || 'Upload failed'));
+            }
+          } else {
+            reject(new Error('Upload failed'));
+          }
+        });
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Upload failed'));
+        });
+
+        xhr.open('POST', '/api/upload');
+        xhr.send(formData);
+      });
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const deleteFile = async (publicId: string) => {
+    try {
+      if (!publicId) {
+        console.log('No public ID provided for deletion');
+        return;
+      }
+
+      const res = await fetch(`/api/upload?publicId=${encodeURIComponent(publicId)}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        console.log('Cloudinary image deleted successfully:', publicId);
+      } else {
+        console.error('Failed to delete image:', data.message);
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
+
   const handleTitleChange = (value: string) => {
     setFormData({ ...formData, title: value, slug: generateSlug(value) });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const pointsArray = pointsText
       .split('\n')
       .map((p) => p.trim())
       .filter((p) => p.length > 0);
-    
-    onSubmit({ ...formData, points: pointsArray });
+
+    let image = formData.image;
+    let imagePublicId = formData.imagePublicId;
+    const oldImage = service?.image;
+    const oldImagePublicId = service?.imagePublicId;
+
+    if (selectedFile) {
+      try {
+        const uploadResult = await uploadFile(selectedFile);
+        image = uploadResult.url;
+        imagePublicId = uploadResult.publicId;
+        toast.success('Image uploaded successfully');
+      } catch (error) {
+        console.error('Upload error:', error);
+        toast.error('Failed to upload image');
+        return;
+      }
+    }
+
+    if (service && oldImagePublicId && oldImagePublicId !== imagePublicId) {
+      await deleteFile(oldImagePublicId);
+    }
+
+    onSubmit({ ...formData, points: pointsArray, image, imagePublicId });
   };
 
   return (
@@ -113,21 +249,92 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
           placeholder="Point 1&#10;Point 2&#10;Point 3"
         />
       </Field>
-      
-      <Field label="Image URL (optional)">
-        <Input
-          value={formData.image || ''}
-          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-          placeholder="https://..."
-        />
+
+      <Field label="Service Image">
+        <div
+          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+            selectedFile || previewImage
+              ? 'border-slate-300 bg-slate-50'
+              : 'border-slate-300 hover:border-aqua hover:bg-slate-50'
+          }`}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleFileDrop}
+        >
+          {uploading ? (
+            <div className="space-y-3">
+              <Loader2 className="h-8 w-8 mx-auto animate-spin text-aqua" />
+              <p className="text-sm text-slate-600">Uploading... {uploadProgress}%</p>
+              <div className="w-full bg-slate-200 rounded-full h-2">
+                <div
+                  className="bg-aqua h-2 rounded-full transition-all"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          ) : previewImage ? (
+            <div className="space-y-3">
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="h-48 w-full object-cover rounded-lg mx-auto"
+              />
+              <div className="flex justify-center gap-2">
+                <Button
+                  variant="secondary"
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setPreviewImage(null);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}
+                >
+                  <X className="h-4 w-4" /> Remove
+                </Button>
+                <Button
+                  variant="secondary"
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-4 w-4" /> Change
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <Upload className="h-12 w-12 mx-auto text-slate-400" />
+              <div>
+                <p className="text-sm font-medium text-slate-700">
+                  Drag and drop an image, or click to browse
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  JPG, JPEG, PNG, or WebP (max 5MB)
+                </p>
+              </div>
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Select Image
+              </Button>
+            </div>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            onChange={handleFileInputChange}
+            className="hidden"
+          />
+        </div>
       </Field>
-      
+
       <div className="flex justify-end gap-2 pt-2">
-        <Button variant="secondary" type="button" onClick={onCancel}>
+        <Button variant="secondary" type="button" onClick={() => { onCancel(); setSelectedFile(null); setPreviewImage(null); }} disabled={isLoading}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Saving...' : 'Save'}
+        <Button type="submit" disabled={isLoading || uploading}>
+          {isLoading || uploading ? 'Saving...' : 'Save'}
         </Button>
       </div>
     </form>

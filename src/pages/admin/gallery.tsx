@@ -8,6 +8,7 @@ interface GalleryItem {
   _id?: string;
   title: string;
   imageUrl: string;
+  imagePublicId?: string;
   description?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -98,7 +99,7 @@ export default function AdminGalleryPage() {
     handleFileSelect(file);
   };
 
-  const uploadFile = async (file: File): Promise<string> => {
+  const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -120,7 +121,7 @@ export default function AdminGalleryPage() {
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
             if (response.success) {
-              resolve(response.filePath);
+              resolve({ url: response.filePath, publicId: response.publicId });
             } else {
               reject(new Error(response.message || 'Upload failed'));
             }
@@ -142,26 +143,25 @@ export default function AdminGalleryPage() {
     }
   };
 
-  const deleteFile = async (filePath: string) => {
+  const deleteFile = async (publicId: string) => {
     try {
-      // Only delete files that are in the uploads directory
-      if (!filePath.startsWith('/uploads/')) {
-        console.log('Skipping deletion of external URL:', filePath);
+      if (!publicId) {
+        console.log('No public ID provided for deletion');
         return;
       }
 
-      const res = await fetch(`/api/upload?filePath=${encodeURIComponent(filePath)}`, {
+      const res = await fetch(`/api/upload?publicId=${encodeURIComponent(publicId)}`, {
         method: 'DELETE',
       });
 
       const data = await res.json();
       if (data.success) {
-        console.log('File deleted successfully:', filePath);
+        console.log('Cloudinary image deleted successfully:', publicId);
       } else {
-        console.error('Failed to delete file:', data.message);
+        console.error('Failed to delete image:', data.message);
       }
     } catch (error) {
-      console.error('Error deleting file:', error);
+      console.error('Error deleting image:', error);
     }
   };
 
@@ -172,12 +172,16 @@ export default function AdminGalleryPage() {
       setError(null);
 
       let imageUrl = item.imageUrl;
+      let imagePublicId = item.imagePublicId;
       const oldImageUrl = edit?.imageUrl;
+      const oldImagePublicId = edit?.imagePublicId;
 
       // Upload new file if selected
       if (selectedFile) {
         try {
-          imageUrl = await uploadFile(selectedFile);
+          const uploadResult = await uploadFile(selectedFile);
+          imageUrl = uploadResult.url;
+          imagePublicId = uploadResult.publicId;
           toast.success('Image uploaded successfully');
         } catch (error) {
           console.error('Upload error:', error);
@@ -187,9 +191,9 @@ export default function AdminGalleryPage() {
         }
       }
 
-      // Delete old file if editing and image changed
-      if (edit && oldImageUrl && oldImageUrl !== imageUrl && oldImageUrl.startsWith('/uploads/')) {
-        await deleteFile(oldImageUrl);
+      // Delete old image from Cloudinary if editing and image changed
+      if (edit && oldImagePublicId && oldImagePublicId !== imagePublicId) {
+        await deleteFile(oldImagePublicId);
       }
 
       const isEdit = !!item._id;
@@ -199,7 +203,7 @@ export default function AdminGalleryPage() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...item, imageUrl }),
+        body: JSON.stringify({ ...item, imageUrl, imagePublicId }),
       });
 
       const data = await res.json();
@@ -228,10 +232,10 @@ export default function AdminGalleryPage() {
     try {
       console.log('Deleting gallery item:', id);
       
-      // Get the item to find its image URL before deletion
+      // Get the item to find its image public ID before deletion
       const itemToDelete = items.find(item => item._id === id);
-      if (itemToDelete?.imageUrl) {
-        await deleteFile(itemToDelete.imageUrl);
+      if (itemToDelete?.imagePublicId) {
+        await deleteFile(itemToDelete.imagePublicId);
       }
 
       const res = await fetch(`/api/gallery/${id}`, {

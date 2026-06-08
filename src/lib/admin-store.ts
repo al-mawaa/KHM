@@ -10,7 +10,7 @@ export type Service = { id: string; title: string; icon: string; description: st
 export type Project = { id: string; title: string; category: "Government" | "Residential" | "Industrial" | "Commercial"; location: string; description: string; image?: string };
 export type BlogPost = { id: string; title: string; slug: string; excerpt: string; content: string; image?: string; tags: string; seoTitle?: string; seoDescription?: string; createdAt: number };
 export type Testimonial = { id: string; name: string; role: string; quote: string; rating: number };
-export type TeamMember = { id: string; name: string; role: string; bio: string; image?: string };
+export type TeamMember = { id: string; name: string; role: string; bio: string; image?: string; imagePublicId?: string };
 export type Lead = { id: string; name: string; email: string; phone: string; company?: string; service: string; message: string; status: "new" | "contacted" | "closed"; createdAt: number };
 export type Settings = {
   companyName: string;

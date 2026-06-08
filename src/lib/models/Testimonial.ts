@@ -12,6 +12,7 @@ export interface ITestimonial extends Document {
   designation?: string;
   city?: string;
   profileImage?: string;
+  profileImagePublicId?: string;
   isFeatured?: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -58,6 +59,10 @@ const TestimonialSchema = new Schema<ITestimonial>(
       trim: true,
     },
     profileImage: {
+      type: String,
+      trim: true,
+    },
+    profileImagePublicId: {
       type: String,
       trim: true,
     },

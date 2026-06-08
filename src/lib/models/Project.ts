@@ -11,6 +11,7 @@ export interface IProject extends Document {
   status: string;
   type: string;
   image?: string;
+  imagePublicId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -64,6 +65,10 @@ const ProjectSchema = new Schema<IProject>(
       trim: true,
     },
     image: {
+      type: String,
+      trim: true,
+    },
+    imagePublicId: {
       type: String,
       trim: true,
     },

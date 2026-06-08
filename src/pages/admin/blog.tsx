@@ -11,6 +11,7 @@ interface BlogItem {
   excerpt: string;
   content: string;
   featuredImage: string;
+  featuredImagePublicId?: string;
   tags?: string[];
   category?: string;
   readingTime?: number;
@@ -110,7 +111,7 @@ export default function AdminBlogPage() {
     handleFileSelect(file);
   };
 
-  const uploadFile = async (file: File): Promise<string> => {
+  const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -132,7 +133,7 @@ export default function AdminBlogPage() {
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
             if (response.success) {
-              resolve(response.filePath);
+              resolve({ url: response.filePath, publicId: response.publicId });
             } else {
               reject(new Error(response.message || 'Upload failed'));
             }
@@ -154,26 +155,25 @@ export default function AdminBlogPage() {
     }
   };
 
-  const deleteFile = async (filePath: string) => {
+  const deleteFile = async (publicId: string) => {
     try {
-      // Only delete files that are in the uploads directory
-      if (!filePath.startsWith('/uploads/')) {
-        console.log('Skipping deletion of external URL:', filePath);
+      if (!publicId) {
+        console.log('No public ID provided for deletion');
         return;
       }
 
-      const res = await fetch(`/api/upload?filePath=${encodeURIComponent(filePath)}`, {
+      const res = await fetch(`/api/upload?publicId=${encodeURIComponent(publicId)}`, {
         method: 'DELETE',
       });
 
       const data = await res.json();
       if (data.success) {
-        console.log('File deleted successfully:', filePath);
+        console.log('Cloudinary image deleted successfully:', publicId);
       } else {
-        console.error('Failed to delete file:', data.message);
+        console.error('Failed to delete image:', data.message);
       }
     } catch (error) {
-      console.error('Error deleting file:', error);
+      console.error('Error deleting image:', error);
     }
   };
 
@@ -184,12 +184,16 @@ export default function AdminBlogPage() {
       setError(null);
 
       let featuredImage = item.featuredImage;
+      let featuredImagePublicId = item.featuredImagePublicId;
       const oldFeaturedImage = edit?.featuredImage;
+      const oldFeaturedImagePublicId = edit?.featuredImagePublicId;
 
       // Upload new file if selected
       if (selectedFile) {
         try {
-          featuredImage = await uploadFile(selectedFile);
+          const uploadResult = await uploadFile(selectedFile);
+          featuredImage = uploadResult.url;
+          featuredImagePublicId = uploadResult.publicId;
           toast.success('Image uploaded successfully');
         } catch (error) {
           console.error('Upload error:', error);
@@ -199,9 +203,9 @@ export default function AdminBlogPage() {
         }
       }
 
-      // Delete old file if editing and image changed
-      if (edit && oldFeaturedImage && oldFeaturedImage !== featuredImage && oldFeaturedImage.startsWith('/uploads/')) {
-        await deleteFile(oldFeaturedImage);
+      // Delete old image from Cloudinary if editing and image changed
+      if (edit && oldFeaturedImagePublicId && oldFeaturedImagePublicId !== featuredImagePublicId) {
+        await deleteFile(oldFeaturedImagePublicId);
       }
 
       const isEdit = !!item._id;
@@ -211,7 +215,7 @@ export default function AdminBlogPage() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...item, featuredImage }),
+        body: JSON.stringify({ ...item, featuredImage, featuredImagePublicId }),
       });
 
       const data = await res.json();
@@ -240,10 +244,10 @@ export default function AdminBlogPage() {
     try {
       console.log('Deleting blog item:', id);
       
-      // Get the item to find its image URL before deletion
+      // Get the item to find its image public ID before deletion
       const itemToDelete = items.find(item => item._id === id);
-      if (itemToDelete?.featuredImage) {
-        await deleteFile(itemToDelete.featuredImage);
+      if (itemToDelete?.featuredImagePublicId) {
+        await deleteFile(itemToDelete.featuredImagePublicId);
       }
 
       const res = await fetch(`/api/blog/${id}`, {

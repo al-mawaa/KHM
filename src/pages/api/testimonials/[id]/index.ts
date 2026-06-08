@@ -1,6 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Testimonial, { ITestimonial } from '@/lib/models/Testimonial';
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
@@ -19,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'PATCH') {
       console.log(`Updating testimonial ${id}`);
-      const { isFeatured, companyName, designation, city, profileImage } = req.body;
+      const { isFeatured, companyName, designation, city, profileImage, profileImagePublicId } = req.body;
 
       const testimonial = await Testimonial.findById(id);
 
@@ -46,6 +54,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (profileImage !== undefined) {
         testimonial.profileImage = profileImage;
       }
+      if (profileImagePublicId !== undefined) {
+        testimonial.profileImagePublicId = profileImagePublicId;
+      }
 
       await testimonial.save();
 
@@ -60,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'DELETE') {
       console.log(`Deleting testimonial ${id}`);
 
-      const testimonial = await Testimonial.findByIdAndDelete(id);
+      const testimonial = await Testimonial.findById(id);
 
       if (!testimonial) {
         return res.status(404).json({
@@ -68,6 +79,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           message: 'Testimonial not found'
         });
       }
+
+      // Delete image from Cloudinary if publicId exists
+      if (testimonial.profileImagePublicId) {
+        try {
+          await cloudinary.uploader.destroy(testimonial.profileImagePublicId);
+          console.log('Cloudinary image deleted:', testimonial.profileImagePublicId);
+        } catch (error) {
+          console.error('Failed to delete Cloudinary image:', error);
+        }
+      }
+
+      await Testimonial.findByIdAndDelete(id);
 
       console.log('Testimonial deleted successfully:', testimonial);
       return res.status(200).json({

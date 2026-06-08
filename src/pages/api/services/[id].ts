@@ -1,6 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Service, { IService } from '@/lib/models/Service';
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
@@ -25,11 +33,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'PUT') {
       console.log('Updating service:', id, 'with body:', req.body);
-      const { title, slug, description, icon, category, points, image } = req.body;
+      const { title, slug, description, icon, category, points, image, imagePublicId } = req.body;
 
       const service = await Service.findByIdAndUpdate(
         id,
-        { title, slug, description, icon, category, points, image },
+        { title, slug, description, icon, category, points, image, imagePublicId },
         { new: true, runValidators: true }
       );
 
@@ -44,12 +52,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'DELETE') {
       console.log('Deleting service:', id);
-      const service = await Service.findByIdAndDelete(id);
+      const service = await Service.findById(id);
 
       if (!service) {
         console.log('Service not found for deletion');
         return res.status(404).json({ success: false, message: 'Service not found' });
       }
+
+      // Delete image from Cloudinary if publicId exists
+      if (service.imagePublicId) {
+        try {
+          await cloudinary.uploader.destroy(service.imagePublicId);
+          console.log('Cloudinary image deleted:', service.imagePublicId);
+        } catch (error) {
+          console.error('Failed to delete Cloudinary image:', error);
+        }
+      }
+
+      await Service.findByIdAndDelete(id);
 
       console.log('Service deleted successfully');
       return res.status(200).json({ success: true, message: 'Service deleted successfully' });

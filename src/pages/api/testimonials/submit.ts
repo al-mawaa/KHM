@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'POST') {
       console.log('Submitting testimonial with body:', req.body);
-      const { name, feedback, industryType, rating, companyName, designation, city, profileImage } = req.body;
+      const { name, feedback, industryType, rating, companyName, designation, city, profileImage, profileImagePublicId } = req.body;
 
       // Rate limiting based on IP
       const ip = req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || 'unknown';
@@ -78,6 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         designation: designation?.trim(),
         city: city?.trim(),
         profileImage: profileImage?.trim(),
+        profileImagePublicId: profileImagePublicId?.trim(),
         status: 'pending', // Always pending for public submissions
         isFeatured: false, // Public cannot set featured
       });

@@ -17,6 +17,7 @@ interface TestimonialItem {
   designation?: string;
   city?: string;
   profileImage?: string;
+  profileImagePublicId?: string;
   isFeatured?: boolean;
   createdAt: string;
 }
@@ -41,6 +42,7 @@ export function HomeTestimonials() {
     companyName: "",
     designation: "",
     city: "",
+    profileImage: "",
   });
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -98,7 +100,7 @@ export function HomeTestimonials() {
     reader.readAsDataURL(file);
   };
 
-  const uploadFile = async (file: File): Promise<string> => {
+  const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -112,7 +114,7 @@ export function HomeTestimonials() {
 
       const data = await res.json();
       if (data.success) {
-        return data.filePath;
+        return { url: data.filePath, publicId: data.publicId };
       } else {
         throw new Error(data.message || 'Upload failed');
       }
@@ -143,11 +145,14 @@ export function HomeTestimonials() {
       setSubmitting(true);
       
       let profileImagePath = formData.profileImage;
+      let profileImagePublicId = "";
       
       // Upload image if selected
       if (selectedFile) {
         try {
-          profileImagePath = await uploadFile(selectedFile);
+          const uploadResult = await uploadFile(selectedFile);
+          profileImagePath = uploadResult.url;
+          profileImagePublicId = uploadResult.publicId;
         } catch (error) {
           setFormError("Failed to upload image");
           setSubmitting(false);
@@ -161,6 +166,7 @@ export function HomeTestimonials() {
         body: JSON.stringify({
           ...formData,
           profileImage: profileImagePath,
+          profileImagePublicId,
         }),
       });
 
@@ -168,14 +174,15 @@ export function HomeTestimonials() {
 
       if (data.success) {
         setSuccessMessage("Thank you for your feedback. It will appear on the website after admin review.");
-        setFormData({ 
-          name: "", 
-          industryType: "", 
-          feedback: "", 
+        setFormData({
+          name: "",
+          industryType: "",
+          feedback: "",
           rating: 5,
           companyName: "",
           designation: "",
           city: "",
+          profileImage: "",
         });
         setSelectedFile(null);
         setPreviewImage(null);

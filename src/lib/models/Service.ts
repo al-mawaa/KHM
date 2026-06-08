@@ -8,6 +8,7 @@ export interface IService extends Document {
   category: string;
   points: string[];
   image?: string;
+  imagePublicId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,6 +47,10 @@ const ServiceSchema = new Schema<IService>(
       default: [],
     },
     image: {
+      type: String,
+      trim: true,
+    },
+    imagePublicId: {
       type: String,
       trim: true,
     },

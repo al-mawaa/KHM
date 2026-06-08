@@ -1,6 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Blog, { IBlog } from '@/lib/models/Blog';
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 // Helper function to generate slug from title
 function generateSlug(title: string): string {
@@ -64,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'PUT') {
       console.log('Updating blog:', id, 'with body:', req.body);
-      const { title, excerpt, content, featuredImage, tags, category, isPublished } = req.body;
+      const { title, excerpt, content, featuredImage, featuredImagePublicId, tags, category, isPublished } = req.body;
 
       // Validation
       if (!title) {
@@ -121,6 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         excerpt,
         content,
         featuredImage,
+        featuredImagePublicId,
         tags: tags || [],
         category: category !== undefined ? category : existingBlog.category,
         readingTime,
@@ -147,12 +156,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'DELETE') {
       console.log('Deleting blog:', id);
-      const blog = await Blog.findByIdAndDelete(id);
+      const blog = await Blog.findById(id);
 
       if (!blog) {
         console.log('Blog not found for deletion');
         return res.status(404).json({ success: false, message: 'Blog not found' });
       }
+
+      // Delete image from Cloudinary if publicId exists
+      if (blog.featuredImagePublicId) {
+        try {
+          await cloudinary.uploader.destroy(blog.featuredImagePublicId);
+          console.log('Cloudinary image deleted:', blog.featuredImagePublicId);
+        } catch (error) {
+          console.error('Failed to delete Cloudinary image:', error);
+        }
+      }
+
+      await Blog.findByIdAndDelete(id);
 
       console.log('Blog deleted successfully');
       return res.status(200).json({ success: true, message: 'Blog deleted successfully' });

@@ -26,7 +26,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
       <Navbar />
 
-      <main className="min-h-0 flex-1">{children}</main>
+      <main className="min-h-0 flex-1" style={{ paddingTop: "var(--site-header-height)" }}>{children}</main>
 
       <Footer />
 

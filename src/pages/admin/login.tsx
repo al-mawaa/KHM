@@ -8,7 +8,7 @@ import { heroPlant } from "@/lib/images";
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@khminfra.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [show, setShow] = useState(false);
@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
                   <input
                     type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                     className="w-full rounded-xl border border-white/20 bg-white/5 pl-10 pr-3 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-aqua"
-                    placeholder="admin@khminfra.com"
+                    placeholder="Email address"
                   />
                 </div>
               </div>
@@ -76,12 +76,11 @@ export default function AdminLoginPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center text-xs">
                 <label className="flex items-center gap-2 text-white/80 cursor-pointer">
                   <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="accent-aqua" />
                   Remember me
                 </label>
-                <a className="text-aqua hover:underline" href="#">Forgot password?</a>
               </div>
 
               {error && (
@@ -97,10 +96,6 @@ export default function AdminLoginPage() {
                 {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                 {loading ? "Signing in…" : "Sign In"}
               </button>
-
-              <p className="text-center text-[11px] text-white/50">
-                Demo credentials: <code className="text-aqua">admin@khminfra.com</code> / <code className="text-aqua">admin123</code>
-              </p>
             </form>
           </div>
 

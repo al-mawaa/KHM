@@ -1,11 +1,8 @@
-import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const heroSlides = [
@@ -16,13 +13,18 @@ const heroSlides = [
 ];
 
 export function HomeHero() {
-  const { settings } = useWebsiteSettings();
-
   return (
-    <section className="relative h-[85vh] w-full overflow-hidden" aria-label="Hero">
+    <section
+      className="relative w-full overflow-hidden home-hero-section"
+      aria-label="Hero"
+      style={{
+        height: "calc(100vh - var(--site-header-height, 0px))",
+        marginTop: "calc(var(--site-header-height, 0px) * -1)",
+      }}
+    >
       <Swiper
         className="h-full w-full"
-        modules={[Autoplay, EffectFade, Navigation, Pagination]}
+        modules={[Autoplay, EffectFade, Pagination]}
         effect="fade"
         speed={1200}
         loop
@@ -30,10 +32,7 @@ export function HomeHero() {
           delay: 4000,
           disableOnInteraction: false,
         }}
-        navigation={{
-          nextEl: ".hero-swiper-button-next",
-          prevEl: ".hero-swiper-button-prev",
-        }}
+        /* navigation removed to disable left/right arrows for a cleaner hero */
         pagination={{
           el: ".hero-swiper-pagination",
           clickable: true,
@@ -47,32 +46,18 @@ export function HomeHero() {
         {heroSlides.map((slide) => (
           <SwiperSlide key={slide}>
             <div
-              className="relative h-[85vh] w-full bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${slide})`,
-              }}
-            >
+                className="relative h-full w-full bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${slide})`,
+                  backgroundPosition: "center top",
+                }}
+              >
               <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
-              <div className="absolute inset-0 flex items-center justify-center px-4">
-                <div className="max-w-4xl text-center text-white">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg">
-                    {settings.heroTitle}
-                  </h1>
-                  <p className="text-lg md:text-xl lg:text-2xl mb-6 drop-shadow-md">
-                    {settings.heroSubtitle}
-                  </p>
-                </div>
-              </div>
             </div>
           </SwiperSlide>
         ))}
 
-        <div className="hero-swiper-button-prev absolute left-4 top-1/2 z-20 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm transition-all duration-300 hover:border-white/60 hover:bg-white/20 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50">
-          <ChevronLeft className="h-6 w-6" />
-        </div>
-        <div className="hero-swiper-button-next absolute right-4 top-1/2 z-20 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm transition-all duration-300 hover:border-white/60 hover:bg-white/20 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50">
-          <ChevronRight className="h-6 w-6" />
-        </div>
+        {/* navigation buttons intentionally removed */}
 
         <div className="hero-swiper-pagination absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-3" />
       </Swiper>
@@ -94,6 +79,11 @@ export function HomeHero() {
           border-radius: 6px;
           background: rgba(255, 255, 255, 0.9);
         }
+
+        /* Responsive hero sizing */
+        .home-hero-section { height: calc(100vh - var(--site-header-height, 0px)); }
+        @media (max-width: 1024px) { .home-hero-section { height: calc(85vh - var(--site-header-height, 0px)); } }
+        @media (max-width: 640px) { .home-hero-section { height: auto; min-height: 360px; padding: 2.5rem 0; } .home-hero-section .h-full { min-height: 360px; } }
       `}</style>
     </section>
   );

@@ -19,7 +19,6 @@ const QUICK_LINKS = [
   ["/services", "Services"],
   ["/projects", "Projects"],
   ["/gallery", "Gallery"],
-  ["/clients", "Client"],
   ["/sectors-we-serve", "Industries We Serve"],
   ["/blog", "Blog"],
   ["/careers", "Careers"],

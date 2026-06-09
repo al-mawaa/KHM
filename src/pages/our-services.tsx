@@ -169,7 +169,7 @@ export default function OurServicesPage() {
               <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
               {services.map((service, index) => (
                 <ServiceCard key={service._id?.toString()} service={service} index={index} />
               ))}

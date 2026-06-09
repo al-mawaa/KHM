@@ -41,45 +41,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     if (req.method === 'GET') {
       console.log('Fetching all blogs...');
-      
+
       // Check if published filter is requested
-      const { published, search, category, page, limit } = req.query;
+      const { published, search, category, page, limit, fields } = req.query;
       const filter: any = {};
-      
+
       if (published === 'true') {
         filter.isPublished = true;
       }
-      
+
       // Search functionality
       if (search && typeof search === 'string') {
         filter.$or = [
           { title: { $regex: search, $options: 'i' } },
           { excerpt: { $regex: search, $options: 'i' } },
           { tags: { $in: [new RegExp(search, 'i')] } },
+          { content: { $regex: search, $options: 'i' } },
         ];
       }
-      
+
       // Category filter
       if (category && typeof category === 'string') {
         filter.category = category;
       }
-      
+
       // Pagination
       const pageNum = parseInt(page as string) || 1;
       const limitNum = parseInt(limit as string) || 6;
       const skip = (pageNum - 1) * limitNum;
-      
+
+      // Select fields for performance optimization
+      // If 'fields' query param is set to 'listing', only fetch fields needed for listing page
+      const selectFields = fields === 'listing'
+        ? 'title slug excerpt featuredImage tags category readingTime isPublished createdAt updatedAt'
+        : '';
+
       // Sort by isPublished (true first), then createdAt (newest first)
       const blogs = await Blog.find(filter)
+        .select(selectFields)
         .sort({ isPublished: -1, createdAt: -1 })
         .skip(skip)
         .limit(limitNum);
-      
+
       const total = await Blog.countDocuments(filter);
-      
+
       console.log(`Found ${blogs.length} blogs (page ${pageNum}, limit ${limitNum}, total ${total})`);
-      return res.status(200).json({ 
-        success: true, 
+      return res.status(200).json({
+        success: true,
         data: blogs,
         pagination: {
           page: pageNum,

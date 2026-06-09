@@ -1,6 +1,7 @@
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -15,6 +16,8 @@ const heroSlides = [
 ];
 
 export function HomeHero() {
+  const { settings } = useWebsiteSettings();
+
   return (
     <section className="relative h-[85vh] w-full overflow-hidden" aria-label="Hero">
       <Swiper
@@ -50,6 +53,16 @@ export function HomeHero() {
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
+              <div className="absolute inset-0 flex items-center justify-center px-4">
+                <div className="max-w-4xl text-center text-white">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg">
+                    {settings.heroTitle}
+                  </h1>
+                  <p className="text-lg md:text-xl lg:text-2xl mb-6 drop-shadow-md">
+                    {settings.heroSubtitle}
+                  </p>
+                </div>
+              </div>
             </div>
           </SwiperSlide>
         ))}

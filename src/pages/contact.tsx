@@ -4,16 +4,27 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Mail, MapPin, Phone, Send, FileBadge, MessageCircle, Building2 } from "lucide-react";
 import { engineers } from "@/lib/images";
 import { addLead } from "@/lib/admin-store";
-import {
-  SITE_ADDRESS,
-  SITE_EMAIL,
-  SITE_MAPS_EMBED_URL,
-  SITE_PHONES,
-  SITE_WHATSAPP_URL,
-} from "@/lib/site-contact";
+import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
+
+function getPhoneNumbers(phone: string) {
+  const numbers = phone.split(",").map(p => p.trim());
+  return numbers.map(n => ({
+    display: n,
+    tel: n.replace(/\D/g, ""),
+  }));
+}
+
+function getMapsEmbedUrl(address: string) {
+  const encoded = encodeURIComponent(address);
+  return `https://www.google.com/maps?q=${encoded}&output=embed`;
+}
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
+  const { settings } = useWebsiteSettings();
+  const phones = getPhoneNumbers(settings.phone);
+  const whatsappUrl = `https://wa.me/${settings.phone.replace(/\D/g, "").slice(0, 10)}`;
+  const mapsEmbedUrl = getMapsEmbedUrl(settings.address);
 
   return (
     <>
@@ -79,15 +90,15 @@ export default function ContactPage() {
 
           <div className="lg:col-span-2 space-y-4">
             {[
-              { I: MapPin, t: "Office", d: SITE_ADDRESS },
+              { I: MapPin, t: "Office", d: settings.address },
               { I: FileBadge, t: "CIN", d: "U71100PN2026PTC255526" },
-              ...SITE_PHONES.map((phone) => ({
+              ...phones.map((phone) => ({
                 I: Phone,
                 t: "Phone",
                 d: phone.display,
                 href: `tel:${phone.tel}`,
               })),
-              { I: Mail, t: "Email", d: SITE_EMAIL, href: `mailto:${SITE_EMAIL}` },
+              { I: Mail, t: "Email", d: settings.email, href: `mailto:${settings.email}` },
               { I: Building2, t: "Industry", d: "Architectural & Engineering Activities · Waste Water Management" },
             ].map((c) => (
               <div key={`${c.t}-${c.d}`} className="rounded-2xl border border-border bg-card p-5 shadow-card hover-lift">
@@ -97,7 +108,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{c.t}</div>
-                    {c.href ? (
+                    {"href" in c && c.href ? (
                       <a href={c.href} className="mt-0.5 font-semibold text-foreground hover:text-aqua-foreground transition-colors">{c.d}</a>
                     ) : (
                       <div className="mt-0.5 font-medium text-foreground">{c.d}</div>
@@ -108,7 +119,7 @@ export default function ContactPage() {
             ))}
 
             <a
-              href={SITE_WHATSAPP_URL}
+              href={whatsappUrl}
               target="_blank" rel="noreferrer"
               className="flex items-center justify-center gap-2 rounded-2xl bg-eco text-primary-foreground py-4 font-semibold shadow-elegant hover-lift"
             >
@@ -123,7 +134,7 @@ export default function ContactPage() {
           <div className="overflow-hidden rounded-3xl shadow-elegant border border-border">
             <iframe
               title="KHM Infra Office Location"
-              src={SITE_MAPS_EMBED_URL}
+              src={mapsEmbedUrl}
               className="w-full h-[420px]"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

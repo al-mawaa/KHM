@@ -11,7 +11,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { BrandLogoLink } from "@/components/BrandLogo";
-import { SITE_ADDRESS, SITE_EMAIL, SITE_PHONES, SITE_WHATSAPP_URL } from "@/lib/site-contact";
+import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 
 const QUICK_LINKS = [
   ["/", "Home"],
@@ -26,17 +26,32 @@ const QUICK_LINKS = [
   ["/contact", "Contact Us"],
 ] as const;
 
+function getSocialLinks(settings: ReturnType<typeof useWebsiteSettings>["settings"]) {
+  const phoneClean = settings.phone.replace(/\D/g, "").slice(0, 10);
+  const whatsappUrl = `https://wa.me/${phoneClean}`;
+  
+  return [
+    { Icon: Facebook, href: settings.facebook || "https://facebook.com", label: "Facebook" },
+    { Icon: Twitter, href: settings.twitter || "https://twitter.com", label: "Twitter" },
+    { Icon: Linkedin, href: settings.linkedin || "https://linkedin.com", label: "LinkedIn" },
+    { Icon: Instagram, href: settings.instagram || "https://instagram.com", label: "Instagram" },
+    { Icon: Youtube, href: settings.youtube || "https://youtube.com", label: "YouTube" },
+    { Icon: MessageCircle, href: whatsappUrl, label: "WhatsApp" },
+  ] as const;
+}
 
-const SOCIAL = [
-  { Icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { Icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { Icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { Icon: Youtube, href: "https://youtube.com", label: "YouTube" },
-  { Icon: MessageCircle, href: SITE_WHATSAPP_URL, label: "WhatsApp" },
-] as const;
+function getPhoneNumbers(phone: string) {
+  const numbers = phone.split(",").map(p => p.trim());
+  return numbers.map(n => ({
+    display: n,
+    tel: n.replace(/\D/g, ""),
+  }));
+}
 
 export function Footer() {
+  const { settings } = useWebsiteSettings();
+  const socialLinks = getSocialLinks(settings);
+  const phones = getPhoneNumbers(settings.phone);
   return (
     <footer className="relative mt-0 bg-[#0d3d5c] text-white">
       <div className="mx-auto max-w-[1400px] gap-10 px-4 py-14 lg:px-6 grid sm:grid-cols-2 lg:grid-cols-5">
@@ -47,7 +62,7 @@ export function Footer() {
             industrial and government infrastructure.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
-            {SOCIAL.map(({ Icon, href, label }) => (
+            {socialLinks.map(({ Icon, href, label }) => (
               <a
                 key={label}
                 href={href}
@@ -81,9 +96,9 @@ export function Footer() {
           <ul className="mt-4 space-y-3 text-sm text-white/80">
             <li className="flex gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#f5c518]" />
-              <span>{SITE_ADDRESS}</span>
+              <span>{settings.address}</span>
             </li>
-            {SITE_PHONES.map((phone) => (
+            {phones.map((phone) => (
               <li key={phone.tel} className="flex gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-[#f5c518]" />
                 <a href={`tel:${phone.tel}`} className="hover:text-[#f5c518]">
@@ -93,8 +108,8 @@ export function Footer() {
             ))}
             <li className="flex gap-3">
               <Mail className="h-4 w-4 shrink-0 text-[#f5c518]" />
-              <a href={`mailto:${SITE_EMAIL}`} className="hover:text-[#f5c518]">
-                {SITE_EMAIL}
+              <a href={`mailto:${settings.email}`} className="hover:text-[#f5c518]">
+                {settings.email}
               </a>
             </li>
           </ul>
@@ -103,8 +118,8 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-2 px-4 py-5 text-center text-xs text-white/55 sm:flex-row lg:px-6">
-          <p>© {new Date().getFullYear()} KHM Infra Innovations Private Limited. All rights reserved.</p>
-          <p>Engineered for sustainable water infrastructure.</p>
+          <p>© {new Date().getFullYear()} {settings.companyName}. All rights reserved.</p>
+          <p>{settings.footerNote}</p>
         </div>
       </div>
     </footer>

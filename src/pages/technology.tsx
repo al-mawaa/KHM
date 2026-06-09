@@ -15,7 +15,7 @@ const steps = [
 export default function TechnologyPage() {
   return (
     <>
-      <PageHero eyebrow="Technology" title="Smart, automated, sustainable" description="A modern treatment train built on proven bioprocesses and real-time intelligence." image={iot} />
+      <PageHero title="Smart, automated, sustainable" subtitle="A modern treatment train built on proven bioprocesses and real-time intelligence." breadcrumb="Technology" backgroundImage={iot} />
 
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">

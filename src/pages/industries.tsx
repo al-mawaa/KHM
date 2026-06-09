@@ -21,7 +21,7 @@ const inds = [
 export default function IndustriesPage() {
   return (
     <>
-      <PageHero eyebrow="Industries" title="Solutions for every sector" description="From a single residential tower to a sprawling industrial estate — engineered to your context, capacity and compliance." image={smartCity} />
+      <PageHero title="Solutions for every sector" subtitle="From a single residential tower to a sprawling industrial estate — engineered to your context, capacity and compliance." breadcrumb="Industries" backgroundImage={smartCity} />
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <SectionHeader eyebrow="Sectors" title="Where our engineering works" />

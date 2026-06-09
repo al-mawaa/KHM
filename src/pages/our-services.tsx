@@ -138,9 +138,9 @@ export default function OurServicesPage() {
   return (
     <>
       <PageHero
-        eyebrow="OUR SERVICES"
-        title="What We Deliver"
-        description="Engineering sustainable infrastructure solutions across water, wastewater, civil, power, irrigation, real estate, and project management sectors."
+        title="Our Services"
+        subtitle="Comprehensive water, wastewater and infrastructure solutions engineered for sustainable growth and operational excellence."
+        breadcrumb="Services"
       />
 
       {/* Services Section */}

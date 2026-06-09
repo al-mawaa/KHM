@@ -18,10 +18,10 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow="About Us"
         title="Building India's water-secure infrastructure"
-        description="We are an engineering-led waste water and infrastructure company combining proven process technology with sustainable design and digital intelligence."
-        image={heroPlant}
+        subtitle="We are an engineering-led waste water and infrastructure company combining proven process technology with sustainable design and digital intelligence."
+        breadcrumb="About Us"
+        backgroundImage={heroPlant}
       />
 
       <section id="about-us" className="scroll-mt-32 py-24">

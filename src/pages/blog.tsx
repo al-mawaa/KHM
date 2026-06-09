@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ChevronRight, Loader2, FileText, Search, Clock, Calendar } from "lucide-react";
 import { BlogCta } from "@/components/BlogCta";
 import { trackBlogSearch, trackPagination } from "@/lib/analytics";
+import { PageHero } from "@/components/PageHero";
 
 interface BlogPost {
   _id: string;
@@ -97,20 +98,14 @@ export default function BlogPage() {
 
   return (
     <>
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-[#f4f6f8]">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
-          <Link href="/" className="transition-colors hover:text-[#1a5276]">
-            Home
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <span className="text-[#1a5276]">Blog</span>
-        </div>
-      </div>
+      <PageHero
+        title="Insights & Articles"
+        subtitle="Stay updated with industry trends, innovations and expert knowledge in water and wastewater management."
+        breadcrumb="Blog"
+      />
 
       <section className="bg-white py-12 lg:py-16">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
-          <h1 className="text-center font-display text-2xl font-bold uppercase text-[#1a5276] sm:text-3xl">Our Blogs</h1>
 
           {/* Search Bar */}
           <div className="mt-8 max-w-2xl mx-auto">

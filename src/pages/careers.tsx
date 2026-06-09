@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 
 interface CareerJob {
   _id: string;
@@ -294,25 +295,11 @@ export default function CareersPage() {
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-white via-gray-50 to-white py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl"
-          >
-            <h1 className="text-[52px] font-bold tracking-tight text-[#1a5276] leading-tight">
-              Careers at KHM Infra Innovations
-            </h1>
-            <div className="mt-4 h-1 w-24 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-            <p className="mt-6 text-[20px] font-semibold text-gray-700">
-              Join our team and contribute to innovative wastewater treatment and environmental engineering projects.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        title="Join Our Team"
+        subtitle="Build your career with a growing engineering organization focused on innovation, sustainability and excellence."
+        breadcrumb="Careers"
+      />
 
       {/* Open Positions Section */}
       <section className="py-16 lg:py-24 bg-white">

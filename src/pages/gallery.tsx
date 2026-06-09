@@ -1,11 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { 
-  ChevronRight, X, ChevronLeft, ChevronRight as ChevronRightIcon, 
-  Loader2, Image as ImageIcon, Search, ZoomIn, ZoomOut, Maximize2, 
+import {
+  ChevronRight, X, ChevronLeft, ChevronRight as ChevronRightIcon,
+  Loader2, Image as ImageIcon, Search, ZoomIn, ZoomOut, Maximize2,
   Download, Filter, Grid3X3, Calendar, FolderOpen, ArrowRight
 } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
 
 // Analytics tracking hooks (architecture for future analytics implementation)
 const trackEvent = (eventName: string, eventData?: Record<string, any>) => {
@@ -202,39 +203,11 @@ export default function GalleryPage() {
 
   return (
     <>
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-[#f4f6f8]">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
-          <Link to="/" className="transition-colors hover:text-[#1a5276]">
-            Home
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <span className="text-[#1a5276]">Gallery</span>
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-white via-gray-50 to-white py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl"
-          >
-            <h1 className="text-[52px] font-bold tracking-tight text-[#1a5276] leading-tight">
-              GALLERY
-            </h1>
-            <div className="mt-4 h-1 w-24 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-            <p className="mt-6 text-[20px] font-semibold text-gray-700">
-              Our Project Showcase
-            </p>
-            <p className="mt-4 text-[16px] leading-8 text-gray-600">
-              Explore our completed projects and ongoing work through visual documentation of our water and wastewater treatment infrastructure across India.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        title="Gallery"
+        subtitle="Explore our completed projects, facilities, installations and engineering achievements across industries."
+        breadcrumb="Gallery"
+      />
 
       {/* Gallery Statistics */}
       <section className="py-12 bg-gradient-to-r from-[#1a5276] to-[#154360]">

@@ -1,26 +1,101 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
-export function PageHero({ eyebrow, title, description, image }: { eyebrow?: string; title: string; description?: string; image?: string }) {
+interface PageHeroProps {
+  title: string;
+  subtitle: string;
+  breadcrumb: string;
+  backgroundImage?: string;
+}
+
+export function PageHero({ title, subtitle, breadcrumb, backgroundImage = "/images/hero-plant.jpg" }: PageHeroProps) {
   return (
-    <section className="relative py-16 pb-20 overflow-hidden bg-gradient-hero text-primary-foreground md:py-20">
-      {image && (
-        <div className="absolute inset-0 -z-0">
-          <img src={image} alt="" className="h-full w-full object-cover opacity-25" />
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/60 via-primary/40 to-background" />
-        </div>
-      )}
-      <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
-          {eyebrow && (
-            <span className="inline-flex items-center gap-2 rounded-full border border-aqua/40 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-aqua">
-              <span className="h-1.5 w-1.5 rounded-full bg-aqua animate-pulse" />
-              {eyebrow}
-            </span>
-          )}
-          <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05]">{title}</h1>
-          {description && <p className="mt-5 text-lg text-primary-foreground/80 max-w-2xl">{description}</p>}
+    <section
+      className="relative w-full overflow-hidden"
+      style={{
+        height: "350px",
+        marginTop: "calc(var(--site-header-height, 0px) * -1)",
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Dark Overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(rgba(5,38,74,0.85), rgba(5,38,74,0.65))",
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl"
+        >
+          {/* Breadcrumb */}
+          <div
+            className="mb-5 flex items-center gap-2 text-sm"
+            style={{
+              color: "rgba(255,255,255,0.8)",
+            }}
+          >
+            <span>{breadcrumb}</span>
+          </div>
+
+          {/* Title */}
+          <h1
+            className="font-bold leading-[1.1] text-white"
+            style={{
+              fontSize: "60px",
+            }}
+          >
+            {title}
+          </h1>
+
+          {/* Subtitle */}
+          <p
+            className="mt-4 max-w-[800px] leading-[1.7]"
+            style={{
+              fontSize: "20px",
+              color: "rgba(255,255,255,0.9)",
+            }}
+          >
+            {subtitle}
+          </p>
         </motion.div>
       </div>
+
+      {/* Responsive Styles */}
+      <style jsx>{`
+        @media (max-width: 1024px) {
+          section {
+            height: 300px !important;
+          }
+          h1 {
+            font-size: 48px !important;
+          }
+          p {
+            font-size: 18px !important;
+          }
+        }
+        @media (max-width: 640px) {
+          section {
+            height: 250px !important;
+          }
+          h1 {
+            font-size: 36px !important;
+          }
+          p {
+            font-size: 16px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

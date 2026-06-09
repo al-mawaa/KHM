@@ -28,7 +28,7 @@ export default function ContactPage() {
 
   return (
     <>
-      <PageHero eyebrow="Contact" title="Let's engineer your project" description="Tell us about your site and goals — we'll respond within one business day." image={engineers} />
+      <PageHero title="Let's engineer your project" subtitle="Tell us about your site and goals — we'll respond within one business day." breadcrumb="Contact" backgroundImage={engineers} />
 
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 lg:px-8 grid lg:grid-cols-5 gap-10">

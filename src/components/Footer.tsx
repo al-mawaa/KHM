@@ -12,7 +12,7 @@ import {
   Hash,
 } from "lucide-react";
 import { BrandLogoLink } from "@/components/BrandLogo";
-import { SITE_ADDRESS, SITE_EMAIL, SITE_PHONES, SITE_WHATSAPP_URL } from "@/lib/site-contact";
+import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 
 const QUICK_LINKS = [
   ["/", "Home"],
@@ -26,25 +26,32 @@ const QUICK_LINKS = [
   ["/contact", "Contact Us"],
 ] as const;
 
-
-const SOCIAL = [
-  { Icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { Icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { Icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { Icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { Icon: Youtube, href: "https://youtube.com", label: "YouTube" },
-  { Icon: MessageCircle, href: SITE_WHATSAPP_URL, label: "WhatsApp" },
-] as const;
-
 export function Footer() {
+  const { settings } = useWebsiteSettings();
+
+  // Parse phone numbers from settings.phone string
+  const phoneNumbers = settings.phone.split(',').map(p => p.trim()).filter(p => p);
+  const phoneClean = settings.phone.replace(/\D/g, "").slice(0, 10);
+  const whatsappUrl = `https://wa.me/${phoneClean}`;
+
+  const SOCIAL = [
+    { Icon: Facebook, href: settings.facebook || "https://facebook.com", label: "Facebook" },
+    { Icon: Twitter, href: settings.twitter || "https://twitter.com", label: "Twitter" },
+    { Icon: Linkedin, href: settings.linkedin || "https://linkedin.com", label: "LinkedIn" },
+    { Icon: Instagram, href: settings.instagram || "https://instagram.com", label: "Instagram" },
+    { Icon: Youtube, href: settings.youtube || "https://youtube.com", label: "YouTube" },
+    { Icon: MessageCircle, href: whatsappUrl, label: "WhatsApp" },
+  ] as const;
+
+  console.log('[Footer] Settings received:', settings);
+
   return (
     <footer className="relative mt-0 bg-[#0d3d5c] text-white">
       <div className="mx-auto max-w-[1400px] gap-10 px-4 py-16 lg:px-6 grid sm:grid-cols-2 lg:grid-cols-3">
         <div className="sm:col-span-2 lg:col-span-1">
           <BrandLogoLink imageClassName="h-16 w-auto max-w-[300px] sm:h-20" withBackground />
           <p className="mt-4 max-w-[460px] text-sm leading-relaxed text-white/75">
-            KHM Infra Innovations delivers advanced water and wastewater treatment systems for residential,
-            industrial and government infrastructure.
+            {settings.tagline}
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {SOCIAL.map(({ Icon, href, label }) => (
@@ -80,20 +87,20 @@ export function Footer() {
           <ul className="mt-4 space-y-3 text-sm text-white/80">
             <li className="flex gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#f5c518]" />
-              <span>{SITE_ADDRESS}</span>
+              <span>{settings.address}</span>
             </li>
-            {SITE_PHONES.map((phone) => (
-              <li key={phone.tel} className="flex gap-3">
+            {phoneNumbers.map((phone, index) => (
+              <li key={index} className="flex gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-[#f5c518]" />
-                <a href={`tel:${phone.tel}`} className="hover:text-[#f5c518]">
-                  {phone.display}
+                <a href={`tel:${phone.replace(/\D/g, '')}`} className="hover:text-[#f5c518]">
+                  {phone}
                 </a>
               </li>
             ))}
             <li className="flex gap-3">
               <Mail className="h-4 w-4 shrink-0 text-[#f5c518]" />
-              <a href={`mailto:${SITE_EMAIL}`} className="hover:text-[#f5c518]">
-                {SITE_EMAIL}
+              <a href={`mailto:${settings.email}`} className="hover:text-[#f5c518]">
+                {settings.email}
               </a>
             </li>
           </ul>
@@ -105,8 +112,8 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-2 px-4 py-5 text-center text-xs text-white/55 sm:flex-row sm:text-left lg:px-6">
-          <p>© {new Date().getFullYear()} KHM Infra Innovations Private Limited. All rights reserved.</p>
-          <p>Engineered for sustainable water infrastructure.</p>
+          <p>© {new Date().getFullYear()} {settings.companyName}. All rights reserved.</p>
+          <p>{settings.footerNote}</p>
         </div>
       </div>
     </footer>

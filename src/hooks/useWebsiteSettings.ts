@@ -49,9 +49,11 @@ export function useWebsiteSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
+        console.log('[useWebsiteSettings] Fetching settings...');
         // Check cache first
         const now = Date.now();
         if (cachedSettings && (now - cacheTimestamp) < CACHE_DURATION) {
+          console.log('[useWebsiteSettings] Using cached settings');
           setSettings(cachedSettings);
           setLoading(false);
           return;
@@ -60,8 +62,11 @@ export function useWebsiteSettings() {
         const res = await fetch("/api/settings");
         const data = await res.json();
         
+        console.log('[useWebsiteSettings] API response:', data);
+        
         if (data.success && data.data) {
           const settingsData = data.data;
+          console.log('[useWebsiteSettings] Settings loaded successfully:', settingsData);
           setSettings(settingsData);
           cachedSettings = settingsData;
           cacheTimestamp = now;
@@ -69,7 +74,7 @@ export function useWebsiteSettings() {
           throw new Error(data.message || "Failed to fetch settings");
         }
       } catch (err) {
-        console.error("Failed to fetch settings:", err);
+        console.error("[useWebsiteSettings] Failed to fetch settings:", err);
         setError(err instanceof Error ? err.message : "Failed to load settings");
         // Use default settings on error
         setSettings(defaultSettings);

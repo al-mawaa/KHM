@@ -5,7 +5,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { Autoplay, EffectFade, Navigation, Pagination, Parallax } from "swiper/modules";
+import { Autoplay, EffectFade, Pagination, Parallax } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
   ArrowRight,
@@ -26,7 +26,6 @@ import {
 
 import "swiper/css";
 import "swiper/css/effect-fade";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/parallax";
 
@@ -98,7 +97,7 @@ export function HeroSwiperBanner() {
       <div className="absolute inset-0 min-h-full">
         <Swiper
           className="hero-swiper !absolute inset-0 h-full w-full"
-          modules={[Autoplay, EffectFade, Navigation, Pagination, Parallax]}
+          modules={[Autoplay, EffectFade, Pagination, Parallax]}
           effect="fade"
           fadeEffect={{ crossFade: true }}
           speed={reduceMotion ? 0 : 1100}
@@ -109,7 +108,6 @@ export function HeroSwiperBanner() {
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
-          navigation={reduceMotion ? false : true}
           pagination={{ clickable: true, dynamicBullets: true }}
           grabCursor
         >
@@ -124,7 +122,7 @@ export function HeroSwiperBanner() {
                   loading={index === 0 ? "eager" : "lazy"}
                   fetchPriority={index === 0 ? "high" : "low"}
                   decoding="async"
-                  className="hero-bg-img absolute inset-0 h-full w-full object-cover"
+                  className="hero-bg-img absolute inset-0 h-full w-full object-cover object-center"
                   data-swiper-parallax={reduceMotion ? undefined : "-8%"}
                 />
                 {/* Green-forward industrial overlay (logo: leaf green + aqua + navy) */}

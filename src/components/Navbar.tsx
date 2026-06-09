@@ -17,28 +17,37 @@ import {
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BrandLogoLink } from "@/components/BrandLogo";
 import { addLead } from "@/lib/admin-store";
-import {
-  SITE_EMAIL,
-  SITE_PHONE_DISPLAY,
-  SITE_PHONE_TEL,
-  SITE_WHATSAPP_URL,
-} from "@/lib/site-contact";
+import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 import { cn } from "@/lib/utils";
 
 
-const SOCIAL = [
-  { href: "https://facebook.com", label: "Facebook", Icon: Facebook, className: "bg-[#1877F2] hover:bg-[#166fe0]" },
-  { href: "https://twitter.com", label: "Twitter", Icon: Twitter, className: "bg-[#1DA1F2] hover:bg-[#1a94df]" },
-  { href: "https://linkedin.com", label: "LinkedIn", Icon: Linkedin, className: "bg-[#0A66C2] hover:bg-[#0958a8]" },
-  {
-    href: "https://instagram.com",
-    label: "Instagram",
-    Icon: Instagram,
-    className: "bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]",
-  },
-  { href: "https://youtube.com", label: "YouTube", Icon: Youtube, className: "bg-[#FF0000] hover:bg-[#e60000]" },
-  { href: SITE_WHATSAPP_URL, label: "WhatsApp", Icon: MessageCircle, className: "bg-[#25D366] hover:bg-[#20bd5a]" },
-] as const;
+function getSocialLinks(settings: ReturnType<typeof useWebsiteSettings>["settings"]) {
+  const phoneClean = settings.phone.replace(/\D/g, "").slice(0, 10);
+  const whatsappUrl = `https://wa.me/${phoneClean}`;
+  
+  return [
+    { href: settings.facebook || "https://facebook.com", label: "Facebook", Icon: Facebook, className: "bg-[#1877F2] hover:bg-[#166fe0]" },
+    { href: settings.twitter || "https://twitter.com", label: "Twitter", Icon: Twitter, className: "bg-[#1DA1F2] hover:bg-[#1a94df]" },
+    { href: settings.linkedin || "https://linkedin.com", label: "LinkedIn", Icon: Linkedin, className: "bg-[#0A66C2] hover:bg-[#0958a8]" },
+    {
+      href: settings.instagram || "https://instagram.com",
+      label: "Instagram",
+      Icon: Instagram,
+      className: "bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]",
+    },
+    { href: settings.youtube || "https://youtube.com", label: "YouTube", Icon: Youtube, className: "bg-[#FF0000] hover:bg-[#e60000]" },
+    { href: whatsappUrl, label: "WhatsApp", Icon: MessageCircle, className: "bg-[#25D366] hover:bg-[#20bd5a]" },
+  ] as const;
+}
+
+function getPhoneDisplay(phone: string) {
+  return phone;
+}
+
+function getPhoneTel(phone: string) {
+  const phoneClean = phone.replace(/\D/g, "");
+  return `tel:${phoneClean}`;
+}
 
 
 
@@ -126,12 +135,17 @@ function syncSiteHeaderHeight(el: HTMLElement) {
 
 export function Navbar() {
   const { pathname } = useLocation();
+  const { settings } = useWebsiteSettings();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [quoteService, setQuoteService] = useState("Consultation");
   const [scrolled, setScrolled] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+
+  const socialLinks = getSocialLinks(settings);
+  const phoneDisplay = getPhoneDisplay(settings.phone);
+  const phoneTel = getPhoneTel(settings.phone);
 
   useEffect(() => {
     const el = headerRef.current;
@@ -205,17 +219,17 @@ export function Navbar() {
       <div className="hidden border-b border-[#154360] bg-[#1a5276] md:block">
         <div className="mx-auto flex h-9 max-w-[1400px] items-center justify-between px-4 text-xs text-white/90 lg:px-6">
           <div className="flex items-center gap-5">
-            <a href={SITE_PHONE_TEL} className="inline-flex items-center gap-1.5 transition-colors hover:text-[#f5c518]">
+            <a href={phoneTel} className="inline-flex items-center gap-1.5 transition-colors hover:text-[#f5c518]">
               <Phone className="h-3.5 w-3.5 text-[#f5c518]" aria-hidden />
-              {SITE_PHONE_DISPLAY}
+              {phoneDisplay}
             </a>
-            <a href={`mailto:${SITE_EMAIL}`} className="inline-flex items-center gap-1.5 transition-colors hover:text-[#f5c518]">
+            <a href={`mailto:${settings.email}`} className="inline-flex items-center gap-1.5 transition-colors hover:text-[#f5c518]">
               <Mail className="h-3.5 w-3.5 text-[#f5c518]" aria-hidden />
-              {SITE_EMAIL}
+              {settings.email}
             </a>
           </div>
           <div className="flex items-center gap-1.5">
-            {SOCIAL.map(({ href, label, Icon, className }) => (
+            {socialLinks.map(({ href, label, Icon, className }) => (
               <a
                 key={label}
                 href={href}
@@ -270,6 +284,10 @@ export function Navbar() {
               <Link to="/blog" className={navLink(isActive("/blog"))}>
                 Blog
               </Link>
+
+              <Link to="/careers" className={navLink(isActive("/careers"))}>
+                Careers
+              </Link>
             </nav>
           </div>
 
@@ -286,7 +304,7 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <a href={SITE_PHONE_TEL} className="grid h-9 w-9 place-items-center text-[#1a5276]" aria-label="Call">
+            <a href={phoneTel} className="grid h-9 w-9 place-items-center text-[#1a5276]" aria-label="Call">
               <Phone className="h-5 w-5" />
             </a>
             <button
@@ -331,21 +349,22 @@ export function Navbar() {
                 <MobileNavLink to="/gallery" label="Gallery" onNavigate={() => setMobileOpen(false)} active={isActive("/gallery")} />
                 <MobileNavLink to="/clients" label="Client" onNavigate={() => setMobileOpen(false)} active={isActive("/clients")} />
                 <MobileNavLink to="/blog" label="Blog" onNavigate={() => setMobileOpen(false)} active={isActive("/blog")} />
+                <MobileNavLink to="/careers" label="Careers" onNavigate={() => setMobileOpen(false)} active={isActive("/careers")} />
                 <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} cta />
               </div>
 
               <div className="space-y-3 border-t border-gray-100 p-5">
-                <a href={SITE_PHONE_TEL} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
+                <a href={phoneTel} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a5276]/10">
                     <Phone className="h-4 w-4 text-[#1a5276]" />
                   </div>
-                  {SITE_PHONE_DISPLAY}
+                  {phoneDisplay}
                 </a>
-                <a href={`mailto:${SITE_EMAIL}`} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
+                <a href={`mailto:${settings.email}`} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a5276]/10">
                     <Mail className="h-4 w-4 text-[#1a5276]" />
                   </div>
-                  {SITE_EMAIL}
+                  {settings.email}
                 </a>
                 <button
                   type="button"

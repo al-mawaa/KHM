@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronRight, Loader2, FileText, Calendar, Tag, Clock, Share2, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react";
 import Head from "next/head";
 import { trackBlogView, trackBlogShare, trackRelatedBlogClick } from "@/lib/analytics";
@@ -221,14 +222,16 @@ export default function BlogDetailPage() {
               {/* Featured Image */}
               {blog.featuredImage && (
                 <div className="mb-8 overflow-hidden rounded-lg">
-                  <img
-                    src={blog.featuredImage}
-                    alt={blog.title}
-                    className="h-[400px] w-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
+                  <div className="relative aspect-[16/9] w-full bg-gray-100">
+                    <Image
+                      src={blog.featuredImage}
+                      alt={blog.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                      priority
+                    />
+                  </div>
                 </div>
               )}
 
@@ -327,25 +330,23 @@ export default function BlogDetailPage() {
                   <div className="grid gap-6 sm:grid-cols-2">
                     {relatedBlogs.map((relatedBlog) => (
                       <article key={relatedBlog._id} className="group flex gap-4">
-                        <Link 
-                          href={`/blog/${relatedBlog.slug}`} 
-                          className="block flex-shrink-0 overflow-hidden"
+                        <Link
+                          href={`/blog/${relatedBlog.slug}`}
+                          className="relative block flex-shrink-0 overflow-hidden aspect-square w-24 bg-gray-100"
                           onClick={() => trackRelatedBlogClick(blog._id, blog.slug, relatedBlog._id, relatedBlog.slug)}
                         >
-                          <img
+                          <Image
                             src={relatedBlog.featuredImage}
                             alt={relatedBlog.title}
-                            loading="lazy"
-                            className="h-24 w-24 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                            sizes="96px"
                           />
                         </Link>
                         <div className="flex-1">
                           <h3 className="font-display text-base font-bold leading-snug text-[#1a5276]">
-                            <Link 
-                              href={`/blog/${relatedBlog.slug}`} 
+                            <Link
+                              href={`/blog/${relatedBlog.slug}`}
                               className="transition-colors hover:text-[#154360]"
                               onClick={() => trackRelatedBlogClick(blog._id, blog.slug, relatedBlog._id, relatedBlog.slug)}
                             >
@@ -370,15 +371,13 @@ export default function BlogDetailPage() {
                   <div className="space-y-4">
                     {latestBlogs.map((latestBlog) => (
                       <article key={latestBlog._id} className="group flex gap-3">
-                        <Link href={`/blog/${latestBlog.slug}`} className="block flex-shrink-0 overflow-hidden">
-                          <img
+                        <Link href={`/blog/${latestBlog.slug}`} className="relative block flex-shrink-0 overflow-hidden aspect-square w-16 bg-gray-100">
+                          <Image
                             src={latestBlog.featuredImage}
                             alt={latestBlog.title}
-                            loading="lazy"
-                            className="h-16 w-16 object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                            sizes="64px"
                           />
                         </Link>
                         <div className="flex-1">

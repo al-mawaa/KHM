@@ -19,7 +19,7 @@ build/
 .tanstack
 
 # Environment variables
-# .env
+.env
 .env.local
 .env.*.local
 .env.production.local

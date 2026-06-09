@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Wrench, FolderKanban, FileText,
-  Users, MessageSquare, UsersRound, Settings as SettingsIcon, LogOut, Menu, X, Image,
+  Users, MessageSquare, UsersRound, Settings as SettingsIcon, LogOut, Menu, X, Image, Briefcase,
 } from "lucide-react";
 import { BrandLogoLink } from "@/components/BrandLogo";
 import { isAuthed, logout } from "@/lib/admin-store";
@@ -15,6 +15,7 @@ const menu = [
   { to: "/admin/blog", label: "Blog", icon: FileText },
   { to: "/admin/gallery", label: "Gallery", icon: Image },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
+  { to: "/admin/careers", label: "Careers", icon: Briefcase },
   { to: "/admin/leads", label: "Contact Leads", icon: Users },
   { to: "/admin/team", label: "Team Members", icon: UsersRound },
   { to: "/admin/settings", label: "Website Settings", icon: SettingsIcon },

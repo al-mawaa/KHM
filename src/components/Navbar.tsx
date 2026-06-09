@@ -270,6 +270,10 @@ export function Navbar() {
               <Link to="/blog" className={navLink(isActive("/blog"))}>
                 Blog
               </Link>
+
+              <Link to="/careers" className={navLink(isActive("/careers"))}>
+                Careers
+              </Link>
             </nav>
           </div>
 
@@ -331,6 +335,7 @@ export function Navbar() {
                 <MobileNavLink to="/gallery" label="Gallery" onNavigate={() => setMobileOpen(false)} active={isActive("/gallery")} />
                 <MobileNavLink to="/clients" label="Client" onNavigate={() => setMobileOpen(false)} active={isActive("/clients")} />
                 <MobileNavLink to="/blog" label="Blog" onNavigate={() => setMobileOpen(false)} active={isActive("/blog")} />
+                <MobileNavLink to="/careers" label="Careers" onNavigate={() => setMobileOpen(false)} active={isActive("/careers")} />
                 <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} cta />
               </div>
 

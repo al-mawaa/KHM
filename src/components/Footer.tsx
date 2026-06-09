@@ -22,6 +22,7 @@ const QUICK_LINKS = [
   ["/clients", "Client"],
   ["/sectors-we-serve", "Industries We Serve"],
   ["/blog", "Blog"],
+  ["/careers", "Careers"],
   ["/contact", "Contact Us"],
 ] as const;
 

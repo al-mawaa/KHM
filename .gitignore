@@ -97,6 +97,8 @@ jest.config.js.bak
 # Storybook
 storybook-static/
 
+## testing
+
 # Vercel
 .vercel/
 

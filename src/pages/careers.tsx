@@ -48,6 +48,7 @@ export default function CareersPage() {
     expectedSalary: '',
     coverLetter: '',
     resumeUrl: '',
+    resumePublicId: '',
     resumeFile: null as File | null,
   });
 
@@ -78,6 +79,29 @@ export default function CareersPage() {
     fetchJobs();
   }, []);
 
+  // Lock body scroll when modal opens
+  useEffect(() => {
+    if (applicationModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [applicationModalOpen]);
+
+  // ESC key to close modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && applicationModalOpen) {
+        closeApplicationModal();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [applicationModalOpen]);
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'Not specified';
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -104,6 +128,7 @@ export default function CareersPage() {
       expectedSalary: '',
       coverLetter: '',
       resumeUrl: '',
+      resumePublicId: '',
       resumeFile: null,
     });
   };
@@ -123,9 +148,9 @@ export default function CareersPage() {
       return;
     }
 
-    // Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setSubmitError('File size must be less than 5MB');
+    // Validate file size (3.5MB to account for base64 overhead)
+    if (file.size > 3.5 * 1024 * 1024) {
+      setSubmitError('File size must be less than 3.5MB');
       return;
     }
 
@@ -133,25 +158,43 @@ export default function CareersPage() {
       setUploading(true);
       setSubmitError(null);
 
-      const formDataUpload = new FormData();
-      formDataUpload.append('resume', file);
+      // Convert file to base64 for Vercel compatibility
+      const reader = new FileReader();
+      
+      reader.onload = async () => {
+        const base64 = reader.result as string;
+        
+        const response = await fetch('/api/upload-resume', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            file: base64,
+            fileName: file.name,
+            mimeType: file.type,
+          }),
+        });
 
-      const res = await fetch('/api/upload-resume', {
-        method: 'POST',
-        body: formDataUpload,
-      });
+        const data = await response.json();
+        
+        if (data.success) {
+          setFormData({ ...formData, resumeUrl: data.filePath, resumePublicId: data.publicId, resumeFile: file });
+        } else {
+          setSubmitError(data.message || 'Failed to upload resume');
+        }
+        setUploading(false);
+      };
 
-      const data = await res.json();
+      reader.onerror = () => {
+        setSubmitError('Failed to read file');
+        setUploading(false);
+      };
 
-      if (data.success) {
-        setFormData({ ...formData, resumeUrl: data.filePath, resumeFile: file });
-      } else {
-        setSubmitError(data.message || 'Failed to upload resume');
-      }
+      reader.readAsDataURL(file);
     } catch (err) {
       console.error('Resume upload error:', err);
       setSubmitError('Failed to upload resume. Please try again.');
-    } finally {
       setUploading(false);
     }
   };
@@ -234,6 +277,7 @@ export default function CareersPage() {
         expectedSalary: formData.expectedSalary,
         coverLetter: formData.coverLetter,
         resumeUrl: formData.resumeUrl,
+        resumePublicId: formData.resumePublicId,
       };
 
       const res = await fetch('/api/careers/apply', {
@@ -259,6 +303,7 @@ export default function CareersPage() {
           expectedSalary: '',
           coverLetter: '',
           resumeUrl: '',
+          resumePublicId: '',
           resumeFile: null,
         });
       } else {
@@ -289,6 +334,7 @@ export default function CareersPage() {
       expectedSalary: '',
       coverLetter: '',
       resumeUrl: '',
+      resumePublicId: '',
       resumeFile: null,
     });
   };
@@ -426,27 +472,31 @@ export default function CareersPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={closeApplicationModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl"
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="w-full max-w-4xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.25)] my-4 md:my-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shadow-sm">
                 <div>
-                  <h3 className="text-2xl font-bold text-[#1a5276]">Apply for Position</h3>
+                  <h3 id="modal-title" className="text-2xl font-bold text-[#1a5276]">Apply for Position</h3>
                   {selectedJob && (
                     <p className="text-sm text-gray-600 mt-1">{selectedJob.title} - {selectedJob.department}</p>
                   )}
                 </div>
                 <button
                   onClick={closeApplicationModal}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[#1a5276]"
+                  aria-label="Close modal"
                 >
                   <X className="h-5 w-5 text-gray-600" />
                 </button>
@@ -478,7 +528,7 @@ export default function CareersPage() {
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
                           Full Name <span className="text-red-500">*</span>
@@ -612,7 +662,6 @@ export default function CareersPage() {
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Resume <span className="text-red-500">*</span>
-                        <span className="text-xs text-gray-500 ml-2">(PDF, DOC, DOCX - Max 5MB)</span>
                       </label>
                       <div className="relative">
                         <input
@@ -625,28 +674,36 @@ export default function CareersPage() {
                         />
                         <label
                           htmlFor="resume-upload"
-                          className={`flex items-center justify-center gap-3 px-4 py-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                          className={`flex flex-col items-center justify-center gap-3 px-4 py-10 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
                             formData.resumeUrl
-                              ? 'border-green-500 bg-green-50'
+                              ? 'border-green-500 bg-green-50 hover:bg-green-100'
                               : 'border-gray-300 hover:border-[#1a5276] hover:bg-gray-50'
                           } ${uploading || submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                          {uploading ? (
-                            <>
-                              <Loader2 className="h-6 w-6 text-[#1a5276] animate-spin" />
-                              <span className="text-sm text-gray-600">Uploading...</span>
-                            </>
-                          ) : formData.resumeUrl ? (
-                            <>
-                              <CheckCircle className="h-6 w-6 text-green-600" />
-                              <span className="text-sm text-green-700">{formData.resumeFile?.name}</span>
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="h-6 w-6 text-gray-400" />
-                              <span className="text-sm text-gray-600">Click to upload resume</span>
-                            </>
-                          )}
+                          <div className="flex flex-col items-center gap-2">
+                            {uploading ? (
+                              <>
+                                <Loader2 className="h-8 w-8 text-[#1a5276] animate-spin" />
+                                <span className="text-sm font-medium text-gray-600">Uploading...</span>
+                              </>
+                            ) : formData.resumeUrl ? (
+                              <>
+                                <FileText className="h-8 w-8 text-green-600" />
+                                <div className="text-center">
+                                  <span className="text-sm font-medium text-green-700">{formData.resumeFile?.name}</span>
+                                  <p className="text-xs text-green-600 mt-1">Resume uploaded successfully</p>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="h-8 w-8 text-gray-400" />
+                                <div className="text-center">
+                                  <span className="text-sm font-medium text-gray-700">Upload Resume</span>
+                                  <p className="text-xs text-gray-500 mt-1">PDF, DOC, DOCX (Max 3.5MB)</p>
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </label>
                       </div>
                     </div>
@@ -665,18 +722,18 @@ export default function CareersPage() {
                       />
                     </div>
 
-                    <div className="flex gap-4 pt-4">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                       <button
                         onClick={closeApplicationModal}
                         disabled={submitting || uploading}
-                        className="flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full sm:flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleSubmitApplication}
                         disabled={submitting || uploading || !formData.resumeUrl}
-                        className="flex-1 bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full sm:flex-1 bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
                         {submitting ? (
                           <>

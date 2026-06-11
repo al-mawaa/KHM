@@ -25,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         currentDesignation,
         expectedSalary,
         resumeUrl,
+        resumePublicId,
         coverLetter,
         applicationStatus,
       } = req.body;
@@ -93,6 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         currentDesignation,
         expectedSalary,
         resumeUrl,
+        resumePublicId,
         coverLetter,
         applicationStatus: applicationStatus || 'Pending',
         activityTimeline: [{

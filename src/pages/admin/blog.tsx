@@ -112,42 +112,54 @@ export default function AdminBlogPage() {
   };
 
   const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
-    const formData = new FormData();
-    formData.append('file', file);
-
     setUploading(true);
     setUploadProgress(0);
 
     try {
-      const xhr = new XMLHttpRequest();
-
+      // Convert file to base64 for Vercel compatibility
+      const reader = new FileReader();
+      
       return new Promise((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (e) => {
+        reader.onprogress = (e) => {
           if (e.lengthComputable) {
             const progress = Math.round((e.loaded / e.total) * 100);
             setUploadProgress(progress);
           }
-        });
+        };
 
-        xhr.addEventListener('load', () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success) {
-              resolve({ url: response.filePath, publicId: response.publicId });
+        reader.onload = async () => {
+          try {
+            const base64 = reader.result as string;
+            
+            const response = await fetch('/api/upload', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                file: base64,
+                fileName: file.name,
+                mimeType: file.type,
+              }),
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+              resolve({ url: data.filePath, publicId: data.publicId });
             } else {
-              reject(new Error(response.message || 'Upload failed'));
+              reject(new Error(data.message || 'Upload failed'));
             }
-          } else {
-            reject(new Error('Upload failed'));
+          } catch (error) {
+            reject(error);
           }
-        });
+        };
 
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload failed'));
-        });
+        reader.onerror = () => {
+          reject(new Error('Failed to read file'));
+        };
 
-        xhr.open('POST', '/api/upload');
-        xhr.send(formData);
+        reader.readAsDataURL(file);
       });
     } finally {
       setUploading(false);

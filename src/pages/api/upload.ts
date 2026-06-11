@@ -1,7 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { v2 as cloudinary } from 'cloudinary';
-import formidable from 'formidable';
-import fs from 'fs';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -11,10 +9,11 @@ cloudinary.config({
   secure: true,
 });
 
-// Disable body parser for file uploads
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
   },
 };
 
@@ -52,11 +51,67 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     console.log('Processing file upload to Cloudinary...');
 
-    // Parse form data
+    // Check for base64 encoded file (Vercel compatible approach)
+    const { file, fileName, mimeType } = req.body;
+
+    if (file && fileName && mimeType) {
+      // Base64 upload approach for Vercel
+      const base64Data = file.replace(/^data:image\/\w+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+
+      // Validate file type
+      const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!allowedMimeTypes.includes(mimeType)) {
+        return res.status(400).json({ success: false, message: 'Invalid file type. Only JPG, PNG, and WebP are allowed.' });
+      }
+
+      // Validate file size (5MB)
+      const maxSize = 5 * 1024 * 1024;
+      if (buffer.length > maxSize) {
+        return res.status(400).json({ success: false, message: 'File size exceeds 5MB limit.' });
+      }
+
+      // Upload to Cloudinary using buffer
+      const uploadPromise = new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'khm-uploads',
+            resource_type: 'image',
+            allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+            transformation: [
+              { quality: 'auto', fetch_format: 'auto' },
+            ],
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        
+        uploadStream.end(buffer);
+      });
+
+      const result = await uploadPromise as any;
+
+      console.log('File uploaded successfully to Cloudinary:', result.secure_url);
+
+      return res.status(200).json({ 
+        success: true, 
+        filePath: result.secure_url,
+        publicId: result.public_id 
+      });
+    }
+
+    // Fallback to formidable for local development
+    const formidable = (await import('formidable')).default;
+    const fs = (await import('fs')).default;
+
     const form = formidable({
       maxFileSize: 5 * 1024 * 1024, // 5MB
       filter: function ({ name, originalFilename, mimetype }) {
-        // Keep only image files
         const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
         return mimetype ? allowedMimeTypes.includes(mimetype) : false;
       },
@@ -70,31 +125,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    const file = Array.isArray(uploadedFiles) ? uploadedFiles[0] : uploadedFiles;
+    const uploadedFile = Array.isArray(uploadedFiles) ? uploadedFiles[0] : uploadedFiles;
     
-    // Read file from temp path
-    const fileBuffer = fs.readFileSync(file.filepath);
+    const fileBuffer = fs.readFileSync(uploadedFile.filepath);
 
-    // Upload to Cloudinary
-    const uploadResult = await cloudinary.uploader.upload_stream(
-      {
-        folder: 'khm-uploads',
-        resource_type: 'image',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-        transformation: [
-          { quality: 'auto', fetch_format: 'auto' },
-        ],
-      },
-      (error, result) => {
-        if (error) {
-          console.error('Cloudinary upload error:', error);
-          throw error;
-        }
-        return result;
-      }
-    );
-
-    // Create a promise to handle the stream
     const uploadPromise = new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -119,8 +153,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const result = await uploadPromise as any;
     
-    // Clean up temp file
-    fs.unlinkSync(file.filepath);
+    fs.unlinkSync(uploadedFile.filepath);
 
     console.log('File uploaded successfully to Cloudinary:', result.secure_url);
 

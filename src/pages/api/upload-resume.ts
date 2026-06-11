@@ -1,7 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { v2 as cloudinary } from 'cloudinary';
-import formidable from 'formidable';
-import fs from 'fs';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -11,10 +9,11 @@ cloudinary.config({
   secure: true,
 });
 
-// Disable body parser for file uploads
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
   },
 };
 
@@ -26,11 +25,72 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     console.log('Processing resume upload to Cloudinary...');
 
-    // Parse form data
+    // Check for base64 encoded file (Vercel compatible approach)
+    const { file, fileName, mimeType } = req.body;
+
+    if (file && fileName && mimeType) {
+      // Base64 upload approach for Vercel
+      const base64Data = file.replace(/^data:application\/[a-z]+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+
+      // Validate file type
+      const allowedMimeTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedMimeTypes.includes(mimeType)) {
+        return res.status(400).json({ success: false, message: 'Invalid file type. Only PDF, DOC, and DOCX are allowed.' });
+      }
+
+      // Validate file size (3.5MB to account for base64 overhead)
+      const maxSize = 3.5 * 1024 * 1024;
+      if (buffer.length > maxSize) {
+        return res.status(400).json({ success: false, message: 'File size exceeds 3.5MB limit.' });
+      }
+
+      // Generate unique filename
+      const timestamp = Date.now();
+      const sanitizedName = fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const publicId = `career-resumes/${sanitizedName.replace(/\.[^/.]+$/, '')}-${timestamp}`;
+
+      // Upload to Cloudinary using buffer
+      const uploadPromise = new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            public_id: publicId,
+            folder: 'career-resumes',
+            resource_type: 'raw',
+            allowed_formats: ['pdf', 'doc', 'docx'],
+            use_filename: true,
+            unique_filename: false,
+          },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        
+        uploadStream.end(buffer);
+      });
+
+      const result = await uploadPromise as any;
+
+      console.log('Resume uploaded successfully to Cloudinary:', result.secure_url);
+
+      return res.status(200).json({ 
+        success: true, 
+        filePath: result.secure_url,
+        publicId: result.public_id 
+      });
+    }
+
+    // Fallback to formidable for local development
+    const formidable = (await import('formidable')).default;
+    const fs = (await import('fs')).default;
+
     const form = formidable({
       maxFileSize: 5 * 1024 * 1024, // 5MB
       filter: function ({ name, originalFilename, mimetype }) {
-        // Keep only document files
         const allowedMimeTypes = [
           'application/pdf',
           'application/msword',
@@ -48,12 +108,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    const file = Array.isArray(uploadedFiles) ? uploadedFiles[0] : uploadedFiles;
+    const uploadedFile = Array.isArray(uploadedFiles) ? uploadedFiles[0] : uploadedFiles;
     
-    // Read file from temp path
-    const fileBuffer = fs.readFileSync(file.filepath);
+    const fileBuffer = fs.readFileSync(uploadedFile.filepath);
 
-    // Upload to Cloudinary
     const uploadPromise = new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -77,8 +135,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const result = await uploadPromise as any;
     
-    // Clean up temp file
-    fs.unlinkSync(file.filepath);
+    fs.unlinkSync(uploadedFile.filepath);
 
     console.log('Resume uploaded successfully to Cloudinary:', result.secure_url);
 
@@ -90,9 +147,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (error: any) {
     console.error('Resume upload error:', error);
     
+    // Handle 413 Payload Too Large error
+    if (error.type === 'entity.too.large' || error.code === 'FST_ERR_CTP_FILE_TOO_LARGE' || error.message?.includes('413')) {
+      return res.status(413).json({ success: false, message: 'File size exceeds 3.5MB limit. Please choose a smaller file.' });
+    }
+    
     // Handle file size errors
     if (error.code === 1002) {
-      return res.status(400).json({ success: false, message: 'File size exceeds 5MB limit' });
+      return res.status(400).json({ success: false, message: 'File size exceeds 3.5MB limit' });
     }
     
     // Handle format errors

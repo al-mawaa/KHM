@@ -2,6 +2,40 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import CareerJob, { ICareerJob } from '@/lib/models/CareerJob';
 
+const normalizeTextItems = (input: any, maxLength = 500): string[] => {
+  if (!input) return [];
+
+  const items: string[] = [];
+
+  const addChunked = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+
+    if (trimmed.length <= maxLength) {
+      items.push(trimmed);
+      return;
+    }
+
+    let start = 0;
+    while (start < trimmed.length) {
+      items.push(trimmed.slice(start, start + maxLength));
+      start += maxLength;
+    }
+  };
+
+  if (Array.isArray(input)) {
+    input.forEach((item) => {
+      if (typeof item === 'string') {
+        item.split('\n').map((line) => line.trim()).filter(Boolean).forEach(addChunked);
+      }
+    });
+  } else if (typeof input === 'string') {
+    input.split('\n').map((line) => line.trim()).filter(Boolean).forEach(addChunked);
+  }
+
+  return items;
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
 
@@ -100,9 +134,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (experienceRequired !== undefined) updateData.experienceRequired = experienceRequired;
       if (salaryRange !== undefined) updateData.salaryRange = salaryRange;
       if (description !== undefined) updateData.description = description;
-      if (responsibilities !== undefined) updateData.responsibilities = responsibilities;
-      if (requirements !== undefined) updateData.requirements = requirements;
-      if (skills !== undefined) updateData.skills = skills;
+      if (responsibilities !== undefined) updateData.responsibilities = normalizeTextItems(responsibilities);
+      if (requirements !== undefined) updateData.requirements = normalizeTextItems(requirements);
+      if (skills !== undefined) updateData.skills = Array.isArray(skills) ? skills.filter((skill) => typeof skill === 'string').map((skill) => skill.trim()).filter(Boolean) : [];
       if (numberOfOpenings !== undefined) updateData.numberOfOpenings = numberOfOpenings;
       if (applicationDeadline !== undefined) updateData.applicationDeadline = new Date(applicationDeadline);
       if (status !== undefined) updateData.status = status;

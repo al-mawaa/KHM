@@ -417,7 +417,7 @@ export default function CandidateProfile() {
                 <div className="flex gap-2">
                   <Button
                     variant="secondary"
-                    onClick={() => openResume(application.resumeUrl)}
+                    onClick={() => downloadResume(application.resumeUrl)}
                     className="text-xs"
                   >
                     <Eye className="h-4 w-4 mr-1" /> View

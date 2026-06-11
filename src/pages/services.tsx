@@ -37,17 +37,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-[#f4f6f8]">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
-          <Link to="/" className="transition-colors hover:text-[#1a5276]">
-            Home
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <span className="text-[#1a5276]">Services</span>
-        </div>
-      </div>
-
       {/* Service categories */}
       <section className="py-14 lg:py-20">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6">

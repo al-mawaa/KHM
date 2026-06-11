@@ -3,6 +3,7 @@ import { CheckCircle2, Cpu, Map, Wrench, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { IService } from "@/lib/models/Service";
+import { siteImages } from "@/lib/site-images";
 import { useState, useEffect } from "react";
 
 const expertise = [
@@ -141,6 +142,7 @@ export default function OurServicesPage() {
         eyebrow="OUR SERVICES"
         title="What We Deliver"
         description="Engineering sustainable infrastructure solutions across water, wastewater, civil, power, irrigation, real estate, and project management sectors."
+        image={siteImages.heroPlant}
       />
 
       {/* Services Section */}
@@ -169,7 +171,7 @@ export default function OurServicesPage() {
               <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8 items-stretch">
               {services.map((service, index) => (
                 <ServiceCard key={service._id?.toString()} service={service} index={index} />
               ))}

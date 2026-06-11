@@ -123,8 +123,8 @@ export default function AdminCareersPage() {
   // Application detail modal
   const [applicationDetailOpen, setApplicationDetailOpen] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null);
-  const [recruiterNotes, setRecruiterNotes] = useState('');
-  const [savingNotes, setSavingNotes] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [selectedJobTitle, setSelectedJobTitle] = useState<string | null>(null);
 
   const fetchJobs = async () => {
     try {
@@ -162,6 +162,7 @@ export default function AdminCareersPage() {
       setError(null);
       
       const params = new URLSearchParams();
+      if (selectedJobId) params.append('jobId', selectedJobId);
       if (applicationFilter && applicationFilter !== 'all') params.append('applicationStatus', applicationFilter);
       if (searchQuery) params.append('search', searchQuery);
       
@@ -228,7 +229,7 @@ export default function AdminCareersPage() {
     } else {
       fetchApplications();
     }
-  }, [activeTab, jobFilter, applicationFilter, searchQuery]);
+  }, [activeTab, jobFilter, applicationFilter, searchQuery, selectedJobId]);
 
   useEffect(() => {
     fetchStats();
@@ -404,36 +405,12 @@ export default function AdminCareersPage() {
     }
   };
 
-  const handleSaveRecruiterNotes = async () => {
-    if (!selectedApplication) return;
-
-    try {
-      setSavingNotes(true);
-      
-      const res = await fetch(`/api/careers/applications/${selectedApplication._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ recruiterNotes }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        toast.success('Recruiter notes saved successfully');
-        await fetchApplications();
-      } else {
-        toast.error(data.message || 'Failed to save notes');
-      }
-    } catch (err) {
-      toast.error('Failed to save notes');
-    } finally {
-      setSavingNotes(false);
-    }
-  };
+  // Recruiter notes feature removed; handler intentionally left out.
 
   const getResumeExtension = (url?: string) => {
     if (!url) return '';
-    const parts = url.split('.');
+    const clean = url.split('?')[0].split('#')[0];
+    const parts = clean.split('.');
     return parts[parts.length - 1].toLowerCase();
   };
 
@@ -444,10 +421,17 @@ export default function AdminCareersPage() {
 
   const downloadResume = (url?: string) => {
     if (!url) return;
+
+    const encodedUrl = encodeURIComponent(url);
+    const filename = `resume_${selectedApplication?.fullName.replace(/\s+/g, '_')}.${getResumeExtension(url)}`;
+    const proxyUrl = `/api/download-resume?url=${encodedUrl}`;
+
     const link = document.createElement('a');
-    link.href = url;
-    link.download = `resume_${selectedApplication?.fullName.replace(/\s+/g, '_')}.${getResumeExtension(url)}`;
+    link.href = proxyUrl;
+    link.download = filename;
+    document.body.appendChild(link);
     link.click();
+    link.remove();
   };
 
   const getTimelineStage = (status: string) => {
@@ -573,118 +557,29 @@ export default function AdminCareersPage() {
         </div>
       )}
 
-      {/* Dashboard Summary Cards */}
-      {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Briefcase className="h-5 w-5 text-slate-600" />
-              <div className="text-2xl font-bold text-slate-900">{stats.totalJobs}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Total Jobs</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              <div className="text-2xl font-bold text-green-600">{stats.openJobs}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Open Jobs</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <XCircle className="h-5 w-5 text-red-600" />
-              <div className="text-2xl font-bold text-red-600">{stats.closedJobs}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Closed Jobs</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-600" />
-              <div className="text-2xl font-bold text-blue-600">{stats.totalApplications}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Total Applications</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-yellow-600" />
-              <div className="text-2xl font-bold text-yellow-600">{stats.pendingApplications}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Pending</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-blue-600" />
-              <div className="text-2xl font-bold text-blue-600">{stats.shortlistedApplications}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Shortlisted</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-purple-600" />
-              <div className="text-2xl font-bold text-purple-600">{stats.interviewScheduled}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Interview Scheduled</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-emerald-600" />
-              <div className="text-2xl font-bold text-emerald-600">{stats.selectedCandidates}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Selected</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-green-600" />
-              <div className="text-2xl font-bold text-green-600">{stats.hiredCandidates}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Hired</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <XCircle className="h-5 w-5 text-red-600" />
-              <div className="text-2xl font-bold text-red-600">{stats.rejectedCandidates}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Rejected</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-orange-600" />
-              <div className="text-2xl font-bold text-orange-600">{stats.applicationsToday}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Today</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-indigo-600" />
-              <div className="text-2xl font-bold text-indigo-600">{stats.applicationsThisWeek}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">This Week</div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-teal-600" />
-              <div className="text-2xl font-bold text-teal-600">{stats.applicationsThisMonth}</div>
-            </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">This Month</div>
-          </Card>
-        </div>
-      )}
+      
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6 border-b border-slate-200">
         <Button
-          variant={activeTab === 'jobs' ? 'primary' : 'ghost'}
-          onClick={() => { setActiveTab('jobs'); setSearchQuery(''); }}
-          className="rounded-b-none"
-        >
-          <Briefcase className="h-4 w-4" /> Jobs
-        </Button>
-        <Button
           variant={activeTab === 'applications' ? 'primary' : 'ghost'}
-          onClick={() => { setActiveTab('applications'); setSearchQuery(''); }}
+          onClick={() => {
+            setActiveTab('applications');
+            setSelectedJobId(null);
+            setSelectedJobTitle(null);
+            setSearchQuery('');
+            setApplicationFilter('all');
+          }}
           className="rounded-b-none"
         >
           <Users className="h-4 w-4" /> Applications
+        </Button>
+        <Button
+          variant={activeTab === 'jobs' ? 'primary' : 'ghost'}
+          onClick={() => { setActiveTab('jobs'); setSelectedJobId(null); setSelectedJobTitle(null); setSearchQuery(''); }}
+          className="rounded-b-none"
+        >
+          <Briefcase className="h-4 w-4" /> Jobs
         </Button>
       </div>
 
@@ -800,6 +695,17 @@ export default function AdminCareersPage() {
         )}
       </div>
 
+      {activeTab === 'applications' && selectedJobTitle && (
+        <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 flex items-center justify-between">
+          <div>
+            Viewing applications for <span className="font-semibold">{selectedJobTitle}</span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => { setSelectedJobId(null); setSelectedJobTitle(null); setActiveTab('applications'); }}>
+            Clear
+          </Button>
+        </div>
+      )}
+
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
@@ -908,7 +814,7 @@ export default function AdminCareersPage() {
                     <div className="flex gap-1">
                       <Button
                         variant="ghost"
-                        onClick={() => { setSelectedApplication(app); setRecruiterNotes(app.recruiterNotes || ''); setApplicationDetailOpen(true); }}
+                        onClick={() => { setSelectedApplication(app); setApplicationDetailOpen(true); }}
                         className="text-xs"
                         title="View Details"
                       >
@@ -1173,42 +1079,7 @@ export default function AdminCareersPage() {
                 <Eye className="h-4 w-4 mr-2" /> View Full Profile
               </Button>
             </div>
-            {/* Application Timeline */}
-            <div className="bg-slate-50 rounded-lg p-4">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-3">Application Timeline</div>
-              <div className="flex items-center justify-between">
-                {['Pending', 'Shortlisted', 'Interview Scheduled', 'Interview Completed', 'Selected', 'Hired'].map((stage, index) => {
-                  const currentStage = getTimelineStage(selectedApplication.applicationStatus);
-                  const isCompleted = index <= currentStage;
-                  const isCurrent = index === currentStage;
-                  const isRejected = selectedApplication.applicationStatus === 'Rejected';
-                  
-                  return (
-                    <div key={stage} className="flex flex-col items-center flex-1">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${
-                        isRejected ? 'bg-red-100 text-red-600' :
-                        isCompleted ? 'bg-green-100 text-green-600' : 
-                        'bg-slate-200 text-slate-500'
-                      }`}>
-                        {isCompleted ? <CheckCircle className="h-4 w-4" /> : index + 1}
-                      </div>
-                      <div className={`text-xs mt-1 text-center ${
-                        isCurrent ? 'font-semibold text-slate-900' : 
-                        isCompleted ? 'text-slate-600' : 'text-slate-400'
-                      }`}>
-                        {stage.split(' ')[0]}
-                      </div>
-                      {index < 5 && (
-                        <div className={`w-full h-1 mt-2 ${
-                          isRejected ? 'bg-red-200' :
-                          isCompleted ? 'bg-green-200' : 'bg-slate-200'
-                        }`} />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            {/* Application Timeline removed */}
 
             {/* Candidate Information */}
             <div>
@@ -1345,14 +1216,14 @@ export default function AdminCareersPage() {
                     <div className="flex gap-2">
                       <Button
                         variant="secondary"
-                        onClick={() => openResume(selectedApplication.resumeUrl)}
+                        onClick={() => downloadResume(selectedApplication?.resumeUrl)}
                         className="text-xs"
                       >
                         <Eye className="h-4 w-4 mr-1" /> View
                       </Button>
                       <Button
                         variant="secondary"
-                        onClick={() => downloadResume(selectedApplication.resumeUrl)}
+                        onClick={() => downloadResume(selectedApplication?.resumeUrl)}
                         className="text-xs"
                       >
                         <Download className="h-4 w-4 mr-1" /> Download
@@ -1375,31 +1246,7 @@ export default function AdminCareersPage() {
               </div>
             )}
 
-            {/* Recruiter Notes */}
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-3 flex items-center gap-2">
-                <MessageSquare className="h-4 w-4" /> Recruiter Notes
-              </div>
-              <div className="bg-white border border-slate-200 rounded-lg p-4">
-                <Textarea
-                  value={recruiterNotes}
-                  onChange={(e) => setRecruiterNotes(e.target.value)}
-                  placeholder="Add your notes about this candidate..."
-                  rows={4}
-                  className="w-full"
-                />
-                <div className="flex justify-end mt-3">
-                  <Button
-                    onClick={handleSaveRecruiterNotes}
-                    disabled={savingNotes}
-                    className="text-xs"
-                  >
-                    {savingNotes ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
-                    Save Notes
-                  </Button>
-                </div>
-              </div>
-            </div>
+            {/* Recruiter Notes removed */}
 
             {/* Email History */}
             {selectedApplication.lastEmailSent && (

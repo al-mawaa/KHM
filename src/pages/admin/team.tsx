@@ -1,13 +1,15 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, Button, Field, Input, Textarea, Modal, Confirm } from "@/components/admin/ui";
-import { useAdminCollection, uid, type TeamMember } from "@/lib/admin-store";
+import type { TeamMemberData as TeamMember } from "@/lib/models/TeamMember";
 import { Plus, Pencil, Trash2, Loader2, Upload, X } from "lucide-react";
+
+type TeamMemberForm = Omit<TeamMember, 'createdAt' | 'updatedAt'>;
 import { toast } from "sonner";
 
 export default function AdminTeamPage() {
-  const [items, setItems] = useAdminCollection("team");
-  const [edit, setEdit] = useState<TeamMember | null>(null);
+  const [items, setItems] = useState<TeamMember[]>([]);
+  const [edit, setEdit] = useState<TeamMemberForm | null>(null);
   const [del, setDel] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -15,7 +17,25 @@ export default function AdminTeamPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const blank = (): TeamMember => ({ id: uid(), name: "", role: "", bio: "", image: "", imagePublicId: "" });
+  const blank = (): TeamMemberForm => ({ id: "", name: "", role: "", bio: "", image: "", imagePublicId: "" });
+
+  const fetchTeam = async () => {
+    try {
+      const res = await fetch('/api/team');
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setItems(data.data || []);
+      } else {
+        console.error('Failed to load team members', data.message);
+      }
+    } catch (error) {
+      console.error('Failed to load team members', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeam();
+  }, []);
 
   const handleFileSelect = (file: File | null) => {
     if (!file) {
@@ -121,10 +141,9 @@ export default function AdminTeamPage() {
     }
   };
 
-  const save = async (t: TeamMember) => {
+  const save = async (t: TeamMemberForm) => {
     let image = t.image;
     let imagePublicId = t.imagePublicId;
-    const oldImage = edit?.image;
     const oldImagePublicId = edit?.imagePublicId;
 
     if (selectedFile) {
@@ -140,15 +159,74 @@ export default function AdminTeamPage() {
       }
     }
 
+    let savedMember: TeamMember | null = null;
+
+    try {
+      const response = await fetch(edit && edit.id ? `/api/team/${edit.id}` : '/api/team', {
+        method: edit && edit.id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: t.name,
+          role: t.role,
+          bio: t.bio,
+          image,
+          imagePublicId,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to save team member');
+      }
+      savedMember = data.data;
+    } catch (error) {
+      console.error('Save error:', error);
+      toast.error('Failed to save team member');
+      return;
+    }
+
     if (edit && oldImagePublicId && oldImagePublicId !== imagePublicId) {
       await deleteFile(oldImagePublicId);
     }
 
-    setItems(items.some((i) => i.id === t.id) ? items.map((i) => (i.id === t.id ? { ...t, image, imagePublicId } : i)) : [{ ...t, image, imagePublicId }, ...items]);
+    if (savedMember) {
+      setItems((current) => {
+        const existingIndex = current.findIndex((i) => i.id === savedMember!.id);
+        if (existingIndex >= 0) {
+          const next = [...current];
+          next[existingIndex] = savedMember!;
+          return next;
+        }
+        return [savedMember!, ...current];
+      });
+    }
+
     setEdit(null);
     setSelectedFile(null);
     setPreviewImage(null);
   };
+
+  const handleDeleteConfirmed = async () => {
+    if (!del) return;
+    const member = items.find((item) => item.id === del);
+
+    try {
+      const res = await fetch(`/api/team/${del}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Failed to delete team member');
+      }
+      if (member?.imagePublicId) {
+        await deleteFile(member.imagePublicId);
+      }
+      setItems((current) => current.filter((item) => item.id !== del));
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete team member');
+    } finally {
+      setDel(null);
+    }
+  };
+
   return (
     <AdminShell title="Manage Team Members">
       <div className="flex justify-end mb-4"><Button onClick={() => setEdit(blank())}><Plus className="h-4 w-4" /> Add Member</Button></div>
@@ -256,7 +334,7 @@ export default function AdminTeamPage() {
           </form>
         )}
       </Modal>
-      <Confirm open={!!del} onClose={() => setDel(null)} onConfirm={() => setItems(items.filter((i) => i.id !== del))} message="Remove this team member?" />
+      <Confirm open={!!del} onClose={() => setDel(null)} onConfirm={handleDeleteConfirmed} message="Remove this team member?" />
     </AdminShell>
   );
 }

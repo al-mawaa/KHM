@@ -2,6 +2,40 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import CareerJob, { ICareerJob } from '@/lib/models/CareerJob';
 
+const normalizeTextItems = (input: any, maxLength = 500): string[] => {
+  if (!input) return [];
+
+  const items: string[] = [];
+
+  const addChunked = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+
+    if (trimmed.length <= maxLength) {
+      items.push(trimmed);
+      return;
+    }
+
+    let start = 0;
+    while (start < trimmed.length) {
+      items.push(trimmed.slice(start, start + maxLength));
+      start += maxLength;
+    }
+  };
+
+  if (Array.isArray(input)) {
+    input.forEach((item) => {
+      if (typeof item === 'string') {
+        item.split('\n').map((line) => line.trim()).filter(Boolean).forEach(addChunked);
+      }
+    });
+  } else if (typeof input === 'string') {
+    input.split('\n').map((line) => line.trim()).filter(Boolean).forEach(addChunked);
+  }
+
+  return items;
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
 
@@ -69,9 +103,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.error('Validation failed: Invalid application deadline date');
           return res.status(400).json({ success: false, message: 'Invalid application deadline date' });
         }
-        if (deadlineDate <= new Date()) {
-          console.error('Validation failed: Application deadline must be in the future');
-          return res.status(400).json({ success: false, message: 'Application deadline must be in the future' });
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const deadlineDay = new Date(deadlineDate.getFullYear(), deadlineDate.getMonth(), deadlineDate.getDate());
+
+        if (deadlineDay < today) {
+          console.error('Validation failed: Application deadline must be today or in the future');
+          return res.status(400).json({ success: false, message: 'Application deadline must be today or in the future' });
         }
       }
 
@@ -83,9 +122,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         experienceRequired,
         salaryRange,
         description,
-        responsibilities: responsibilities || [],
-        requirements: requirements || [],
-        skills: skills || [],
+        responsibilities: normalizeTextItems(responsibilities),
+        requirements: normalizeTextItems(requirements),
+        skills: Array.isArray(skills) ? skills.filter((skill) => typeof skill === 'string').map((skill) => skill.trim()).filter(Boolean) : [],
         numberOfOpenings,
         applicationDeadline: applicationDeadline ? new Date(applicationDeadline) : undefined,
         status: (status || 'Open') as 'Open' | 'Closed',

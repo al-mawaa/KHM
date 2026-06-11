@@ -1,18 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Counter } from "@/components/Counter";
+import type { TeamMemberData as TeamMember } from "@/lib/models/TeamMember";
 import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { engineers, heroPlant } from "@/lib/images";
 import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles } from "lucide-react";
 
 export default function AboutPage() {
+  const [team, setTeam] = useState<TeamMember[]>([]);
+
   useEffect(() => {
     if (!window.location.hash) return;
     const id = window.location.hash.replace("#", "");
     requestAnimationFrame(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  }, []);
+
+  useEffect(() => {
+    const fetchTeam = async () => {
+      try {
+        const res = await fetch('/api/team');
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setTeam(data.data || []);
+        } else {
+          console.error('Failed to load team members', data.message);
+        }
+      } catch (error) {
+        console.error('Failed to load team members', error);
+      }
+    };
+    fetchTeam();
   }, []);
 
   return (
@@ -115,19 +135,26 @@ export default function AboutPage() {
       <section className="py-20 bg-surface">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <SectionHeader eyebrow="Leadership" title="Meet the directors" />
-          <div className="mt-12 grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {[
-              { n: "Hrishikesh Madhav Kaluskar", r: "Director & Co-Founder" },
-              { n: "Smita Hrishikesh Kaluskar", r: "Director & Co-Founder" },
-            ].map((d) => (
-              <div key={d.n} className="rounded-2xl border border-border bg-card p-7 text-center shadow-card hover-lift">
-                <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-gradient-aqua font-display text-3xl font-bold text-primary-foreground">
-                  {d.n.split(" ").map(s => s[0]).slice(0,2).join("")}
-                </div>
-                <div className="mt-4 font-display text-xl font-semibold">{d.n}</div>
-                <div className="text-sm text-muted-foreground">{d.r}</div>
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto justify-items-center">
+            {team.map((member) => (
+              <div key={member.id} className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center shadow-card hover-lift">
+                {member.image ? (
+                  <img src={member.image} alt={member.name} className="mx-auto h-28 w-28 rounded-full object-cover" />
+                ) : (
+                  <div className="mx-auto grid h-28 w-28 place-items-center rounded-full bg-gradient-aqua font-display text-3xl font-bold text-primary-foreground">
+                    {member.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+                  </div>
+                )}
+                <div className="mt-5 font-display text-lg font-semibold">{member.name}</div>
+                <div className="text-sm text-muted-foreground">{member.role}</div>
+                {member.bio && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>}
               </div>
             ))}
+            {team.length === 0 && (
+              <div className="rounded-2xl border border-border bg-card p-12 text-center text-sm text-muted-foreground">
+                No team members have been added yet.
+              </div>
+            )}
           </div>
         </div>
       </section>

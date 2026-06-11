@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { PageHero } from "@/components/PageHero";
+import { siteImages } from "@/lib/site-images";
 import { 
   ChevronRight, X, ChevronLeft, ChevronRight as ChevronRightIcon, 
   Loader2, Image as ImageIcon, Search, ZoomIn, ZoomOut, Maximize2, 
@@ -18,7 +20,7 @@ interface GalleryItem {
   title: string;
   imageUrl: string;
   description?: string;
-  category?: string;
+  category: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -34,7 +36,7 @@ export default function GalleryPage() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('All');
-  const [visibleCount, setVisibleCount] = useState(12);
+  const [visibleCount, setVisibleCount] = useState(3);
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [imageHeights, setImageHeights] = useState<Record<string, number>>({});
@@ -51,9 +53,14 @@ export default function GalleryPage() {
       console.log('API response:', data);
       
       if (data.success) {
-        const sortedItems = data.data.sort((a: GalleryItem, b: GalleryItem) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        const sortedItems = data.data
+          .map((item: GalleryItem) => ({
+            ...item,
+            category: item.category || 'Projects',
+          }))
+          .sort((a: GalleryItem, b: GalleryItem) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
         setGalleryItems(sortedItems);
         setFilteredItems(sortedItems);
       } else {
@@ -90,7 +97,7 @@ export default function GalleryPage() {
     }
 
     setFilteredItems(filtered);
-    setVisibleCount(12); // Reset visible count when filters change
+    setVisibleCount(3); // Reset visible count when filters change
     trackEvent('gallery_filtered', { category: selectedCategory, searchQuery });
   }, [galleryItems, selectedCategory, searchQuery]);
 
@@ -179,8 +186,8 @@ export default function GalleryPage() {
   }, [handlePrevious, handleNext]);
 
   const handleLoadMore = () => {
-    setVisibleCount(prev => prev + 12);
-    trackEvent('gallery_load_more', { currentCount: visibleCount, newCount: visibleCount + 12 });
+    setVisibleCount(prev => prev + 3);
+    trackEvent('gallery_load_more', { currentCount: visibleCount, newCount: visibleCount + 3 });
   };
 
   const categories: CategoryFilter[] = ['All', 'Projects', 'Treatment Plants', 'Construction', 'Maintenance', 'Events'];
@@ -202,39 +209,12 @@ export default function GalleryPage() {
 
   return (
     <>
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-[#f4f6f8]">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
-          <Link to="/" className="transition-colors hover:text-[#1a5276]">
-            Home
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <span className="text-[#1a5276]">Gallery</span>
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-white via-gray-50 to-white py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl"
-          >
-            <h1 className="text-[52px] font-bold tracking-tight text-[#1a5276] leading-tight">
-              GALLERY
-            </h1>
-            <div className="mt-4 h-1 w-24 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-            <p className="mt-6 text-[20px] font-semibold text-gray-700">
-              Our Project Showcase
-            </p>
-            <p className="mt-4 text-[16px] leading-8 text-gray-600">
-              Explore our completed projects and ongoing work through visual documentation of our water and wastewater treatment infrastructure across India.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Gallery"
+        title="Our Project Showcase"
+        description="Explore our completed projects and ongoing work through visual documentation of our water and wastewater treatment infrastructure across India."
+        image={siteImages.heroPlant}
+      />
 
       {/* Gallery Statistics */}
       <section className="py-12 bg-gradient-to-r from-[#1a5276] to-[#154360]">
@@ -386,7 +366,7 @@ export default function GalleryPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="columns-1 gap-6 sm:columns-2 lg:columns-3 xl:columns-4 space-y-6"
+                    className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                   >
                     {filteredItems.slice(0, visibleCount).map((item, index) => (
                       <motion.div
@@ -395,51 +375,48 @@ export default function GalleryPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: index * 0.05 }}
-                        className="break-inside-avoid group cursor-pointer"
+                        className="group cursor-pointer"
                         onClick={() => handleImageClick(item, index)}
                       >
-                        <div className="relative overflow-hidden rounded-xl bg-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-[#1a5276]/20">
-                          <div className="relative">
-                            {/* Blur placeholder */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 blur-xl opacity-50" />
-                            <img
-                              src={item.imageUrl}
-                              alt={item.title}
-                              loading="lazy"
-                              className="relative w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                              onLoad={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                handleImageLoad(item._id, target.naturalHeight);
-                              }}
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                const parent = target.parentElement;
-                                if (parent) {
-                                  parent.classList.add('flex', 'items-center', 'justify-center', 'min-h-[200px]');
-                                  parent.innerHTML = '<div class="text-gray-400"><svg class="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
-                                }
-                              }}
-                            />
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                          <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">
-                            <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
-                            {item.description && (
-                              <p className="mt-1 text-sm text-white/90 line-clamp-2">{item.description}</p>
-                            )}
-                            {item.category && (
-                              <span className="mt-2 inline-block px-2 py-1 text-xs font-medium bg-[#f5c518] text-[#1a5276] rounded-full">
+                        <div className="relative aspect-square overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                          <img
+                            src={item.imageUrl}
+                            alt={item.title}
+                            loading="lazy"
+                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            onLoad={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              handleImageLoad(item._id, target.naturalHeight);
+                            }}
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.classList.add('flex', 'items-center', 'justify-center', 'min-h-[240px]');
+                                parent.innerHTML = '<div class="text-gray-400"><svg class="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
+                              }
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                          <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="inline-flex items-center rounded-full bg-[#1a5276]/80 px-3 py-1 text-xs font-semibold text-white">
                                 {item.category}
                               </span>
+                            </div>
+                            <h3 className="mt-4 text-lg font-semibold leading-tight">{item.title}</h3>
+                            {item.description && (
+                              <p className="mt-2 text-sm leading-6 text-white/90 line-clamp-2">
+                                {item.description}
+                              </p>
                             )}
+                            <div className="mt-4">
+                              <span className="inline-flex w-full items-center justify-center rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/20">
+                                View Details
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="mt-3">
-                          <h3 className="font-semibold text-[#1a5276] group-hover:text-[#154360] transition-colors">{item.title}</h3>
-                          {item.description && (
-                            <p className="mt-1 text-sm text-gray-600 line-clamp-2">{item.description}</p>
-                          )}
                         </div>
                       </motion.div>
                     ))}

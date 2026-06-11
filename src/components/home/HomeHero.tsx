@@ -19,7 +19,6 @@ export function HomeHero() {
       aria-label="Hero"
       style={{
         height: "calc(100vh - var(--site-header-height, 0px))",
-        marginTop: "calc(var(--site-header-height, 0px) * -1)",
       }}
     >
       <Swiper

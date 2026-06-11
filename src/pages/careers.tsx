@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin } from "lucide-react";
+import { PageHero } from "@/components/PageHero";
+import { siteImages } from "@/lib/site-images";
 
 interface CareerJob {
   _id: string;
@@ -193,9 +195,14 @@ export default function CareersPage() {
       setSubmitError('LinkedIn profile URL is required');
       return false;
     }
-    const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/.+/;
-    if (!linkedinRegex.test(formData.linkedinUrl)) {
-      setSubmitError('Please enter a valid LinkedIn profile URL');
+    try {
+      const url = new URL(formData.linkedinUrl);
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        setSubmitError('Please enter a valid profile URL');
+        return false;
+      }
+    } catch {
+      setSubmitError('Please enter a valid profile URL');
       return false;
     }
     if (!formData.expectedSalary.trim()) {
@@ -294,25 +301,12 @@ export default function CareersPage() {
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-white via-gray-50 to-white py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-4xl"
-          >
-            <h1 className="text-[52px] font-bold tracking-tight text-[#1a5276] leading-tight">
-              Careers at KHM Infra Innovations
-            </h1>
-            <div className="mt-4 h-1 w-24 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-            <p className="mt-6 text-[20px] font-semibold text-gray-700">
-              Join our team and contribute to innovative wastewater treatment and environmental engineering projects.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Careers"
+        title="Careers at KHM Infra Innovations"
+        description="Join our team and contribute to innovative wastewater treatment and environmental engineering projects."
+        image={siteImages.heroPlant}
+      />
 
       {/* Open Positions Section */}
       <section className="py-16 lg:py-24 bg-white">
@@ -439,7 +433,7 @@ export default function CareersPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-black/50"
             onClick={closeApplicationModal}
           >
             <motion.div

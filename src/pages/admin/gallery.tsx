@@ -10,6 +10,7 @@ interface GalleryItem {
   imageUrl: string;
   imagePublicId?: string;
   description?: string;
+  category: 'Projects' | 'Treatment Plants' | 'Construction' | 'Maintenance' | 'Events';
   createdAt?: string;
   updatedAt?: string;
 }
@@ -27,6 +28,8 @@ export default function AdminGalleryPage() {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const categoryOptions = ['Projects', 'Treatment Plants', 'Construction', 'Maintenance', 'Events'] as const;
+
   const fetchGallery = async () => {
     try {
       console.log('Fetching gallery items...');
@@ -37,7 +40,10 @@ export default function AdminGalleryPage() {
       console.log('API response:', data);
       
       if (data.success) {
-        setItems(data.data);
+        setItems(data.data.map((item: any) => ({
+          ...item,
+          category: item.category || 'Projects',
+        })));
       } else {
         setError(data.message || 'Failed to fetch gallery items');
       }
@@ -56,7 +62,8 @@ export default function AdminGalleryPage() {
   const blank = (): GalleryItem => ({
     title: "",
     imageUrl: "",
-    description: ""
+    description: "",
+    category: 'Projects',
   });
 
   const handleFileSelect = (file: File | null) => {
@@ -200,10 +207,17 @@ export default function AdminGalleryPage() {
       const url = isEdit ? `/api/gallery/${item._id}` : '/api/gallery';
       const method = isEdit ? 'PUT' : 'POST';
 
+      const payload = {
+        title: item.title,
+        imageUrl,
+        imagePublicId,
+        description: item.description,
+        category: item.category ?? 'Projects',
+      };
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...item, imageUrl, imagePublicId }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -310,13 +324,20 @@ export default function AdminGalleryPage() {
                 </div>
               )}
               <div className="p-5">
-                <h3 className="font-display font-bold text-lg">{item.title}</h3>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <h3 className="font-display font-bold text-lg">{item.title}</h3>
+                  {item.category && (
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                      {item.category}
+                    </span>
+                  )}
+                </div>
                 {item.description && (
-                  <p className="mt-2 text-sm text-slate-600 line-clamp-2">{item.description}</p>
+                  <p className="mt-1 text-sm text-slate-600 line-clamp-2">{item.description}</p>
                 )}
                 <p className="mt-3 text-xs text-slate-400">Added: {formatDate(item.createdAt)}</p>
                 <div className="mt-4 flex gap-2">
-                  <Button variant="secondary" onClick={() => { setEdit(item); setSelectedFile(null); setPreviewImage(item.imageUrl || null); }}><Pencil className="h-3.5 w-3.5" /> Edit</Button>
+                  <Button variant="secondary" onClick={() => { setEdit({ ...item, category: item.category || 'Projects' }); setSelectedFile(null); setPreviewImage(item.imageUrl || null); }}><Pencil className="h-3.5 w-3.5" /> Edit</Button>
                   <Button variant="danger" onClick={() => setDel(item._id!)}><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
               </div>
@@ -413,6 +434,20 @@ export default function AdminGalleryPage() {
                   className="hidden"
                 />
               </div>
+            </Field>
+            <Field label="Category">
+              <select
+                value={edit.category}
+                onChange={(e) => setEdit({ ...edit, category: e.target.value as GalleryItem['category'] })}
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-aqua"
+                required
+              >
+                {categoryOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </Field>
             <Field label="Description (optional)">
               <Textarea 

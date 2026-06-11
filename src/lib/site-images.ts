@@ -25,6 +25,4 @@ export const siteImages = {
   heroWaterGradient: img("home-hero-water-gradient.png"),
   heroSlideWtp: img("home-hero-slide-wtp.png"),
   waterTreatmentHero: img("home-water-treatment-hero.png"),
-  /** Clients page — professional team / partnership banner */
-  clientsHero: img("engineers.jpg"),
 } as const;

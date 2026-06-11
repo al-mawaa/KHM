@@ -5,6 +5,7 @@ export interface IGallery extends Document {
   imageUrl: string;
   imagePublicId?: string;
   description?: string;
+  category: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,6 +29,13 @@ const GallerySchema = new Schema<IGallery>(
     description: {
       type: String,
       trim: true,
+    },
+    category: {
+      type: String,
+      required: [true, 'Category is required'],
+      trim: true,
+      enum: ['Projects', 'Treatment Plants', 'Construction', 'Maintenance', 'Events'],
+      default: 'Projects',
     },
   },
   {

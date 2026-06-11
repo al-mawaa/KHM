@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight, FileText } from "lucide-react";
 
+import { PageHero } from "@/components/PageHero";
 import { CLIENT_FILTERS, CUSTOMERS, type ClientFilterId } from "@/lib/clients-content";
 import { siteImages } from "@/lib/site-images";
 import { cn } from "@/lib/utils";
@@ -17,27 +18,13 @@ export default function ClientsPage() {
 
   return (
     <main className="bg-white text-gray-800">
-      {/* Hero banner */}
-      <section className="clients-page-hero" aria-label="Clients">
-        <img
-          src={siteImages.clientsHero}
-          alt="Engineering team reviewing project plans at an industrial site"
-          className="clients-page-hero__img"
-          loading="eager"
-        />
-        <div className="clients-page-hero__overlay" aria-hidden />
-        <div className="clients-page-hero__breadcrumb">
-          <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
-            <Link to="/" className="transition-colors hover:text-[#1a5276]">
-              Home
-            </Link>
-            <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-            <span className="text-[#1a5276]">Clients</span>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Clients"
+        title="Trusted customers across India"
+        description="We partner with clients across industries to engineer water, wastewater and infrastructure solutions."
+        image={siteImages.heroPlant}
+      />
 
-      {/* Customers */}
       <section className="py-12 lg:py-16">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
           <motion.div

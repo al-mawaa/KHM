@@ -146,9 +146,6 @@ JobApplicationSchema.index({ jobId: 1, createdAt: -1 });
 // Index for filtering by status
 JobApplicationSchema.index({ applicationStatus: 1, createdAt: -1 });
 
-// Index for filtering by email (to prevent duplicate applications)
-JobApplicationSchema.index({ email: 1, jobId: 1 }, { unique: true });
-
 // Index for search
 JobApplicationSchema.index({ fullName: 'text', email: 'text', currentCompany: 'text' });
 

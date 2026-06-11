@@ -67,10 +67,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ success: false, message: 'Application deadline for this job has passed' });
       }
 
-      // Check if user has already applied for this job
-      const existingApplication = await JobApplication.findOne({ jobId, email });
-      if (existingApplication) {
-        return res.status(409).json({ success: false, message: 'You have already applied for this job' });
+      // Remove legacy unique index if it still exists in MongoDB
+      try {
+        const indexes = await JobApplication.collection.indexes();
+        const legacyUniqueIndex = indexes.find((index: any) => {
+          return index.unique && index.key && index.key.email === 1 && index.key.jobId === 1;
+        });
+        if (legacyUniqueIndex && legacyUniqueIndex.name) {
+          console.log('Dropping legacy unique index:', legacyUniqueIndex.name);
+          await JobApplication.collection.dropIndex(legacyUniqueIndex.name);
+        }
+      } catch (indexErr) {
+        console.warn('Could not drop legacy job application index:', indexErr);
       }
 
       // Validate application status if provided

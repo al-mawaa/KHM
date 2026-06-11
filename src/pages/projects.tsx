@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { PageHero } from "@/components/PageHero";
+import { siteImages } from "@/lib/site-images";
 
 interface Project {
   _id: string;
@@ -82,28 +84,12 @@ export default function ProjectsPage() {
         <div className="text-center py-12 text-slate-500">Loading projects...</div>
       ) : (
         <>
-          {/* Hero Section */}
-          <section className="relative bg-gradient-to-br from-white via-gray-50 to-white py-20 lg:py-28">
-            <div className="mx-auto max-w-7xl px-4 lg:px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="max-w-4xl"
-              >
-                <h1 className="text-[52px] font-bold tracking-tight text-[#1a5276] leading-tight">
-                  PROJECTS IN HAND
-                </h1>
-                <div className="mt-4 h-1 w-24 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-                <p className="mt-6 text-[20px] font-semibold text-gray-700">
-                  Active & Upcoming Assignments — 2025–26
-                </p>
-                <p className="mt-4 text-[16px] leading-8 text-gray-600">
-                  KHM Infra Innovations is currently engaged across multiple states in India, delivering DPR preparation, design engineering, and project management consultancy assignments spanning water supply, sewerage, wastewater management, and urban infrastructure sectors.
-                </p>
-              </motion.div>
-            </div>
-          </section>
+          <PageHero
+            eyebrow="Projects"
+            title="Projects in Hand"
+            description="Active and upcoming assignments across water, wastewater, and urban infrastructure sectors."
+            image={siteImages.heroPlant}
+          />
 
           {/* Active Projects Section */}
           <section className="py-16 lg:py-24 bg-white">

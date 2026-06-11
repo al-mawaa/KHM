@@ -140,7 +140,6 @@ export default function OurServicesPage() {
       <PageHero
         title="Our Services"
         subtitle="Comprehensive water, wastewater and infrastructure solutions engineered for sustainable growth and operational excellence."
-        breadcrumb="Services"
       />
 
       {/* Services Section */}

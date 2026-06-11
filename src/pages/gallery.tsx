@@ -3,8 +3,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   ChevronRight, X, ChevronLeft, ChevronRight as ChevronRightIcon,
-  Loader2, Image as ImageIcon, Search, ZoomIn, ZoomOut, Maximize2,
-  Download, Filter, Grid3X3, Calendar, FolderOpen, ArrowRight
+  Loader2, Image as ImageIcon, ZoomIn, ZoomOut, Maximize2,
+  Download, Grid3X3, Calendar, FolderOpen, ArrowRight
 } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 
@@ -24,17 +24,14 @@ interface GalleryItem {
   updatedAt: string;
 }
 
-type CategoryFilter = 'All' | 'Projects' | 'Treatment Plants' | 'Construction' | 'Maintenance' | 'Events';
+
 
 export default function GalleryPage() {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [filteredItems, setFilteredItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('All');
   const [visibleCount, setVisibleCount] = useState(12);
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -56,7 +53,6 @@ export default function GalleryPage() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         setGalleryItems(sortedItems);
-        setFilteredItems(sortedItems);
       } else {
         setError(data.message || 'Failed to fetch gallery items');
       }
@@ -72,28 +68,6 @@ export default function GalleryPage() {
     fetchGallery();
   }, []);
 
-  // Filter items based on search and category
-  useEffect(() => {
-    let filtered = galleryItems;
-
-    // Category filter
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(item => item.category === selectedCategory);
-    }
-
-    // Search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(item =>
-        item.title.toLowerCase().includes(query) ||
-        (item.description && item.description.toLowerCase().includes(query))
-      );
-    }
-
-    setFilteredItems(filtered);
-    setVisibleCount(12); // Reset visible count when filters change
-    trackEvent('gallery_filtered', { category: selectedCategory, searchQuery });
-  }, [galleryItems, selectedCategory, searchQuery]);
 
   // Calculate statistics
   const stats = {
@@ -124,21 +98,21 @@ export default function GalleryPage() {
     if (selectedIndex > 0) {
       const newIndex = selectedIndex - 1;
       setSelectedIndex(newIndex);
-      setSelectedImage(filteredItems[newIndex]);
+      setSelectedImage(galleryItems[newIndex]);
       setZoom(1);
-      trackEvent('gallery_image_navigate', { direction: 'previous', imageId: filteredItems[newIndex]._id });
+      trackEvent('gallery_image_navigate', { direction: 'previous', imageId: galleryItems[newIndex]._id });
     }
-  }, [selectedIndex, filteredItems]);
+  }, [selectedIndex, galleryItems]);
 
   const handleNext = useCallback(() => {
-    if (selectedIndex < filteredItems.length - 1) {
+    if (selectedIndex < galleryItems.length - 1) {
       const newIndex = selectedIndex + 1;
       setSelectedIndex(newIndex);
-      setSelectedImage(filteredItems[newIndex]);
+      setSelectedImage(galleryItems[newIndex]);
       setZoom(1);
-      trackEvent('gallery_image_navigate', { direction: 'next', imageId: filteredItems[newIndex]._id });
+      trackEvent('gallery_image_navigate', { direction: 'next', imageId: galleryItems[newIndex]._id });
     }
-  }, [selectedIndex, filteredItems]);
+  }, [selectedIndex, galleryItems]);
 
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 0.25, 3));
@@ -184,7 +158,7 @@ export default function GalleryPage() {
     trackEvent('gallery_load_more', { currentCount: visibleCount, newCount: visibleCount + 12 });
   };
 
-  const categories: CategoryFilter[] = ['All', 'Projects', 'Treatment Plants', 'Construction', 'Maintenance', 'Events'];
+
 
   // Update document title for SEO
   useEffect(() => {
@@ -206,7 +180,6 @@ export default function GalleryPage() {
       <PageHero
         title="Gallery"
         subtitle="Explore our completed projects, facilities, installations and engineering achievements across industries."
-        breadcrumb="Gallery"
       />
 
       {/* Gallery Statistics */}
@@ -292,149 +265,74 @@ export default function GalleryPage() {
             </motion.div>
           ) : (
             <>
-              {/* Search and Filter Bar */}
+              {/* Masonry Gallery Grid */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="mb-8 space-y-4"
+                className="columns-1 gap-6 sm:columns-2 lg:columns-3 xl:columns-4 space-y-6"
               >
-                {/* Search Bar */}
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search gallery by title or description..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent transition-all"
-                  />
-                </div>
-
-                {/* Category Filters */}
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                        selectedCategory === category
-                          ? 'bg-[#1a5276] text-white shadow-md'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Results Count */}
-                <div className="text-sm text-gray-600">
-                  Showing {filteredItems.length} {filteredItems.length === 1 ? 'image' : 'images'}
-                  {searchQuery && ` matching "${searchQuery}"`}
-                  {selectedCategory !== 'All' && ` in ${selectedCategory}`}
-                </div>
+                {galleryItems.slice(0, visibleCount).map((item, index) => (
+                  <motion.div
+                    key={item._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                    className="break-inside-avoid group cursor-pointer"
+                    onClick={() => handleImageClick(item, index)}
+                  >
+                    <div className="relative overflow-hidden rounded-xl bg-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-[#1a5276]/20">
+                      <div className="relative">
+                        {/* Blur placeholder */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 blur-xl opacity-50" />
+                        <img
+                          src={item.imageUrl}
+                          alt={item.title}
+                          loading="lazy"
+                          className="relative w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          onLoad={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            handleImageLoad(item._id, target.naturalHeight);
+                          }}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const parent = target.parentElement;
+                            if (parent) {
+                              parent.classList.add('flex', 'items-center', 'justify-center', 'min-h-[200px]');
+                              parent.innerHTML = '<div class="text-gray-400"><svg class="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
+                            }
+                          }}
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">
+                        <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <h3 className="font-semibold text-[#1a5276] group-hover:text-[#154360] transition-colors">{item.title}</h3>
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
 
-              {/* Masonry Gallery Grid */}
-              {filteredItems.length === 0 ? (
+              {/* Load More Button */}
+              {visibleCount < galleryItems.length && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-center py-24"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  className="text-center mt-12"
                 >
-                  <ImageIcon className="h-24 w-24 mx-auto text-gray-300 mb-6" />
-                  <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Results Found</h3>
-                  <p className="text-gray-500 mb-6">Try adjusting your search or filter criteria.</p>
                   <button
-                    onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-                    className="inline-flex items-center gap-2 bg-[#1a5276] text-white px-6 py-3 rounded-lg hover:bg-[#154360] transition-colors"
+                    onClick={handleLoadMore}
+                    className="inline-flex items-center gap-2 bg-[#1a5276] text-white px-8 py-3 rounded-lg hover:bg-[#154360] transition-all hover:shadow-lg hover:shadow-[#1a5276]/20"
                   >
-                    Clear Filters
+                    Load More Images ({galleryItems.length - visibleCount} remaining)
                   </button>
                 </motion.div>
-              ) : (
-                <>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="columns-1 gap-6 sm:columns-2 lg:columns-3 xl:columns-4 space-y-6"
-                  >
-                    {filteredItems.slice(0, visibleCount).map((item, index) => (
-                      <motion.div
-                        key={item._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: index * 0.05 }}
-                        className="break-inside-avoid group cursor-pointer"
-                        onClick={() => handleImageClick(item, index)}
-                      >
-                        <div className="relative overflow-hidden rounded-xl bg-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-[#1a5276]/20">
-                          <div className="relative">
-                            {/* Blur placeholder */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 blur-xl opacity-50" />
-                            <img
-                              src={item.imageUrl}
-                              alt={item.title}
-                              loading="lazy"
-                              className="relative w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                              onLoad={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                handleImageLoad(item._id, target.naturalHeight);
-                              }}
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                const parent = target.parentElement;
-                                if (parent) {
-                                  parent.classList.add('flex', 'items-center', 'justify-center', 'min-h-[200px]');
-                                  parent.innerHTML = '<div class="text-gray-400"><svg class="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
-                                }
-                              }}
-                            />
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                          <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0">
-                            <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
-                            {item.description && (
-                              <p className="mt-1 text-sm text-white/90 line-clamp-2">{item.description}</p>
-                            )}
-                            {item.category && (
-                              <span className="mt-2 inline-block px-2 py-1 text-xs font-medium bg-[#f5c518] text-[#1a5276] rounded-full">
-                                {item.category}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="mt-3">
-                          <h3 className="font-semibold text-[#1a5276] group-hover:text-[#154360] transition-colors">{item.title}</h3>
-                          {item.description && (
-                            <p className="mt-1 text-sm text-gray-600 line-clamp-2">{item.description}</p>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-
-                  {/* Load More Button */}
-                  {visibleCount < filteredItems.length && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      className="text-center mt-12"
-                    >
-                      <button
-                        onClick={handleLoadMore}
-                        className="inline-flex items-center gap-2 bg-[#1a5276] text-white px-8 py-3 rounded-lg hover:bg-[#154360] transition-all hover:shadow-lg hover:shadow-[#1a5276]/20"
-                      >
-                        Load More Images ({filteredItems.length - visibleCount} remaining)
-                      </button>
-                    </motion.div>
-                  )}
-                </>
               )}
             </>
           )}
@@ -529,7 +427,7 @@ export default function GalleryPage() {
               )}
 
               {/* Next Button */}
-              {selectedIndex < filteredItems.length - 1 && (
+              {selectedIndex < galleryItems.length - 1 && (
                 <button
                   onClick={handleNext}
                   className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:text-[#f5c518] transition-colors bg-black/30 hover:bg-black/50 rounded-full p-3 backdrop-blur-sm"
@@ -572,7 +470,7 @@ export default function GalleryPage() {
                     </span>
                   )}
                   <div className="mt-4 flex items-center justify-between text-sm text-gray-400">
-                    <span>{selectedIndex + 1} of {filteredItems.length}</span>
+                    <span>{selectedIndex + 1} of {galleryItems.length}</span>
                     <div className="flex items-center gap-4">
                       <span>Press ← → to navigate</span>
                       <span>Press + - to zoom</span>

@@ -76,7 +76,6 @@ export default function ProjectsPage() {
       <PageHero
         title="Our Projects"
         subtitle="Delivering successful infrastructure and wastewater treatment projects with quality, innovation and reliability."
-        breadcrumb="Projects"
       />
 
       {error && (

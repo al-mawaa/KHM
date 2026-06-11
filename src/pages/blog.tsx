@@ -101,7 +101,6 @@ export default function BlogPage() {
       <PageHero
         title="Insights & Articles"
         subtitle="Stay updated with industry trends, innovations and expert knowledge in water and wastewater management."
-        breadcrumb="Blog"
       />
 
       <section className="bg-white py-12 lg:py-16">

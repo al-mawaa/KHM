@@ -2,7 +2,6 @@ import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Mail, MapPin, Phone, Send, FileBadge, MessageCircle, Building2 } from "lucide-react";
-import { engineers } from "@/lib/images";
 import { addLead } from "@/lib/admin-store";
 import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 
@@ -28,7 +27,7 @@ export default function ContactPage() {
 
   return (
     <>
-      <PageHero title="Let's engineer your project" subtitle="Tell us about your site and goals — we'll respond within one business day." breadcrumb="Contact" backgroundImage={engineers} />
+      <PageHero title="Let's engineer your project" subtitle="Tell us about your site and goals — we'll respond within one business day." backgroundImage="/images/hero-plant.jpg" />
 
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 lg:px-8 grid lg:grid-cols-5 gap-10">

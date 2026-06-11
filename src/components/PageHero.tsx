@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 interface PageHeroProps {
   title: string;
   subtitle: string;
-  breadcrumb: string;
+  breadcrumb?: string;
   backgroundImage?: string;
 }
 
@@ -39,14 +39,16 @@ export function PageHero({ title, subtitle, breadcrumb, backgroundImage = "/imag
           className="max-w-4xl"
         >
           {/* Breadcrumb */}
-          <div
-            className="mb-5 flex items-center gap-2 text-sm"
-            style={{
-              color: "rgba(255,255,255,0.8)",
-            }}
-          >
-            <span>{breadcrumb}</span>
-          </div>
+          {breadcrumb && (
+            <div
+              className="mb-5 flex items-center gap-2 text-sm"
+              style={{
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              <span>{breadcrumb}</span>
+            </div>
+          )}
 
           {/* Title */}
           <h1

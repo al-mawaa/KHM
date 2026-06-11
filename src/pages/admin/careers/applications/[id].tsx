@@ -2,12 +2,25 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { AdminShell } from '@/components/admin/AdminShell';
 import { Card, Button, Field, Input, Textarea, Select, Modal, Confirm } from '@/components/admin/ui';
-import { 
-  ArrowLeft, Eye, Download, Mail, Phone, MapPin, Building, Briefcase, 
-  Clock, Award, Linkedin, FileText, Calendar, UserCheck, MessageSquare, 
-  Save, Loader2, ChevronRight, CheckCircle 
+import {
+  ArrowLeft, Eye, Download, Mail, Phone, MapPin, Building, Briefcase,
+  Clock, Award, Linkedin, FileText, Calendar, UserCheck, MessageSquare,
+  Save, Loader2, ChevronRight, CheckCircle
 } from "lucide-react";
 import { toast } from "sonner";
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps = async () => {
+  return {
+    props: {},
+  };
+};
 
 interface JobApplication {
   _id?: string;

@@ -150,51 +150,8 @@ export default function ServiceDetailPage() {
         />
       </Head>
 
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-[#f4f6f8]">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
-          <Link href="/" className="transition-colors hover:text-[#1a5276]">
-            Home
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <Link href="/our-services" className="transition-colors hover:text-[#1a5276]">
-            Services
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <span className="text-[#1a5276]">{service.title}</span>
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#1a5276] to-[#154360] text-white">
-        <div className="absolute inset-0 opacity-10">
-          {service.image && (
-            <Image
-              src={service.image}
-              alt=""
-              fill
-              className="object-cover"
-              priority
-            />
-          )}
-        </div>
-        <div className="relative mx-auto max-w-[1400px] px-4 py-20 lg:px-6 lg:py-32">
-          <div className="max-w-3xl">
-            <span className="inline-block px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] bg-white/10 rounded-full mb-6">
-              {service.category}
-            </span>
-            <h1 className="font-display text-4xl font-bold uppercase leading-tight sm:text-5xl lg:text-6xl mb-6">
-              {service.title}
-            </h1>
-            <p className="text-lg leading-relaxed text-white/90 max-w-2xl">
-              Professional infrastructure solutions tailored to your needs
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Overview Section */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-8 lg:py-16 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
           <div className="grid gap-12 lg:grid-cols-2">
             <div>

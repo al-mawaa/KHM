@@ -36,6 +36,7 @@ interface JobApplication {
   currentDesignation?: string;
   expectedSalary?: string;
   resumeUrl?: string;
+  resumePublicId?: string;
   coverLetter?: string;
   applicationStatus: 'Pending' | 'Shortlisted' | 'Interview Scheduled' | 'Interview Completed' | 'Selected' | 'Hired' | 'Rejected';
   recruiterNotes?: string;
@@ -416,15 +417,15 @@ export default function CandidateProfile() {
         </div>
 
         {/* Resume Section */}
-        {application.resumeUrl && (
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-3 flex items-center gap-2">
-              <FileText className="h-4 w-4" /> Resume
-            </div>
-            <div className="bg-white border border-slate-200 rounded-lg p-4">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-3 flex items-center gap-2">
+            <FileText className="h-4 w-4" /> Resume
+          </div>
+          <div className="bg-white border border-slate-200 rounded-lg p-4">
+            {application.resumeUrl ? (
               <div className="flex items-center gap-4">
                 <div className="flex-1">
-                  <div className="text-sm font-medium">Resume File</div>
+                  <div className="text-sm font-medium text-green-700">Resume uploaded successfully</div>
                   <div className="text-xs text-slate-500">{getResumeExtension(application.resumeUrl).toUpperCase()} Format</div>
                 </div>
                 <div className="flex gap-2">
@@ -433,20 +434,22 @@ export default function CandidateProfile() {
                     onClick={() => openResume(application.resumeUrl)}
                     className="text-xs"
                   >
-                    <Eye className="h-4 w-4 mr-1" /> View
+                    <Eye className="h-4 w-4 mr-1" /> View Resume
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() => downloadResume(application.resumeUrl)}
                     className="text-xs"
                   >
-                    <Download className="h-4 w-4 mr-1" /> Download
+                    <Download className="h-4 w-4 mr-1" /> Download Resume
                   </Button>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-sm text-slate-500">Resume not available</div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Cover Letter */}
         {application.coverLetter && (

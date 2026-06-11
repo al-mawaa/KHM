@@ -115,43 +115,40 @@ export default function AdminProjectsPage() {
   };
 
   const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
-    const formData = new FormData();
-    formData.append('file', file);
-
     setUploading(true);
     setUploadProgress(0);
 
     try {
-      const xhr = new XMLHttpRequest();
-
-      return new Promise((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable) {
-            const progress = Math.round((e.loaded / e.total) * 100);
-            setUploadProgress(progress);
-          }
-        });
-
-        xhr.addEventListener('load', () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success) {
-              resolve({ url: response.filePath, publicId: response.publicId });
-            } else {
-              reject(new Error(response.message || 'Upload failed'));
-            }
-          } else {
-            reject(new Error('Upload failed'));
-          }
-        });
-
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload failed'));
-        });
-
-        xhr.open('POST', '/api/upload');
-        xhr.send(formData);
+      // Read file as base64 data URL
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
       });
+
+      // Simulate progress since we're using fetch (no XHR progress for JSON)
+      setUploadProgress(30);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file: base64,
+          fileName: file.name,
+          mimeType: file.type,
+        }),
+      });
+
+      setUploadProgress(90);
+      const data = await res.json();
+      setUploadProgress(100);
+
+      if (data.success) {
+        return { url: data.filePath, publicId: data.publicId };
+      } else {
+        throw new Error(data.message || 'Upload failed');
+      }
     } finally {
       setUploading(false);
       setUploadProgress(0);

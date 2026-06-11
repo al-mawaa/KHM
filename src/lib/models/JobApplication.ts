@@ -15,6 +15,7 @@ export interface IJobApplication extends Document {
   currentDesignation?: string;
   expectedSalary?: string;
   resumeUrl?: string;
+  resumePublicId?: string;
   coverLetter?: string;
   applicationStatus: ApplicationStatus;
   recruiterNotes?: string;
@@ -91,6 +92,11 @@ const JobApplicationSchema = new Schema<IJobApplication>(
       type: String,
       trim: true,
       maxlength: [500, 'Resume URL cannot exceed 500 characters'],
+    },
+    resumePublicId: {
+      type: String,
+      trim: true,
+      maxlength: [500, 'Resume Public ID cannot exceed 500 characters'],
     },
     coverLetter: {
       type: String,

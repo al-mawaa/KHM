@@ -344,7 +344,6 @@ export default function CareersPage() {
       <PageHero
         title="Join Our Team"
         subtitle="Build your career with a growing engineering organization focused on innovation, sustainability and excellence."
-        breadcrumb="Careers"
       />
 
       {/* Open Positions Section */}

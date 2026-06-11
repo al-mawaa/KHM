@@ -1,12 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Counter } from "@/components/Counter";
 import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { engineers, heroPlant } from "@/lib/images";
-import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles } from "lucide-react";
+import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin } from "lucide-react";
+
+interface TeamMember {
+  _id: string;
+  fullName: string;
+  designation: string;
+  profileImage?: string;
+  bio?: string;
+  linkedinUrl?: string;
+  displayOrder: number;
+  status: string;
+}
 
 export default function AboutPage() {
+  const [directors, setDirectors] = useState<TeamMember[]>([]);
+
+  useEffect(() => {
+    // Fetch active team members sorted by displayOrder
+    fetch("/api/team-members")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setDirectors(data.data);
+      })
+      .catch(() => {
+        // Silently fail – section will simply show empty
+      });
+  }, []);
+
   useEffect(() => {
     if (!window.location.hash) return;
     const id = window.location.hash.replace("#", "");
@@ -15,12 +40,19 @@ export default function AboutPage() {
     });
   }, []);
 
+  const initials = (name: string) =>
+    name
+      .split(" ")
+      .map((s) => s[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+
   return (
     <>
       <PageHero
         title="Building India's water-secure infrastructure"
         subtitle="We are an engineering-led waste water and infrastructure company combining proven process technology with sustainable design and digital intelligence."
-        breadcrumb="About Us"
         backgroundImage={heroPlant}
       />
 
@@ -112,25 +144,46 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-20 bg-surface">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <SectionHeader eyebrow="Leadership" title="Meet the directors" />
-          <div className="mt-12 grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {[
-              { n: "Hrishikesh Madhav Kaluskar", r: "Director & Co-Founder" },
-              { n: "Smita Hrishikesh Kaluskar", r: "Director & Co-Founder" },
-            ].map((d) => (
-              <div key={d.n} className="rounded-2xl border border-border bg-card p-7 text-center shadow-card hover-lift">
-                <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-gradient-aqua font-display text-3xl font-bold text-primary-foreground">
-                  {d.n.split(" ").map(s => s[0]).slice(0,2).join("")}
+      {/* ── Meet the Directors – Dynamic from MongoDB ── */}
+      {directors.length > 0 && (
+        <section className="py-20 bg-surface">
+          <div className="mx-auto max-w-7xl px-4 lg:px-8">
+            <SectionHeader eyebrow="Leadership" title="Meet the directors" />
+            <div className="mt-12 grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+              {directors.map((d) => (
+                <div key={d._id} className="rounded-2xl border border-border bg-card p-7 text-center shadow-card hover-lift">
+                  {d.profileImage ? (
+                    <img
+                      src={d.profileImage}
+                      alt={d.fullName}
+                      className="mx-auto h-24 w-24 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-gradient-aqua font-display text-3xl font-bold text-primary-foreground">
+                      {initials(d.fullName)}
+                    </div>
+                  )}
+                  <div className="mt-4 font-display text-xl font-semibold">{d.fullName}</div>
+                  <div className="text-sm text-muted-foreground">{d.designation}</div>
+                  {d.bio && (
+                    <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{d.bio}</p>
+                  )}
+                  {d.linkedinUrl && (
+                    <a
+                      href={d.linkedinUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#0077b5] hover:underline"
+                    >
+                      <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+                    </a>
+                  )}
                 </div>
-                <div className="mt-4 font-display text-xl font-semibold">{d.n}</div>
-                <div className="text-sm text-muted-foreground">{d.r}</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="py-20 bg-gradient-deep text-primary-foreground">
         <div className="mx-auto max-w-7xl px-4 lg:px-8 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">

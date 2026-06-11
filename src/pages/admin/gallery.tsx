@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { Card, Button, Field, Input, Textarea, Modal, Confirm } from "@/components/admin/ui";
+import { Card, Button, Field, Input, Modal, Confirm } from "@/components/admin/ui";
 import { Plus, Pencil, Trash2, Loader2, Image as ImageIcon, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -100,43 +100,40 @@ export default function AdminGalleryPage() {
   };
 
   const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
-    const formData = new FormData();
-    formData.append('file', file);
-
     setUploading(true);
-    setUploadProgress(0);
+    setUploadProgress(10);
 
     try {
-      const xhr = new XMLHttpRequest();
-
-      return new Promise((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable) {
-            const progress = Math.round((e.loaded / e.total) * 100);
-            setUploadProgress(progress);
-          }
-        });
-
-        xhr.addEventListener('load', () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success) {
-              resolve({ url: response.filePath, publicId: response.publicId });
-            } else {
-              reject(new Error(response.message || 'Upload failed'));
-            }
-          } else {
-            reject(new Error('Upload failed'));
-          }
-        });
-
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload failed'));
-        });
-
-        xhr.open('POST', '/api/upload');
-        xhr.send(formData);
+      // Convert file to base64 for the API
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
       });
+
+      setUploadProgress(40);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file: base64,
+          fileName: file.name,
+          mimeType: file.type,
+        }),
+      });
+
+      setUploadProgress(90);
+
+      const data = await response.json();
+
+      if (data.success) {
+        setUploadProgress(100);
+        return { url: data.filePath, publicId: data.publicId };
+      } else {
+        throw new Error(data.message || 'Upload failed');
+      }
     } finally {
       setUploading(false);
       setUploadProgress(0);
@@ -311,9 +308,7 @@ export default function AdminGalleryPage() {
               )}
               <div className="p-5">
                 <h3 className="font-display font-bold text-lg">{item.title}</h3>
-                {item.description && (
-                  <p className="mt-2 text-sm text-slate-600 line-clamp-2">{item.description}</p>
-                )}
+
                 <p className="mt-3 text-xs text-slate-400">Added: {formatDate(item.createdAt)}</p>
                 <div className="mt-4 flex gap-2">
                   <Button variant="secondary" onClick={() => { setEdit(item); setSelectedFile(null); setPreviewImage(item.imageUrl || null); }}><Pencil className="h-3.5 w-3.5" /> Edit</Button>
@@ -414,14 +409,7 @@ export default function AdminGalleryPage() {
                 />
               </div>
             </Field>
-            <Field label="Description (optional)">
-              <Textarea 
-                rows={4} 
-                value={edit.description || ''} 
-                onChange={(e) => setEdit({ ...edit, description: e.target.value })} 
-                placeholder="Gallery item description"
-              />
-            </Field>
+
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => { setEdit(null); setSelectedFile(null); setPreviewImage(null); }} disabled={saving}>
                 Cancel

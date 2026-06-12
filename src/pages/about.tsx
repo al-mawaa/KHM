@@ -5,6 +5,7 @@ import { Counter } from "@/components/Counter";
 import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { engineers, heroPlant } from "@/lib/images";
 import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin } from "lucide-react";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 interface TeamMember {
   _id: string;
@@ -18,6 +19,8 @@ interface TeamMember {
 }
 
 export default function AboutPage() {
+  useVisitorTracking('About');
+  
   const [directors, setDirectors] = useState<TeamMember[]>([]);
 
   useEffect(() => {

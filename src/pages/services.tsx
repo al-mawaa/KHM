@@ -4,8 +4,10 @@ import { ChevronRight } from "lucide-react";
 
 import { SERVICE_CATEGORIES, SERVICES_PAGE } from "@/lib/services-content";
 import { siteImages } from "@/lib/site-images";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 export default function ServicesPage() {
+  useVisitorTracking('Services');
   return (
     <main className="bg-white text-gray-800">
       {/* Hero */}

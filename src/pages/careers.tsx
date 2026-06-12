@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 interface CareerJob {
   _id: string;
@@ -23,6 +24,8 @@ interface CareerJob {
 }
 
 export default function CareersPage() {
+  useVisitorTracking('Careers');
+  
   const [jobs, setJobs] = useState<CareerJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

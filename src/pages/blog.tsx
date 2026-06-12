@@ -5,6 +5,7 @@ import { ChevronRight, Loader2, FileText, Search, Clock, Calendar } from "lucide
 import { BlogCta } from "@/components/BlogCta";
 import { trackBlogSearch, trackPagination } from "@/lib/analytics";
 import { PageHero } from "@/components/PageHero";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 interface BlogPost {
   _id: string;
@@ -27,6 +28,8 @@ interface PaginationData {
 }
 
 export default function BlogPage() {
+  useVisitorTracking('Blog');
+  
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

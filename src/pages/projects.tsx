@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { PageHero } from "@/components/PageHero";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 interface Project {
   _id: string;
@@ -19,6 +20,8 @@ interface Project {
 }
 
 export default function ProjectsPage() {
+  useVisitorTracking('Projects');
+  
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

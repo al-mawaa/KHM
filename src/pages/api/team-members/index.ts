@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'GET') {
       // Public GET: return only Active members sorted by displayOrder
       const { all } = req.query;
-      const query = all === 'true' ? {} : { status: 'Active' };
+      const query = all === 'true' ? {} : { status: 'Active' as const };
       const members = await TeamMember.find(query).sort({ displayOrder: 1, createdAt: -1 });
       console.log(`Found ${members.length} team members`);
       return res.status(200).json({ success: true, data: members });

@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, Loader2, FileText, Calendar, Tag, Clock, Share2, Facebook, Linkedin, Twitter, MessageCircle } from "lucide-react";
+import { ChevronRight, Loader2, FileText, Calendar, Tag, Clock } from "lucide-react";
 import Head from "next/head";
-import { trackBlogView, trackBlogShare, trackRelatedBlogClick } from "@/lib/analytics";
+import { trackBlogView, trackBlogShare } from "@/lib/analytics";
 
 interface BlogPost {
   _id: string;
@@ -114,36 +114,6 @@ export default function BlogDetailPage() {
     );
   }
 
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const shareTitle = blog.title;
-  const shareDescription = blog.excerpt;
-
-  const handleShare = (platform: string) => {
-    const url = shareUrl;
-    let shareLink = '';
-
-    switch (platform) {
-      case 'facebook':
-        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        break;
-      case 'twitter':
-        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareTitle)}`;
-        break;
-      case 'linkedin':
-        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-        break;
-      case 'whatsapp':
-        shareLink = `https://wa.me/?text=${encodeURIComponent(`${shareTitle} ${url}`)}`;
-        break;
-    }
-
-    if (shareLink) {
-      window.open(shareLink, '_blank', 'width=600,height=400');
-      // Track share event
-      trackBlogShare(blog._id, blog.slug, platform);
-    }
-  };
-
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -171,13 +141,11 @@ export default function BlogDetailPage() {
       <Head>
         <title>{blog.title} | KHM Infra Innovations</title>
         <meta name="description" content={blog.excerpt} />
-        <link rel="canonical" href={shareUrl} />
         
         {/* Open Graph */}
         <meta property="og:title" content={blog.title} />
         <meta property="og:description" content={blog.excerpt} />
         <meta property="og:image" content={blog.featuredImage} />
-        <meta property="og:url" content={shareUrl} />
         <meta property="og:type" content="article" />
         <meta property="article:published_time" content={blog.createdAt} />
         <meta property="article:modified_time" content={blog.updatedAt} />
@@ -199,30 +167,15 @@ export default function BlogDetailPage() {
         />
       </Head>
 
-      {/* Breadcrumb */}
-      <div className="border-b border-gray-200 bg-[#f4f6f8]">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
-          <Link href="/" className="transition-colors hover:text-[#1a5276]">
-            Home
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <Link href="/blog" className="transition-colors hover:text-[#1a5276]">
-            Blog
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5 opacity-50" aria-hidden />
-          <span className="text-[#1a5276]">{blog.title}</span>
-        </div>
-      </div>
-
-      <article className="bg-white py-12 lg:py-16">
-        <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
+      <article className="bg-white pt-0 pb-8 lg:pb-12">
+        <div className="mx-auto max-w-[1400px] px-4 lg:px-6 pt-6">
           <div className="grid gap-12 lg:grid-cols-[1fr,350px]">
             {/* Main Content */}
             <div className="min-w-0">
               {/* Featured Image */}
               {blog.featuredImage && (
-                <div className="mb-8 overflow-hidden rounded-lg">
-                  <div className="relative aspect-[16/9] w-full bg-gray-100">
+                <div className="mb-6 overflow-hidden rounded-lg">
+                  <div className="relative aspect-[3/2] w-full bg-gray-100">
                     <Image
                       src={blog.featuredImage}
                       alt={blog.title}
@@ -270,42 +223,6 @@ export default function BlogDetailPage() {
                 </div>
               )}
 
-              {/* Social Sharing */}
-              <div className="mt-6 flex items-center gap-3 border-b border-gray-200 pb-6">
-                <span className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                  <Share2 className="h-4 w-4" />
-                  Share:
-                </span>
-                <button
-                  onClick={() => handleShare('facebook')}
-                  className="rounded-full bg-blue-600 p-2 text-white transition-colors hover:bg-blue-700"
-                  aria-label="Share on Facebook"
-                >
-                  <Facebook className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => handleShare('twitter')}
-                  className="rounded-full bg-sky-500 p-2 text-white transition-colors hover:bg-sky-600"
-                  aria-label="Share on Twitter"
-                >
-                  <Twitter className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => handleShare('linkedin')}
-                  className="rounded-full bg-blue-700 p-2 text-white transition-colors hover:bg-blue-800"
-                  aria-label="Share on LinkedIn"
-                >
-                  <Linkedin className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => handleShare('whatsapp')}
-                  className="rounded-full bg-green-500 p-2 text-white transition-colors hover:bg-green-600"
-                  aria-label="Share on WhatsApp"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                </button>
-              </div>
-
               {/* Content */}
               <div className="mt-8 prose prose-lg max-w-none">
                 <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
@@ -322,44 +239,6 @@ export default function BlogDetailPage() {
                   ← Back to Blog
                 </Link>
               </div>
-
-              {/* Related Blogs */}
-              {relatedBlogs.length > 0 && (
-                <div className="mt-16">
-                  <h2 className="mb-6 font-display text-2xl font-bold uppercase text-[#1a5276]">Related Articles</h2>
-                  <div className="grid gap-6 sm:grid-cols-2">
-                    {relatedBlogs.map((relatedBlog) => (
-                      <article key={relatedBlog._id} className="group flex gap-4">
-                        <Link
-                          href={`/blog/${relatedBlog.slug}`}
-                          className="relative block flex-shrink-0 overflow-hidden aspect-square w-24 bg-gray-100"
-                          onClick={() => trackRelatedBlogClick(blog._id, blog.slug, relatedBlog._id, relatedBlog.slug)}
-                        >
-                          <Image
-                            src={relatedBlog.featuredImage}
-                            alt={relatedBlog.title}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                            sizes="96px"
-                          />
-                        </Link>
-                        <div className="flex-1">
-                          <h3 className="font-display text-base font-bold leading-snug text-[#1a5276]">
-                            <Link
-                              href={`/blog/${relatedBlog.slug}`}
-                              className="transition-colors hover:text-[#154360]"
-                              onClick={() => trackRelatedBlogClick(blog._id, blog.slug, relatedBlog._id, relatedBlog.slug)}
-                            >
-                              {relatedBlog.title}
-                            </Link>
-                          </h3>
-                          <p className="mt-2 text-xs text-gray-500">{formatDate(relatedBlog.createdAt)}</p>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Sidebar */}

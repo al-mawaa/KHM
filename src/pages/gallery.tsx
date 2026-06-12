@@ -7,6 +7,7 @@ import {
   Download, Grid3X3, Calendar, FolderOpen, ArrowRight
 } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 // Analytics tracking hooks (architecture for future analytics implementation)
 const trackEvent = (eventName: string, eventData?: Record<string, any>) => {
@@ -27,6 +28,8 @@ interface GalleryItem {
 
 
 export default function GalleryPage() {
+  useVisitorTracking('Gallery');
+  
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

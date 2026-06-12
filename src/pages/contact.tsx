@@ -4,6 +4,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Mail, MapPin, Phone, Send, FileBadge, MessageCircle, Building2 } from "lucide-react";
 import { addLead } from "@/lib/admin-store";
 import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 function getPhoneNumbers(phone: string) {
   const numbers = phone.split(",").map(p => p.trim());
@@ -19,6 +20,8 @@ function getMapsEmbedUrl(address: string) {
 }
 
 export default function ContactPage() {
+  useVisitorTracking('Contact');
+  
   const [sent, setSent] = useState(false);
   const { settings } = useWebsiteSettings();
   const phones = getPhoneNumbers(settings.phone);

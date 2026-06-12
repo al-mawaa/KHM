@@ -54,7 +54,6 @@ const SettingsSchema = new Schema<ISettings>(
     },
     facebook: {
       type: String,
-      required: [true, 'Facebook URL is required'],
       trim: true,
       default: 'https://facebook.com',
     },
@@ -66,7 +65,6 @@ const SettingsSchema = new Schema<ISettings>(
     },
     twitter: {
       type: String,
-      required: [true, 'Twitter URL is required'],
       trim: true,
       default: 'https://twitter.com',
     },

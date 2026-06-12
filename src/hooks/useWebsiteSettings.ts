@@ -49,24 +49,35 @@ export function useWebsiteSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        console.log('[useWebsiteSettings] Fetching settings...');
+        console.log('🚀 [useWebsiteSettings] Fetching settings...');
         // Check cache first
         const now = Date.now();
         if (cachedSettings && (now - cacheTimestamp) < CACHE_DURATION) {
-          console.log('[useWebsiteSettings] Using cached settings');
+          console.log('✅ [useWebsiteSettings] Using cached settings (age:', (now - cacheTimestamp), 'ms)');
           setSettings(cachedSettings);
           setLoading(false);
           return;
         }
 
-        const res = await fetch("/api/settings");
+        console.log('📡 [useWebsiteSettings] Making API request to /api/settings');
+        const res = await fetch("/api/settings", {
+          cache: 'no-store', // Disable Next.js fetch cache
+          headers: {
+            'Cache-Control': 'no-cache',
+          }
+        });
+        
+        console.log('📊 [useWebsiteSettings] Response status:', res.status, res.statusText);
+        console.log('📋 [useWebsiteSettings] Response headers:', Object.fromEntries(res.headers.entries()));
+        
         const data = await res.json();
         
-        console.log('[useWebsiteSettings] API response:', data);
+        console.log('📦 [useWebsiteSettings] API response data:', data);
         
         if (data.success && data.data) {
           const settingsData = data.data;
-          console.log('[useWebsiteSettings] Settings loaded successfully:', settingsData);
+          console.log('✅ [useWebsiteSettings] Settings loaded successfully');
+          console.log('📝 [useWebsiteSettings] Settings data:', settingsData);
           setSettings(settingsData);
           cachedSettings = settingsData;
           cacheTimestamp = now;
@@ -74,7 +85,7 @@ export function useWebsiteSettings() {
           throw new Error(data.message || "Failed to fetch settings");
         }
       } catch (err) {
-        console.error("[useWebsiteSettings] Failed to fetch settings:", err);
+        console.error("❌ [useWebsiteSettings] Failed to fetch settings:", err);
         setError(err instanceof Error ? err.message : "Failed to load settings");
         // Use default settings on error
         setSettings(defaultSettings);

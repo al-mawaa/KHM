@@ -3,11 +3,8 @@ import {
   Mail,
   MapPin,
   Phone,
-  Facebook,
   Linkedin,
-  Twitter,
   Instagram,
-  Youtube,
   MessageCircle,
   Hash,
 } from "lucide-react";
@@ -16,12 +13,9 @@ import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 
 const QUICK_LINKS = [
   ["/", "Home"],
-  ["/about", "Company"],
   ["/services", "Services"],
   ["/projects", "Projects"],
   ["/gallery", "Gallery"],
-  ["/clients", "Clients"],
-  ["/sectors-we-serve", "Industries We Serve"],
   ["/blog", "Blog"],
   ["/contact", "Contact Us"],
 ] as const;
@@ -35,11 +29,8 @@ export function Footer() {
   const whatsappUrl = `https://wa.me/${phoneClean}`;
 
   const SOCIAL = [
-    { Icon: Facebook, href: settings.facebook || "https://facebook.com", label: "Facebook" },
-    { Icon: Twitter, href: settings.twitter || "https://twitter.com", label: "Twitter" },
     { Icon: Linkedin, href: settings.linkedin || "https://linkedin.com", label: "LinkedIn" },
     { Icon: Instagram, href: settings.instagram || "https://instagram.com", label: "Instagram" },
-    { Icon: Youtube, href: settings.youtube || "https://youtube.com", label: "YouTube" },
     { Icon: MessageCircle, href: whatsappUrl, label: "WhatsApp" },
   ] as const;
 
@@ -71,7 +62,7 @@ export function Footer() {
 
         <div>
           <h4 className="text-sm font-bold uppercase tracking-wider text-[#f5c518]">Quick Links</h4>
-          <ul className="mt-4 grid gap-2 text-sm text-white/80 sm:grid-cols-2">
+          <ul className="mt-4 flex flex-col gap-2 text-sm text-white/80">
             {QUICK_LINKS.map(([to, label]) => (
               <li key={to}>
                 <Link to={to} className="hover:text-[#f5c518] transition-colors">

@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 interface EmailConfig {
   host: string;
   port: number;
+  secure: boolean;
   user: string;
   pass: string;
   from: string;
@@ -14,50 +15,65 @@ interface EmailData {
   html: string;
 }
 
-// Email transporter configuration
+// ─── Transporter Factory ────────────────────────────────────────────────────
 const createTransporter = () => {
+  const smtpPort = parseInt(process.env.SMTP_PORT || '587');
   const config: EmailConfig = {
     host: process.env.SMTP_HOST || '',
-    port: parseInt(process.env.SMTP_PORT || '587'),
+    port: smtpPort,
+    secure: process.env.SMTP_SECURE === 'true' || smtpPort === 465,
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
     from: process.env.SMTP_FROM || 'noreply@khminfra.com',
   };
 
+  // Detailed diagnostic logging so missing vars are easy to spot in logs
+  console.log('📧 [SMTP] Initialising transporter...');
+  console.log(`   SMTP_HOST  : "${config.host}" ${config.host ? '✅' : '❌ MISSING'}`);
+  console.log(`   SMTP_PORT  : ${config.port}`);
+  console.log(`   SMTP_SECURE: ${config.secure}`);
+  console.log(`   SMTP_USER  : "${config.user}" ${config.user ? '✅' : '❌ MISSING'}`);
+  console.log(`   SMTP_PASS  : ${config.pass ? '✅ set (' + config.pass.length + ' chars)' : '❌ MISSING'}`);
+  console.log(`   SMTP_FROM  : "${config.from}"`);
+
   if (!config.host || !config.user || !config.pass) {
-    console.warn('SMTP configuration incomplete. Email sending will be disabled.');
+    console.error('❌ [SMTP] Configuration incomplete. Email sending disabled.');
+    console.error('   → Add SMTP_HOST, SMTP_USER, and SMTP_PASS to your .env file.');
     return null;
   }
 
-  return nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     host: config.host,
     port: config.port,
-    secure: config.port === 465,
+    secure: config.secure,
     auth: {
       user: config.user,
       pass: config.pass,
     },
   });
+
+  console.log('✅ [SMTP] Transporter created successfully.');
+  return { transporter, config };
 };
 
-// Send email function
+// ─── Send Email ─────────────────────────────────────────────────────────────
 export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
   try {
-    const transporter = createTransporter();
-    
-    if (!transporter) {
-      console.warn('Email transporter not configured. Skipping email send.');
+    const result = createTransporter();
+
+    if (!result) {
+      console.warn('⚠️ [SMTP] Transporter is null. Skipping email send.');
       return false;
     }
 
-    const config: EmailConfig = {
-      host: process.env.SMTP_HOST || '',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      user: process.env.SMTP_USER || '',
-      pass: process.env.SMTP_PASS || '',
-      from: process.env.SMTP_FROM || 'noreply@khminfra.com',
-    };
+    const { transporter, config } = result;
 
+    // Verify SMTP connection before attempting to send
+    console.log('🔍 [SMTP] Verifying SMTP connection...');
+    await transporter.verify();
+    console.log('✅ [SMTP] SMTP connection verified successfully.');
+
+    console.log(`📤 [SMTP] Sending email to: ${emailData.to}`);
     const info = await transporter.sendMail({
       from: config.from,
       to: emailData.to,
@@ -65,10 +81,12 @@ export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
       html: emailData.html,
     });
 
-    console.log('Email sent successfully:', info.messageId);
+    console.log(`✅ [SMTP] Email sent! Message ID: ${info.messageId}`);
     return true;
-  } catch (error) {
-    console.error('Error sending email:', error);
+  } catch (error: any) {
+    console.error('❌ [SMTP] Failed to send email:', error.message);
+    console.error('   Error code   :', error.code);
+    console.error('   SMTP response:', error.response);
     return false;
   }
 };

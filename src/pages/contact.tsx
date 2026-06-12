@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
-import { Mail, MapPin, Phone, Send, FileBadge, MessageCircle, Building2 } from "lucide-react";
-import { addLead } from "@/lib/admin-store";
+import { Mail, MapPin, Phone, Send, FileBadge, MessageCircle, Building2, Loader2 } from "lucide-react";
 import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
@@ -23,6 +22,8 @@ export default function ContactPage() {
   useVisitorTracking('Contact');
   
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { settings } = useWebsiteSettings();
   const phones = getPhoneNumbers(settings.phone);
   const whatsappUrl = `https://wa.me/${settings.phone.replace(/\D/g, "").slice(0, 10)}`;
@@ -44,18 +45,41 @@ export default function ContactPage() {
               </div>
             ) : (
               <form
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  const fd = new FormData(e.currentTarget);
-                  addLead({
-                    name: String(fd.get("name") ?? ""),
-                    phone: String(fd.get("phone") ?? ""),
-                    email: String(fd.get("email") ?? ""),
-                    company: String(fd.get("company") ?? ""),
-                    service: String(fd.get("service") ?? ""),
-                    message: String(fd.get("message") ?? ""),
-                  });
-                  setSent(true);
+                  setSubmitting(true);
+                  setError(null);
+                  
+                  try {
+                    const fd = new FormData(e.currentTarget);
+                    const response = await fetch('/api/contact', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        name: String(fd.get("name") ?? ""),
+                        phone: String(fd.get("phone") ?? ""),
+                        email: String(fd.get("email") ?? ""),
+                        company: String(fd.get("company") ?? ""),
+                        service: String(fd.get("service") ?? ""),
+                        message: String(fd.get("message") ?? ""),
+                      }),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                      throw new Error(data.message || 'Failed to submit form');
+                    }
+
+                    setSent(true);
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : 'An error occurred');
+                    console.error('Form submission error:', err);
+                  } finally {
+                    setSubmitting(false);
+                  }
                 }}
                 className="mt-8 grid sm:grid-cols-2 gap-4"
               >
@@ -83,8 +107,26 @@ export default function ContactPage() {
                   <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Message</label>
                   <textarea name="message" rows={5} required maxLength={1000} className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-aqua resize-none" />
                 </div>
-                <button type="submit" className="sm:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-aqua px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow hover-lift">
-                  Send Enquiry <Send className="h-4 w-4" />
+                {error && (
+                  <div className="sm:col-span-2 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                    {error}
+                  </div>
+                )}
+                <button 
+                  type="submit" 
+                  disabled={submitting}
+                  className="sm:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-aqua px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow hover-lift disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Enquiry <Send className="h-4 w-4" />
+                    </>
+                  )}
                 </button>
               </form>
             )}

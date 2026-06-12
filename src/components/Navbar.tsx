@@ -2,16 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Facebook,
   Instagram,
   Linkedin,
   Mail,
   Menu,
   MessageCircle,
   Phone,
-  Twitter,
   X,
-  Youtube,
 } from "lucide-react";
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -26,8 +23,6 @@ function getSocialLinks(settings: ReturnType<typeof useWebsiteSettings>["setting
   const whatsappUrl = `https://wa.me/${phoneClean}`;
 
   return [
-    { href: settings.facebook || "https://facebook.com", label: "Facebook", Icon: Facebook, className: "bg-[#1877F2] hover:bg-[#166fe0]" },
-    { href: settings.twitter || "https://twitter.com", label: "Twitter", Icon: Twitter, className: "bg-[#1DA1F2] hover:bg-[#1a94df]" },
     { href: settings.linkedin || "https://linkedin.com", label: "LinkedIn", Icon: Linkedin, className: "bg-[#0A66C2] hover:bg-[#0958a8]" },
     {
       href: settings.instagram || "https://instagram.com",
@@ -35,7 +30,6 @@ function getSocialLinks(settings: ReturnType<typeof useWebsiteSettings>["setting
       Icon: Instagram,
       className: "bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]",
     },
-    { href: settings.youtube || "https://youtube.com", label: "YouTube", Icon: Youtube, className: "bg-[#FF0000] hover:bg-[#e60000]" },
     { href: whatsappUrl, label: "WhatsApp", Icon: MessageCircle, className: "bg-[#25D366] hover:bg-[#20bd5a]" },
   ] as const;
 }

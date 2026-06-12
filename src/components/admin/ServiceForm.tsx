@@ -29,6 +29,9 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isSubmittingRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const isUploadingRef = useRef(false);
 
   useEffect(() => {
     if (service) {
@@ -46,6 +49,17 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
       setPreviewImage(service.image || null);
     }
   }, [service]);
+
+  useEffect(() => {
+    return () => {
+      // Abort any ongoing upload when component unmounts
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      isUploadingRef.current = false;
+    };
+  }, []);
 
   const generateSlug = (title: string) => {
     return title
@@ -93,47 +107,72 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
   };
 
   const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    setUploading(true);
-    setUploadProgress(0);
-
-    try {
-      const xhr = new XMLHttpRequest();
-
-      return new Promise((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (e) => {
-          if (e.lengthComputable) {
-            const progress = Math.round((e.loaded / e.total) * 100);
-            setUploadProgress(progress);
-          }
-        });
-
-        xhr.addEventListener('load', () => {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            if (response.success) {
-              resolve({ url: response.filePath, publicId: response.publicId });
-            } else {
-              reject(new Error(response.message || 'Upload failed'));
-            }
-          } else {
-            reject(new Error('Upload failed'));
-          }
-        });
-
-        xhr.addEventListener('error', () => {
-          reject(new Error('Upload failed'));
-        });
-
-        xhr.open('POST', '/api/upload');
-        xhr.send(formData);
-      });
-    } finally {
-      setUploading(false);
-      setUploadProgress(0);
+    if (isUploadingRef.current) {
+      throw new Error('Upload already in progress');
     }
+
+    isUploadingRef.current = true;
+
+    // Cancel any previous upload
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const reader = new FileReader();
+    
+    return new Promise((resolve, reject) => {
+      reader.onload = async () => {
+        try {
+          const base64 = reader.result as string;
+          
+          setUploadProgress(30);
+          
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              file: base64,
+              fileName: file.name,
+              mimeType: file.type,
+            }),
+            signal: abortController.signal,
+          });
+
+          setUploadProgress(70);
+
+          const data = await response.json();
+
+          if (data.success) {
+            setUploadProgress(100);
+            resolve({ url: data.filePath, publicId: data.publicId });
+          } else {
+            reject(new Error(data.message || 'Upload failed'));
+          }
+        } catch (error) {
+          if (error instanceof Error && error.name === 'AbortError') {
+            reject(new Error('Upload aborted'));
+          } else {
+            reject(error);
+          }
+        } finally {
+          abortControllerRef.current = null;
+          isUploadingRef.current = false;
+        }
+      };
+
+      reader.onerror = () => {
+        abortControllerRef.current = null;
+        isUploadingRef.current = false;
+        reject(new Error('Failed to read file'));
+      };
+
+      reader.readAsDataURL(file);
+    });
   };
 
   const deleteFile = async (publicId: string) => {
@@ -164,6 +203,14 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (uploading || isSubmittingRef.current) {
+      return;
+    }
+
+    isSubmittingRef.current = true;
+    setUploading(true);
+
     const pointsArray = pointsText
       .split('\n')
       .map((p) => p.trim())
@@ -183,6 +230,9 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
       } catch (error) {
         console.error('Upload error:', error);
         toast.error('Failed to upload image');
+        setUploading(false);
+        setUploadProgress(0);
+        isSubmittingRef.current = false;
         return;
       }
     }
@@ -192,6 +242,9 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
     }
 
     onSubmit({ ...formData, points: pointsArray, image, imagePublicId });
+    setUploading(false);
+    setUploadProgress(0);
+    isSubmittingRef.current = false;
   };
 
   return (

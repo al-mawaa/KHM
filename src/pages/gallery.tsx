@@ -2,9 +2,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
-  ChevronRight, X, ChevronLeft, ChevronRight as ChevronRightIcon,
-  Loader2, Image as ImageIcon, ZoomIn, ZoomOut, Maximize2,
-  Download, Grid3X3, Calendar, FolderOpen, ArrowRight
+  ChevronRight,
+  X,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon,
+  Loader2,
+  Image as ImageIcon,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  Download,
+  Grid3X3,
+  Calendar,
+  FolderOpen,
+  ArrowRight,
 } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
@@ -12,7 +23,7 @@ import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 // Analytics tracking hooks (architecture for future analytics implementation)
 const trackEvent = (eventName: string, eventData?: Record<string, any>) => {
   // TODO: Integrate with Google Analytics, Mixpanel, or other analytics
-  console.log('[Analytics]', eventName, eventData);
+  console.log("[Analytics]", eventName, eventData);
 };
 
 interface GalleryItem {
@@ -25,11 +36,9 @@ interface GalleryItem {
   updatedAt: string;
 }
 
-
-
 export default function GalleryPage() {
-  useVisitorTracking('Gallery');
-  
+  useVisitorTracking("Gallery");
+
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,29 +48,30 @@ export default function GalleryPage() {
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [imageHeights, setImageHeights] = useState<Record<string, number>>({});
-  
+
   const imageRefs = useRef<Record<string, HTMLImageElement>>({});
 
   const fetchGallery = async () => {
     try {
-      console.log('Fetching gallery items from API...');
+      console.log("Fetching gallery items from API...");
       setLoading(true);
       setError(null);
-      const res = await fetch('/api/gallery');
+      const res = await fetch("/api/gallery");
       const data = await res.json();
-      console.log('API response:', data);
-      
+      console.log("API response:", data);
+
       if (data.success) {
-        const sortedItems = data.data.sort((a: GalleryItem, b: GalleryItem) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        const sortedItems = data.data.sort(
+          (a: GalleryItem, b: GalleryItem) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
         setGalleryItems(sortedItems);
       } else {
-        setError(data.message || 'Failed to fetch gallery items');
+        setError(data.message || "Failed to fetch gallery items");
       }
     } catch (err) {
-      console.error('Error fetching gallery:', err);
-      setError('Failed to load gallery. Please try again later.');
+      console.error("Error fetching gallery:", err);
+      setError("Failed to load gallery. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -71,22 +81,24 @@ export default function GalleryPage() {
     fetchGallery();
   }, []);
 
-
   // Calculate statistics
   const stats = {
     totalImages: galleryItems.length,
-    latestUpload: galleryItems.length > 0 
-      ? new Date(galleryItems[0].createdAt).toLocaleDateString('en-US', { 
-          year: 'numeric', month: 'long', day: 'numeric' 
-        })
-      : 'N/A',
-    totalProjects: galleryItems.filter(item => 
-      item.category === 'Projects' || item.title.toLowerCase().includes('project')
-    ).length
+    latestUpload:
+      galleryItems.length > 0
+        ? new Date(galleryItems[0].createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        : "N/A",
+    totalProjects: galleryItems.filter(
+      (item) => item.category === "Projects" || item.title.toLowerCase().includes("project"),
+    ).length,
   };
 
   const handleImageLoad = (id: string, height: number) => {
-    setImageHeights(prev => ({ ...prev, [id]: height }));
+    setImageHeights((prev) => ({ ...prev, [id]: height }));
   };
 
   const handleImageClick = (item: GalleryItem, index: number) => {
@@ -94,7 +106,7 @@ export default function GalleryPage() {
     setSelectedIndex(index);
     setZoom(1);
     setIsFullscreen(false);
-    trackEvent('gallery_image_opened', { imageId: item._id, title: item.title });
+    trackEvent("gallery_image_opened", { imageId: item._id, title: item.title });
   };
 
   const handlePrevious = useCallback(() => {
@@ -103,7 +115,10 @@ export default function GalleryPage() {
       setSelectedIndex(newIndex);
       setSelectedImage(galleryItems[newIndex]);
       setZoom(1);
-      trackEvent('gallery_image_navigate', { direction: 'previous', imageId: galleryItems[newIndex]._id });
+      trackEvent("gallery_image_navigate", {
+        direction: "previous",
+        imageId: galleryItems[newIndex]._id,
+      });
     }
   }, [selectedIndex, galleryItems]);
 
@@ -113,67 +128,78 @@ export default function GalleryPage() {
       setSelectedIndex(newIndex);
       setSelectedImage(galleryItems[newIndex]);
       setZoom(1);
-      trackEvent('gallery_image_navigate', { direction: 'next', imageId: galleryItems[newIndex]._id });
+      trackEvent("gallery_image_navigate", {
+        direction: "next",
+        imageId: galleryItems[newIndex]._id,
+      });
     }
   }, [selectedIndex, galleryItems]);
 
   const handleZoomIn = () => {
-    setZoom(prev => Math.min(prev + 0.25, 3));
+    setZoom((prev) => Math.min(prev + 0.25, 3));
   };
 
   const handleZoomOut = () => {
-    setZoom(prev => Math.max(prev - 0.25, 0.5));
+    setZoom((prev) => Math.max(prev - 0.25, 0.5));
   };
 
   const handleDownload = () => {
     if (selectedImage) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = selectedImage.imageUrl;
       link.download = selectedImage.title;
       link.click();
-      trackEvent('gallery_image_downloaded', { imageId: selectedImage._id, title: selectedImage.title });
+      trackEvent("gallery_image_downloaded", {
+        imageId: selectedImage._id,
+        title: selectedImage.title,
+      });
     }
   };
 
   const handleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
-    trackEvent('gallery_fullscreen_toggled', { isFullscreen: !isFullscreen });
+    trackEvent("gallery_fullscreen_toggled", { isFullscreen: !isFullscreen });
   };
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      setSelectedImage(null);
-      setZoom(1);
-      setIsFullscreen(false);
-    } else if (e.key === 'ArrowLeft') {
-      handlePrevious();
-    } else if (e.key === 'ArrowRight') {
-      handleNext();
-    } else if (e.key === '+' || e.key === '=') {
-      handleZoomIn();
-    } else if (e.key === '-' || e.key === '_') {
-      handleZoomOut();
-    }
-  }, [handlePrevious, handleNext]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedImage(null);
+        setZoom(1);
+        setIsFullscreen(false);
+      } else if (e.key === "ArrowLeft") {
+        handlePrevious();
+      } else if (e.key === "ArrowRight") {
+        handleNext();
+      } else if (e.key === "+" || e.key === "=") {
+        handleZoomIn();
+      } else if (e.key === "-" || e.key === "_") {
+        handleZoomOut();
+      }
+    },
+    [handlePrevious, handleNext],
+  );
 
   const handleLoadMore = () => {
-    setVisibleCount(prev => prev + 12);
-    trackEvent('gallery_load_more', { currentCount: visibleCount, newCount: visibleCount + 12 });
+    setVisibleCount((prev) => prev + 12);
+    trackEvent("gallery_load_more", { currentCount: visibleCount, newCount: visibleCount + 12 });
   };
-
-
 
   // Update document title for SEO
   useEffect(() => {
-    document.title = 'Gallery - KHM Infra Innovations | Water & Wastewater Treatment Projects';
+    document.title = "Gallery - KHM Infra Innovations | Water & Wastewater Treatment Projects";
     // Add meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Explore our gallery showcasing water and wastewater treatment projects, infrastructure development, and environmental solutions across India.');
+      metaDescription.setAttribute(
+        "content",
+        "Explore our gallery showcasing water and wastewater treatment projects, infrastructure development, and environmental solutions across India.",
+      );
     } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = 'Explore our gallery showcasing water and wastewater treatment projects, infrastructure development, and environmental solutions across India.';
+      const meta = document.createElement("meta");
+      meta.name = "description";
+      meta.content =
+        "Explore our gallery showcasing water and wastewater treatment projects, infrastructure development, and environmental solutions across India.";
       document.head.appendChild(meta);
     }
   }, []);
@@ -257,8 +283,12 @@ export default function GalleryPage() {
               className="text-center py-24"
             >
               <ImageIcon className="h-24 w-24 mx-auto text-gray-300 mb-6" />
-              <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Gallery Images Available</h3>
-              <p className="text-gray-500 mb-6">Check back soon for updates on our latest projects.</p>
+              <h3 className="text-2xl font-semibold text-gray-700 mb-2">
+                No Gallery Images Available
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Check back soon for updates on our latest projects.
+              </p>
               <Link
                 to="/contact"
                 className="inline-flex items-center gap-2 bg-[#1a5276] text-white px-6 py-3 rounded-lg hover:bg-[#154360] transition-colors"
@@ -300,11 +330,17 @@ export default function GalleryPage() {
                           }}
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
+                            target.style.display = "none";
                             const parent = target.parentElement;
                             if (parent) {
-                              parent.classList.add('flex', 'items-center', 'justify-center', 'min-h-[200px]');
-                              parent.innerHTML = '<div class="text-gray-400"><svg class="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
+                              parent.classList.add(
+                                "flex",
+                                "items-center",
+                                "justify-center",
+                                "min-h-[200px]",
+                              );
+                              parent.innerHTML =
+                                '<div class="text-gray-400"><svg class="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
                             }
                           }}
                         />
@@ -315,7 +351,9 @@ export default function GalleryPage() {
                       </div>
                     </div>
                     <div className="mt-3">
-                      <h3 className="font-semibold text-[#1a5276] group-hover:text-[#154360] transition-colors">{item.title}</h3>
+                      <h3 className="font-semibold text-[#1a5276] group-hover:text-[#154360] transition-colors">
+                        {item.title}
+                      </h3>
                     </div>
                   </motion.div>
                 ))}
@@ -349,7 +387,7 @@ export default function GalleryPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-[300] bg-black/95 flex items-center justify-center p-4 ${isFullscreen ? 'p-0' : ''}`}
+            className={`fixed inset-0 z-[300] bg-black/95 flex items-center justify-center p-4 ${isFullscreen ? "p-0" : ""}`}
             onClick={() => setSelectedImage(null)}
             onKeyDown={handleKeyDown}
             tabIndex={0}
@@ -359,7 +397,7 @@ export default function GalleryPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className={`relative w-full ${isFullscreen ? 'h-full' : 'max-w-6xl max-h-[90vh]'}`}
+              className={`relative w-full ${isFullscreen ? "h-full" : "max-w-6xl max-h-[90vh]"}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Top Controls Bar */}
@@ -367,7 +405,7 @@ export default function GalleryPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleDownload}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all backdrop-blur-sm"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all backdrop-blur-sm cursor-pointer"
                     aria-label="Download image"
                   >
                     <Download className="h-4 w-4" />
@@ -375,7 +413,7 @@ export default function GalleryPage() {
                   </button>
                   <button
                     onClick={handleFullscreen}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all backdrop-blur-sm"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all backdrop-blur-sm cursor-pointer"
                     aria-label="Toggle fullscreen"
                   >
                     {isFullscreen ? (
@@ -383,12 +421,14 @@ export default function GalleryPage() {
                     ) : (
                       <Maximize2 className="h-4 w-4" />
                     )}
-                    <span className="hidden sm:inline">{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+                    <span className="hidden sm:inline">
+                      {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                    </span>
                   </button>
                 </div>
                 <button
                   onClick={() => setSelectedImage(null)}
-                  className="p-2 hover:bg-white/10 text-white rounded-lg transition-all"
+                  className="p-2 hover:bg-white/10 text-white rounded-lg transition-all cursor-pointer"
                   aria-label="Close"
                 >
                   <X className="h-6 w-6" />
@@ -396,11 +436,11 @@ export default function GalleryPage() {
               </div>
 
               {/* Zoom Controls */}
-              <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-full px-4 py-2">
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-full px-4 py-2">
                 <button
                   onClick={handleZoomOut}
                   disabled={zoom <= 0.5}
-                  className="p-2 hover:bg-white/10 text-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 hover:bg-white/10 text-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   aria-label="Zoom out"
                 >
                   <ZoomOut className="h-5 w-5" />
@@ -411,7 +451,7 @@ export default function GalleryPage() {
                 <button
                   onClick={handleZoomIn}
                   disabled={zoom >= 3}
-                  className="p-2 hover:bg-white/10 text-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 hover:bg-white/10 text-white rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   aria-label="Zoom in"
                 >
                   <ZoomIn className="h-5 w-5" />
@@ -422,7 +462,7 @@ export default function GalleryPage() {
               {selectedIndex > 0 && (
                 <button
                   onClick={handlePrevious}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white hover:text-[#f5c518] transition-colors bg-black/30 hover:bg-black/50 rounded-full p-3 backdrop-blur-sm"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white hover:text-[#f5c518] transition-colors bg-black/30 hover:bg-black/50 rounded-full p-3 backdrop-blur-sm cursor-pointer"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="h-8 w-8" />
@@ -433,7 +473,7 @@ export default function GalleryPage() {
               {selectedIndex < galleryItems.length - 1 && (
                 <button
                   onClick={handleNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:text-[#f5c518] transition-colors bg-black/30 hover:bg-black/50 rounded-full p-3 backdrop-blur-sm"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:text-[#f5c518] transition-colors bg-black/30 hover:bg-black/50 rounded-full p-3 backdrop-blur-sm cursor-pointer"
                   aria-label="Next image"
                 >
                   <ChevronRightIcon className="h-8 w-8" />
@@ -441,45 +481,24 @@ export default function GalleryPage() {
               )}
 
               {/* Image Container */}
-              <div className={`relative flex items-center justify-center ${isFullscreen ? 'h-full' : 'max-h-[80vh]'}`}>
-                <div 
+              <div
+                className={`relative flex items-center justify-center ${isFullscreen ? "h-full" : "max-h-[80vh]"}`}
+              >
+                <div
                   className="relative overflow-hidden"
-                  style={{ 
+                  style={{
                     transform: `scale(${zoom})`,
-                    transition: 'transform 0.3s ease-out'
+                    transition: "transform 0.3s ease-out",
                   }}
                 >
                   <img
                     src={selectedImage.imageUrl}
                     alt={selectedImage.title}
-                    className={`max-w-full object-contain ${isFullscreen ? 'max-h-screen' : 'max-h-[80vh]'} mx-auto`}
+                    className={`max-w-full object-contain ${isFullscreen ? "max-h-screen" : "max-h-[80vh]"} mx-auto`}
                     onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
+                      (e.target as HTMLImageElement).style.display = "none";
                     }}
                   />
-                </div>
-              </div>
-
-              {/* Image Info */}
-              <div className="absolute bottom-0 left-0 right-0 z-10 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-                <div className="max-w-4xl mx-auto">
-                  <h3 className="text-2xl font-bold text-white">{selectedImage.title}</h3>
-                  {selectedImage.description && (
-                    <p className="mt-2 text-gray-300 text-lg">{selectedImage.description}</p>
-                  )}
-                  {selectedImage.category && (
-                    <span className="mt-3 inline-block px-3 py-1 text-sm font-medium bg-[#f5c518] text-[#1a5276] rounded-full">
-                      {selectedImage.category}
-                    </span>
-                  )}
-                  <div className="mt-4 flex items-center justify-between text-sm text-gray-400">
-                    <span>{selectedIndex + 1} of {galleryItems.length}</span>
-                    <div className="flex items-center gap-4">
-                      <span>Press ← → to navigate</span>
-                      <span>Press + - to zoom</span>
-                      <span>Press Esc to close</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </motion.div>

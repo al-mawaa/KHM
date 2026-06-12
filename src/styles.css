@@ -189,7 +189,7 @@
 
 /* About section — isometric visual (16:9 source image) */
 .home-about-visual {
-  --home-about-visual-width: min(100%, 560px);
+  --home-about-visual-width: min(100%, 720px);
   width: var(--home-about-visual-width);
   aspect-ratio: 16 / 9;
 }

@@ -3,7 +3,7 @@ import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Counter } from "@/components/Counter";
 import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
-import { engineers, heroPlant } from "@/lib/images";
+import { rainwater, heroPlant } from "@/lib/images";
 import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin } from "lucide-react";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
@@ -62,7 +62,7 @@ export default function AboutPage() {
       <section id="about-us" className="scroll-mt-32 py-24">
         <div className="mx-auto max-w-7xl px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
           <div className="overflow-hidden rounded-3xl shadow-elegant">
-            <img src={engineers} alt="KHM engineers" className="w-full h-[520px] object-cover hover-zoom" loading="lazy" width={1280} height={960} />
+            <img src={rainwater} alt="KHM Rainwater Harvesting" className="w-full h-[520px] object-cover hover-zoom" loading="lazy" width={1280} height={960} />
           </div>
           <div>
             <SectionHeader align="left" eyebrow="Company" title={ABOUT_US.title} />

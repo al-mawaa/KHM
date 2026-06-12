@@ -129,11 +129,8 @@ export default function AdminSettingsPage() {
 
         <Card className="p-6 space-y-4">
           <h3 className="font-display font-bold">Social Links</h3>
-          <Field label="Facebook"><Input value={draft.facebook} onChange={(e) => set("facebook", e.target.value)} /></Field>
           <Field label="LinkedIn"><Input value={draft.linkedin} onChange={(e) => set("linkedin", e.target.value)} /></Field>
-          <Field label="Twitter / X"><Input value={draft.twitter} onChange={(e) => set("twitter", e.target.value)} /></Field>
           <Field label="Instagram"><Input value={draft.instagram} onChange={(e) => set("instagram", e.target.value)} /></Field>
-          <Field label="YouTube"><Input value={draft.youtube} onChange={(e) => set("youtube", e.target.value)} /></Field>
         </Card>
 
         <Card className="p-6 space-y-4">

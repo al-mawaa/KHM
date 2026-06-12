@@ -29,9 +29,9 @@ interface LeadsByDayData {
 export default function AdminDashboardPage() {
   const [services] = useAdminCollection("services");
   const [projects] = useAdminCollection("projects");
-  const [leads] = useAdminCollection("leads");
   const [blog] = useAdminCollection("blog");
   const [testimonials] = useAdminCollection("testimonials");
+  const [leads, setLeads] = useState<any[]>([]);
   
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,10 +70,7 @@ export default function AdminDashboardPage() {
       try {
         const response = await fetch('/api/admin/dashboard/weekly-visitors');
         const data = await response.json();
-        
-        if (data.success) {
-          setWeeklyVisitors(data.data);
-        }
+        if (data.success) setWeeklyVisitors(data.data);
       } catch (err) {
         console.error('Error fetching weekly visitors:', err);
       }
@@ -83,12 +80,20 @@ export default function AdminDashboardPage() {
       try {
         const response = await fetch('/api/admin/dashboard/leads-by-day');
         const data = await response.json();
-        
-        if (data.success) {
-          setLeadsByDay(data.data);
-        }
+        if (data.success) setLeadsByDay(data.data);
       } catch (err) {
         console.error('Error fetching leads by day:', err);
+      }
+    }
+
+    // Fetch recent leads from MongoDB for the Recent Inquiries widget
+    async function fetchRecentLeads() {
+      try {
+        const res = await fetch('/api/leads');
+        const data = await res.json();
+        if (data.success) setLeads(data.data);
+      } catch (err) {
+        console.error('Error fetching recent leads:', err);
       }
     }
 
@@ -97,21 +102,16 @@ export default function AdminDashboardPage() {
         fetchStats(isRefresh),
         fetchWeeklyVisitors(),
         fetchLeadsByDay(),
+        fetchRecentLeads(),
       ]);
     }
 
     // Initial fetch
     fetchAllData();
 
-    // Set up auto-refresh every 60 seconds
-    const intervalId = setInterval(() => {
-      fetchAllData(true);
-    }, 60000);
-
-    // Cleanup interval on unmount
-    return () => {
-      clearInterval(intervalId);
-    };
+    // Auto-refresh every 60 seconds
+    const intervalId = setInterval(() => fetchAllData(true), 60000);
+    return () => clearInterval(intervalId);
   }, []);
 
   const cards = [

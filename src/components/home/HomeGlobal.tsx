@@ -5,19 +5,21 @@ import { KEY_ASSETS } from "@/lib/home-content";
 export function HomeGlobal() {
   return (
     <>
-      <section className="relative overflow-hidden bg-[#1a5276] py-14 text-white lg:py-16">
+      <section className="relative overflow-hidden bg-white py-14 lg:py-16">
         <div className="mx-auto max-w-[1400px] px-4 text-center lg:px-6">
-          <h2 className="font-display text-2xl font-bold uppercase sm:text-3xl">The World Is Our Playground</h2>
+          <h2 className="font-display text-2xl font-bold uppercase sm:text-3xl text-[#1a5276]">
+            The World Is Our Playground
+          </h2>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative mx-auto mt-8 max-w-6xl"
+            className="relative mx-auto mt-8 w-full max-w-[1200px] px-0"
           >
             <img
               src="/images/Hero1.png"
               alt="Global presence map"
-              className="w-full rounded-lg opacity-90 mix-blend-screen"
+              className="w-full rounded-2xl shadow-lg"
               loading="lazy"
             />
           </motion.div>

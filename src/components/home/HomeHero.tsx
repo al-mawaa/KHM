@@ -6,10 +6,9 @@ import "swiper/css/effect-fade";
 import "swiper/css/pagination";
 
 const heroSlides = [
-  "/images/Hero1.png",
-  "/images/Hero2.png",
-  "/images/Hero3.png",
-  "/images/Hero4.png",
+  "/images/file_0000000017107209bff0165912f3405b.png",
+  "/images/file_000000000f40720c890aee0f78410d17.png",
+  "/images/file_00000000a3587207869c1ff1e4408c21.png",
 ];
 
 export function HomeHero() {
@@ -18,7 +17,8 @@ export function HomeHero() {
       className="relative w-full overflow-hidden home-hero-section"
       aria-label="Hero"
       style={{
-        height: "calc(100vh - var(--site-header-height, 0px))",
+        height: "100vh",
+        minHeight: "600px",
         marginTop: "calc(var(--site-header-height, 0px) * -1)",
       }}
     >
@@ -49,7 +49,7 @@ export function HomeHero() {
                 className="relative h-full w-full bg-cover bg-center"
                 style={{
                   backgroundImage: `url(${slide})`,
-                  backgroundPosition: "center top",
+                  backgroundPosition: "center center",
                 }}
               >
               <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
@@ -81,9 +81,9 @@ export function HomeHero() {
         }
 
         /* Responsive hero sizing */
-        .home-hero-section { height: calc(100vh - var(--site-header-height, 0px)); }
-        @media (max-width: 1024px) { .home-hero-section { height: calc(85vh - var(--site-header-height, 0px)); } }
-        @media (max-width: 640px) { .home-hero-section { height: auto; min-height: 360px; padding: 2.5rem 0; } .home-hero-section .h-full { min-height: 360px; } }
+        .home-hero-section { height: 100vh; min-height: 600px; }
+        @media (max-width: 1024px) { .home-hero-section { height: 85vh; min-height: 500px; } }
+        @media (max-width: 640px) { .home-hero-section { height: 70vh; min-height: 400px; } }
       `}</style>
     </section>
   );

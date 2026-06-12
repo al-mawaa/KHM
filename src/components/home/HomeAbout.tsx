@@ -32,11 +32,13 @@ export function HomeAbout() {
           viewport={{ once: true }}
           className="flex w-full items-center justify-center lg:justify-end"
         >
-          <div className="home-about-visual shrink-0">
+          <div className="w-full max-w-[680px] lg:max-w-full">
             <img
-              src={siteImages.aboutPlant}
+              src={siteImages.treatment}
               alt="Water treatment plant — intake, clarification, filtration, storage and distribution"
               loading="lazy"
+              className="w-full h-auto object-cover rounded-2xl shadow-xl ring-1 ring-[#1a5276]/20"
+              style={{ borderRadius: "16px" }}
             />
           </div>
         </motion.div>

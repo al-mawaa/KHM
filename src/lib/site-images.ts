@@ -13,6 +13,7 @@ export const siteImages = {
   heroSlide2: img("home-hero-slide-wtp.png"),
   heroSlide3: img("home-water-treatment-plant.png"),
   aboutPlant: img("home-about-plant-isometric.png"),
+  treatment: img("Treatment.png"),
   projectBuilding: img("hero-plant.jpg"),
   worldMap: img("home-hero-water-wide.png"),
   videoThumb: img("engineers.jpg"),

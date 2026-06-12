@@ -1,8 +1,30 @@
 import { useState, useEffect, useRef } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { Card, Button, Field, Input, Textarea, Select, Modal, Confirm } from "@/components/admin/ui";
-import { Plus, Pencil, Trash2, Loader2, Upload, X, Search, Linkedin, Mail, ArrowUp, ArrowDown } from "lucide-react";
+import {
+  Card,
+  Button,
+  Field,
+  Input,
+  Textarea,
+  Select,
+  Modal,
+  Confirm,
+} from "@/components/admin/ui";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Loader2,
+  Upload,
+  X,
+  Search,
+  Linkedin,
+  Mail,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 import { toast } from "sonner";
+import { useAdminCollection } from "@/lib/admin-store";
 
 interface TeamMember {
   _id?: string;
@@ -16,16 +38,20 @@ interface TeamMember {
   displayOrder: number;
   status: "Active" | "Inactive";
   createdAt?: string;
+  isDirector?: boolean;
 }
 
 const STATUS_OPTIONS = ["Active", "Inactive"] as const;
 const ITEMS_PER_PAGE = 10;
 
 export default function AdminTeamPage() {
-  const [items, setItems] = useState<TeamMember[]>([]);
+  const [rawItems, setRawItems] = useAdminCollection("team") as unknown as [
+    any[],
+    (val: any[]) => void,
+  ];
   const [edit, setEdit] = useState<TeamMember | null>(null);
   const [del, setDel] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -37,27 +63,20 @@ export default function AdminTeamPage() {
   const [page, setPage] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchMembers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await fetch("/api/team-members?all=true");
-      const data = await res.json();
-      if (data.success) {
-        setItems(data.data);
-      } else {
-        setError(data.message || "Failed to fetch team members");
-      }
-    } catch (err) {
-      setError("Failed to fetch team members");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMembers();
-  }, []);
+  const items = (rawItems || []).map((m: any) => ({
+    _id: m._id || m.id || "",
+    fullName: m.fullName || m.name || "",
+    designation: m.designation || m.role || "",
+    profileImage: m.profileImage || m.image || "",
+    profileImagePublicId: m.profileImagePublicId || m.imagePublicId || "",
+    bio: m.bio || "",
+    linkedinUrl: m.linkedinUrl || "",
+    email: m.email || "",
+    displayOrder: m.displayOrder ?? m.order ?? 0,
+    status: m.status || (m.isActive === false ? "Inactive" : "Active"),
+    createdAt: m.createdAt || new Date().toISOString(),
+    isDirector: m.isDirector || false,
+  }));
 
   const blank = (): TeamMember => ({
     fullName: "",
@@ -69,22 +88,37 @@ export default function AdminTeamPage() {
     email: "",
     displayOrder: items.length,
     status: "Active",
+    isDirector: false,
   });
 
   // ─── File Handling ─────────────────────────────────────────────────
   const handleFileSelect = (file: File | null) => {
-    if (!file) { setSelectedFile(null); setPreviewImage(null); return; }
+    if (!file) {
+      setSelectedFile(null);
+      setPreviewImage(null);
+      return;
+    }
     const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    if (!allowed.includes(file.type)) { toast.error("Invalid file type. Please upload JPG, JPEG, PNG, or WebP images."); return; }
-    if (file.size > 5 * 1024 * 1024) { toast.error("File size exceeds 5MB limit."); return; }
+    if (!allowed.includes(file.type)) {
+      toast.error("Invalid file type. Please upload JPG, JPEG, PNG, or WebP images.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size exceeds 5MB limit.");
+      return;
+    }
     setSelectedFile(file);
     const reader = new FileReader();
     reader.onloadend = () => setPreviewImage(reader.result as string);
     reader.readAsDataURL(file);
   };
 
-  const handleFileDrop = (e: React.DragEvent) => { e.preventDefault(); handleFileSelect(e.dataTransfer.files[0]); };
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => handleFileSelect(e.target.files?.[0] || null);
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    handleFileSelect(e.dataTransfer.files[0]);
+  };
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    handleFileSelect(e.target.files?.[0] || null);
 
   const uploadFile = async (file: File): Promise<{ url: string; publicId: string }> => {
     setUploading(true);
@@ -149,26 +183,42 @@ export default function AdminTeamPage() {
       }
 
       const isEdit = !!m._id;
-      const url = isEdit ? `/api/team-members/${m._id}` : "/api/team-members";
-      const method = isEdit ? "PUT" : "POST";
+      let newItems = [...(rawItems || [])];
 
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...m, profileImage, profileImagePublicId }),
-      });
-      const data = await res.json();
+      const serializedMember = {
+        id: m._id || (m as any).id || Math.random().toString(36).slice(2, 10),
+        name: m.fullName || "",
+        role: m.designation || "",
+        bio: m.bio || "",
+        image: profileImage || "",
+        imagePublicId: profileImagePublicId || "",
+        _id: m._id || (m as any).id || Math.random().toString(36).slice(2, 10),
+        fullName: m.fullName || "",
+        designation: m.designation || "",
+        profileImage: profileImage || "",
+        profileImagePublicId: profileImagePublicId || "",
+        linkedinUrl: m.linkedinUrl || "",
+        email: m.email || "",
+        displayOrder: m.displayOrder ?? 0,
+        status: m.status || "Active",
+        createdAt: m.createdAt || new Date().toISOString(),
+        isDirector: m.isDirector || false,
+      };
 
-      if (data.success) {
-        toast.success(isEdit ? "Team member updated successfully." : "Team member created successfully.");
-        await fetchMembers();
-        setEdit(null);
-        setSelectedFile(null);
-        setPreviewImage(null);
+      if (isEdit) {
+        newItems = newItems.map((item) =>
+          item._id === m._id || item.id === m._id ? serializedMember : item,
+        );
+        toast.success("Team member updated successfully.");
       } else {
-        toast.error(data.message || "Failed to save team member.");
-        setError(data.message || "Failed to save team member.");
+        newItems.push(serializedMember);
+        toast.success("Team member created successfully.");
       }
+
+      setRawItems(newItems);
+      setEdit(null);
+      setSelectedFile(null);
+      setPreviewImage(null);
     } catch {
       toast.error("Failed to save team member.");
     } finally {
@@ -178,15 +228,15 @@ export default function AdminTeamPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/team-members/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Team member deleted successfully.");
-        await fetchMembers();
-        setDel(null);
-      } else {
-        toast.error(data.message || "Failed to delete team member.");
+      const itemToDelete = (rawItems || []).find((item) => item._id === id || item.id === id);
+      const publicId = itemToDelete?.profileImagePublicId || itemToDelete?.imagePublicId;
+      if (publicId) {
+        await deleteCloudinaryFile(publicId);
       }
+      const newItems = (rawItems || []).filter((item) => item._id !== id && item.id !== id);
+      setRawItems(newItems);
+      toast.success("Team member deleted successfully.");
+      setDel(null);
     } catch {
       toast.error("Failed to delete team member.");
     }
@@ -204,10 +254,19 @@ export default function AdminTeamPage() {
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-  const resetFilters = () => { setSearch(""); setStatusFilter("All"); setPage(1); };
+  const resetFilters = () => {
+    setSearch("");
+    setStatusFilter("All");
+    setPage(1);
+  };
 
   const initials = (name: string) =>
-    name.split(" ").map((s) => s[0]).slice(0, 2).join("").toUpperCase();
+    name
+      .split(" ")
+      .map((s) => s[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
 
   return (
     <AdminShell title="Manage Team Members">
@@ -227,7 +286,10 @@ export default function AdminTeamPage() {
               type="text"
               placeholder="Search by name or designation…"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               className="pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aqua/30 w-60"
             />
           </div>
@@ -236,7 +298,10 @@ export default function AdminTeamPage() {
             {(["All", "Active", "Inactive"] as const).map((s) => (
               <button
                 key={s}
-                onClick={() => { setStatusFilter(s); setPage(1); }}
+                onClick={() => {
+                  setStatusFilter(s);
+                  setPage(1);
+                }}
                 className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
                   statusFilter === s
                     ? "bg-aqua text-aqua-foreground"
@@ -264,7 +329,10 @@ export default function AdminTeamPage() {
             ? 'No team members yet. Click "+ Add Member" to create one.'
             : "No members match your search or filter."}
           {(search || statusFilter !== "All") && (
-            <button onClick={resetFilters} className="block mx-auto mt-2 text-aqua text-sm underline">
+            <button
+              onClick={resetFilters}
+              className="block mx-auto mt-2 text-aqua text-sm underline"
+            >
               Clear filters
             </button>
           )}
@@ -305,12 +373,20 @@ export default function AdminTeamPage() {
                           <div className="text-xs text-slate-500 md:hidden">{m.designation}</div>
                           <div className="flex gap-2 mt-0.5">
                             {m.linkedinUrl && (
-                              <a href={m.linkedinUrl} target="_blank" rel="noreferrer" className="text-[#0077b5] hover:opacity-70">
+                              <a
+                                href={m.linkedinUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[#0077b5] hover:opacity-70"
+                              >
                                 <Linkedin className="h-3.5 w-3.5" />
                               </a>
                             )}
                             {m.email && (
-                              <a href={`mailto:${m.email}`} className="text-slate-400 hover:text-slate-600">
+                              <a
+                                href={`mailto:${m.email}`}
+                                className="text-slate-400 hover:text-slate-600"
+                              >
                                 <Mail className="h-3.5 w-3.5" />
                               </a>
                             )}
@@ -318,8 +394,12 @@ export default function AdminTeamPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 hidden md:table-cell text-slate-600">{m.designation}</td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-slate-500 text-center">{m.displayOrder}</td>
+                    <td className="px-4 py-3 hidden md:table-cell text-slate-600">
+                      {m.designation}
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell text-slate-500 text-center">
+                      {m.displayOrder}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -361,7 +441,8 @@ export default function AdminTeamPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-4 text-sm text-slate-600">
               <span>
-                Showing {(page - 1) * ITEMS_PER_PAGE + 1}–{Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
+                Showing {(page - 1) * ITEMS_PER_PAGE + 1}–
+                {Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
               </span>
               <div className="flex gap-1">
                 <button
@@ -400,12 +481,19 @@ export default function AdminTeamPage() {
       {/* Create / Edit Modal */}
       <Modal
         open={!!edit}
-        onClose={() => { setEdit(null); setSelectedFile(null); setPreviewImage(null); }}
+        onClose={() => {
+          setEdit(null);
+          setSelectedFile(null);
+          setPreviewImage(null);
+        }}
         title={edit?._id ? "Edit Team Member" : "Add Team Member"}
       >
         {edit && (
           <form
-            onSubmit={(e) => { e.preventDefault(); save(edit); }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              save(edit);
+            }}
             className="space-y-4"
           >
             <div className="grid sm:grid-cols-2 gap-4">
@@ -419,13 +507,27 @@ export default function AdminTeamPage() {
               </Field>
               <Field label="Designation">
                 <Input
-                  value={edit.designation}
+                  value={edit.designation || ""}
                   onChange={(e) => setEdit({ ...edit, designation: e.target.value })}
-                  required
-                  placeholder="e.g. Managing Director"
+                  placeholder="e.g. Director & Co-Founder"
                 />
               </Field>
             </div>
+
+            <Field label="Show in Meet the Directors section">
+              <div className="flex items-center gap-3 mt-1">
+                <input
+                  type="checkbox"
+                  checked={edit.isDirector || false}
+                  onChange={(e) => setEdit({ ...edit, isDirector: e.target.checked })}
+                  className="w-4 h-4 rounded border-slate-300 text-aqua focus:ring-aqua"
+                  id="isDirector"
+                />
+                <label htmlFor="isDirector" className="text-sm text-slate-700">
+                  Yes, show this member as a Director on About page
+                </label>
+              </div>
+            </Field>
 
             <Field label="Bio / Short Description">
               <Textarea
@@ -466,9 +568,13 @@ export default function AdminTeamPage() {
               <Field label="Status">
                 <Select
                   value={edit.status}
-                  onChange={(e) => setEdit({ ...edit, status: e.target.value as "Active" | "Inactive" })}
+                  onChange={(e) =>
+                    setEdit({ ...edit, status: e.target.value as "Active" | "Inactive" })
+                  }
                 >
-                  {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
                 </Select>
               </Field>
             </div>
@@ -489,7 +595,10 @@ export default function AdminTeamPage() {
                     <Loader2 className="h-8 w-8 mx-auto animate-spin text-aqua" />
                     <p className="text-sm text-slate-600">Uploading… {uploadProgress}%</p>
                     <div className="w-full bg-slate-200 rounded-full h-2">
-                      <div className="bg-aqua h-2 rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
+                      <div
+                        className="bg-aqua h-2 rounded-full transition-all"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
                     </div>
                   </div>
                 ) : previewImage ? (
@@ -503,11 +612,19 @@ export default function AdminTeamPage() {
                       <Button
                         variant="secondary"
                         type="button"
-                        onClick={() => { setSelectedFile(null); setPreviewImage(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                        onClick={() => {
+                          setSelectedFile(null);
+                          setPreviewImage(null);
+                          if (fileInputRef.current) fileInputRef.current.value = "";
+                        }}
                       >
                         <X className="h-4 w-4" /> Remove
                       </Button>
-                      <Button variant="secondary" type="button" onClick={() => fileInputRef.current?.click()}>
+                      <Button
+                        variant="secondary"
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
                         <Upload className="h-4 w-4" /> Change
                       </Button>
                     </div>
@@ -516,10 +633,18 @@ export default function AdminTeamPage() {
                   <div className="space-y-3">
                     <Upload className="h-10 w-10 mx-auto text-slate-400" />
                     <div>
-                      <p className="text-sm font-medium text-slate-700">Drag and drop an image, or click to browse</p>
-                      <p className="text-xs text-slate-500 mt-1">JPG, JPEG, PNG, or WebP (max 5MB)</p>
+                      <p className="text-sm font-medium text-slate-700">
+                        Drag and drop an image, or click to browse
+                      </p>
+                      <p className="text-xs text-slate-500 mt-1">
+                        JPG, JPEG, PNG, or WebP (max 5MB)
+                      </p>
                     </div>
-                    <Button variant="secondary" type="button" onClick={() => fileInputRef.current?.click()}>
+                    <Button
+                      variant="secondary"
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
                       Select Image
                     </Button>
                   </div>
@@ -538,7 +663,11 @@ export default function AdminTeamPage() {
               <Button
                 variant="secondary"
                 type="button"
-                onClick={() => { setEdit(null); setSelectedFile(null); setPreviewImage(null); }}
+                onClick={() => {
+                  setEdit(null);
+                  setSelectedFile(null);
+                  setPreviewImage(null);
+                }}
                 disabled={saving}
               >
                 Cancel

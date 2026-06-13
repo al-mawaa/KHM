@@ -102,9 +102,22 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-2 px-4 py-5 text-center text-xs text-white/55 sm:flex-row sm:text-left lg:px-6">
-          <p>© {new Date().getFullYear()} {settings.companyName}. All rights reserved.</p>
-          <p>{settings.footerNote}</p>
+        <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-2 px-4 py-5 text-center text-xs text-white/55 sm:flex-row lg:px-6">
+          <p className="sm:flex-1 sm:text-left">© {new Date().getFullYear()} {settings.companyName}. All rights reserved.</p>
+
+          <p className="sm:flex-1 text-center">
+            Designed &amp; Developed by&nbsp;
+            <a
+              href="https://www.al-mawa.international/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/75 hover:text-white hover:font-bold transition-colors"
+            >
+              Al-Mawa International
+            </a>
+          </p>
+
+          <p className="sm:flex-1 sm:text-right">{settings.footerNote}</p>
         </div>
       </div>
     </footer>

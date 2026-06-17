@@ -25,6 +25,7 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const fetchProjects = async () => {
     try {
@@ -54,6 +55,7 @@ export default function ProjectsPage() {
 
   const activeProjects = projects
     .filter((p) => p.status === "Active")
+    .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
     .map((p, index) => ({
       srNo: index + 1,
       projectName: p.title,
@@ -65,6 +67,7 @@ export default function ProjectsPage() {
 
   const upcomingProjects = projects
     .filter((p) => p.status === "Upcoming")
+    .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
     .map((p, index) => ({
       srNo: activeProjects.length + index + 1,
       projectName: p.title,
@@ -74,12 +77,45 @@ export default function ProjectsPage() {
       status: p.status,
     }));
 
+  const uniqueCategories = Array.from(new Set(projects.map((p) => p.category)));
+
   return (
     <>
       <PageHero
         title="Our Projects"
         subtitle="Delivering successful infrastructure and wastewater treatment projects with quality, innovation and reliability."
       />
+
+      {/* Category Filter Section */}
+      <section className="py-8 bg-white">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="flex flex-wrap gap-2 justify-center">
+            <button
+              onClick={() => setSelectedCategory("All")}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                selectedCategory === "All"
+                  ? "bg-[#1a5276] text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              All
+            </button>
+            {uniqueCategories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                  selectedCategory === category
+                    ? "bg-[#1a5276] text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {error && (
         <div className="text-center py-12 text-red-600">

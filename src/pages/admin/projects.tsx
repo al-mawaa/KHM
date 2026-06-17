@@ -16,6 +16,7 @@ interface Project {
   department: string;
   state: string;
   scope: string;
+  cost?: string;
   status: string;
   type: string;
   image?: string;
@@ -64,12 +65,13 @@ export default function AdminProjectsPage() {
 
   const blank = (): Project => ({ 
     title: "", 
-    category: "Commercial", 
+    category: "", 
     location: "", 
     description: "",
     department: "",
     state: "",
     scope: "",
+    cost: "",
     status: "Active",
     type: "",
     image: "",
@@ -281,7 +283,7 @@ export default function AdminProjectsPage() {
       
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex gap-1.5 flex-wrap">
-          {["All", ...CATS].map((c) => (
+          {["All", ...Array.from(new Set(items.map((i) => i.category)))].map((c) => (
             <button key={c} onClick={() => setFilter(c)} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${filter === c ? "bg-aqua text-aqua-foreground" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>{c}</button>
           ))}
         </div>
@@ -316,12 +318,13 @@ export default function AdminProjectsPage() {
         {edit && (
           <form onSubmit={(e) => { e.preventDefault(); save(edit); }} className="space-y-4">
             <Field label="Title"><Input value={edit.title} onChange={(e) => setEdit({ ...edit, title: e.target.value })} required /></Field>
-            <Field label="Category"><Select value={edit.category} onChange={(e) => setEdit({ ...edit, category: e.target.value as typeof edit.category })}>{CATS.map((c) => <option key={c}>{c}</option>)}</Select></Field>
+            <Field label="Category"><Input value={edit.category} onChange={(e) => setEdit({ ...edit, category: e.target.value })} required /></Field>
             <Field label="Location"><Input value={edit.location} onChange={(e) => setEdit({ ...edit, location: e.target.value })} required /></Field>
             <Field label="Description"><Textarea rows={4} value={edit.description} onChange={(e) => setEdit({ ...edit, description: e.target.value })} required /></Field>
             <Field label="Department"><Input value={edit.department} onChange={(e) => setEdit({ ...edit, department: e.target.value })} required /></Field>
             <Field label="State"><Input value={edit.state} onChange={(e) => setEdit({ ...edit, state: e.target.value })} required /></Field>
             <Field label="Scope"><Input value={edit.scope} onChange={(e) => setEdit({ ...edit, scope: e.target.value })} required /></Field>
+            <Field label="Cost"><Input value={edit.cost || ""} onChange={(e) => setEdit({ ...edit, cost: e.target.value })} /></Field>
             <Field label="Status"><Select value={edit.status} onChange={(e) => setEdit({ ...edit, status: e.target.value as typeof edit.status })}>{STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}</Select></Field>
             <Field label="Type"><Input value={edit.type} onChange={(e) => setEdit({ ...edit, type: e.target.value })} required /></Field>
             <Field label="Project Image">

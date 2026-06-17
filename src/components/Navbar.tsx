@@ -281,46 +281,6 @@ export function Navbar() {
 
       <header ref={headerRef} className="header-3d" data-scrolled={scrolled} style={scrolled ? { background: 'rgba(255,255,255,0.92)' } : {}}>
 
-        {/* ── Top bar ── */}
-        <div
-          className="hidden md:block"
-          style={{
-            background: "linear-gradient(90deg, #0d3d5c 0%, #1a5276 40%, #1a5276 60%, #0d3d5c 100%)",
-            borderBottom: "1px solid rgba(245,197,24,0.25)",
-            boxShadow: "0 1px 0 rgba(0,200,208,0.1) inset",
-          }}
-        >
-          <div className="mx-auto flex h-9 max-w-[1400px] items-center justify-between px-4 text-xs text-white/90 lg:px-6">
-            <div className="flex items-center gap-5">
-              <a href={phoneTel} className="inline-flex items-center gap-1.5 transition-all duration-200 hover:text-[#f5c518] hover:drop-shadow-[0_0_6px_rgba(245,197,24,0.5)]">
-                <Phone className="h-3.5 w-3.5 text-[#f5c518]" aria-hidden />
-                {phoneDisplay}
-              </a>
-              <a href={`mailto:${settings.email}`} className="inline-flex items-center gap-1.5 transition-all duration-200 hover:text-[#f5c518] hover:drop-shadow-[0_0_6px_rgba(245,197,24,0.5)]">
-                <Mail className="h-3.5 w-3.5 text-[#f5c518]" aria-hidden />
-                {settings.email}
-              </a>
-            </div>
-            <div className="flex items-center gap-1.5">
-              {socialLinks.map(({ href, label, Icon, className }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  className={cn(
-                    "grid h-7 w-7 place-items-center rounded-full text-white transition-all duration-200 hover:scale-110 hover:shadow-[0_0_8px_rgba(255,255,255,0.3)]",
-                    className,
-                  )}
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* ── Main navbar ── */}
         <div
           style={{

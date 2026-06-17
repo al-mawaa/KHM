@@ -4,10 +4,12 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Counter } from "@/components/Counter";
 import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { rainwater, heroPlant } from "@/lib/images";
-import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin } from "lucide-react";
+import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin, Star, Recycle, Zap, Shield, Diamond, Triangle } from "lucide-react";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 import { TeamTree } from "@/components/TeamTree";
 import { useAdminCollection } from "@/lib/admin-store";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 interface TeamMember {
   _id: string;
@@ -20,42 +22,85 @@ interface TeamMember {
   status: string;
 }
 
+interface CoreValueCardProps {
+  icon: any;
+  title: string;
+  points: string[];
+  accentColor: string;
+  gradient: string;
+  index: number;
+}
+
+function CoreValueCard({ icon: Icon, title, points, accentColor, gradient, index }: CoreValueCardProps) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+      className="group relative rounded-[18px] bg-white p-8 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[rgba(13,61,92,0.08)] transition-all duration-[0.35s] ease-out hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(13,61,92,0.15)] hover:border-[#0d3d5c]"
+    >
+      {/* Top Accent Bar */}
+      <div 
+        className="absolute left-0 right-0 top-0 h-1.5 rounded-t-[18px]"
+        style={{ backgroundColor: accentColor }}
+      />
+
+      {/* Premium Icon Container */}
+      <div 
+        className="relative mb-6 flex h-[68px] w-[68px] items-center justify-center rounded-full shadow-lg transition-transform duration-[0.35s] ease-out group-hover:scale-110"
+        style={{
+          background: `linear-gradient(135deg, ${accentColor} 0%, ${accentColor}dd 100%)`,
+          boxShadow: `0 8px 24px ${accentColor}40`
+        }}
+      >
+        <Icon className="h-8 w-8 text-white" />
+      </div>
+
+      {/* Enhanced Typography */}
+      <h3 
+        className="mb-4 text-[24px] font-bold text-[#0d3d5c] font-display leading-tight"
+      >
+        {title}
+      </h3>
+
+      <ul className="space-y-3">
+        {points.map((point) => (
+          <li
+            key={point}
+            className="flex items-start gap-3 text-[16px] leading-[1.8] text-[#64748b]"
+          >
+            <span 
+              className="mt-2 h-2 w-2 shrink-0 rounded-full"
+              style={{ backgroundColor: accentColor }}
+            />
+            {point}
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
+
 function DirectorsSection() {
   const [team] = useAdminCollection("team");
 
   const directors = team.filter((member) => member.isDirector === true);
 
-  // Fallback to static if no directors marked yet
-  const displayList =
-    directors.length > 0
-      ? directors
-      : [
-          {
-            id: "1",
-            name: "Hrishikesh Madhav Kaluskar",
-            role: "Director & Co-Founder",
-            designation: "Director & Co-Founder",
-            bio: "",
-            isDirector: true,
-          },
-          {
-            id: "2",
-            name: "Smita Hrishikesh Kaluskar",
-            role: "Director & Co-Founder",
-            designation: "Director & Co-Founder",
-            bio: "",
-            isDirector: true,
-          },
-        ];
+  // Only render section if there are directors
+  if (directors.length === 0) return null;
 
   return (
     <section className="py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <SectionHeader eyebrow="Leadership" title="Meet the directors" />
         <div
-          className={`mt-12 grid gap-6 max-w-3xl mx-auto ${displayList.length === 1 ? "sm:grid-cols-1 justify-center" : "sm:grid-cols-2"}`}
+          className={`mt-12 grid gap-6 max-w-3xl mx-auto ${directors.length === 1 ? "sm:grid-cols-1 justify-center" : "sm:grid-cols-2"}`}
         >
-          {displayList.map((d) => (
+          {directors.map((d) => (
             <div
               key={d.id}
               className="rounded-2xl border border-gray-200 bg-white p-7 text-center shadow-md hover:-translate-y-1 transition-all duration-300"
@@ -158,39 +203,6 @@ export default function AboutPage() {
               ))}
             </div>
             <p className="mt-4 text-xs text-muted-foreground">CIN {ABOUT_US.cin}</p>
-            <div className="mt-8 grid sm:grid-cols-2 gap-4">
-              {[
-                {
-                  icon: Target,
-                  t: "Mission",
-                  d: "Engineer sustainable water systems for every community we serve.",
-                },
-                {
-                  icon: Eye,
-                  t: "Vision",
-                  d: "India's most trusted partner for sustainable water and wastewater infrastructure.",
-                },
-                {
-                  icon: Leaf,
-                  t: "Sustainability",
-                  d: "Low-carbon designs and circular water principles.",
-                },
-                {
-                  icon: Award,
-                  t: "Excellence",
-                  d: "Compliance-first, lifecycle-optimised engineering.",
-                },
-              ].map((b) => (
-                <div
-                  key={b.t}
-                  className="rounded-2xl border border-border bg-card p-5 shadow-card hover-lift"
-                >
-                  <b.icon className="h-6 w-6 text-aqua" />
-                  <div className="mt-3 font-display font-semibold">{b.t}</div>
-                  <p className="mt-1.5 text-sm text-muted-foreground">{b.d}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -260,6 +272,120 @@ export default function AboutPage() {
                 {OUR_MISSION.lead}
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section 
+        id="core-values" 
+        className="scroll-mt-32 border-t border-border py-20 lg:py-24 relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)'
+        }}
+      >
+        {/* Subtle grid pattern overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
+          style={{
+            backgroundImage: `
+              linear-gradient(#0d3d5c 1px, transparent 1px),
+              linear-gradient(90deg, #0d3d5c 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px'
+          }}
+        />
+        
+        <div className="mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
+          {/* Enhanced Section Header */}
+          <div className="mb-16 text-center">
+            <div className="mx-auto mb-4 h-1 w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#6aa84f]" />
+            <h2 className="mb-3 text-sm font-bold tracking-[0.2em] uppercase text-[#64748b]">
+              Core Values
+            </h2>
+            <h3 className="text-4xl sm:text-5xl font-bold text-[#0d3d5c] font-display leading-tight">
+              What We Stand For
+            </h3>
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                icon: Star,
+                title: "Quality Excellence",
+                points: [
+                  "Technically rigorous solutions",
+                  "Precision in every deliverable",
+                  "International standards compliance",
+                ],
+                accentColor: "#0d3d5c",
+                gradient: "from-[#0d3d5c] to-[#1e88e5]",
+              },
+              {
+                icon: Recycle,
+                title: "Sustainability",
+                points: [
+                  "Eco-friendly infrastructure design",
+                  "Long-term environmental impact",
+                  "Water security focus",
+                ],
+                accentColor: "#6aa84f",
+                gradient: "from-[#6aa84f] to-[#4a8c3a]",
+              },
+              {
+                icon: Zap,
+                title: "Innovation",
+                points: [
+                  "Drone surveys & GIS mapping",
+                  "Hydraulic modelling tools",
+                  "Advanced engineering technologies",
+                ],
+                accentColor: "#0d3d5c",
+                gradient: "from-[#0d3d5c] to-[#1e88e5]",
+              },
+              {
+                icon: Shield,
+                title: "Integrity",
+                points: [
+                  "Highest ethical standards",
+                  "Transparent engagements",
+                  "Accountable project delivery",
+                ],
+                accentColor: "#6aa84f",
+                gradient: "from-[#6aa84f] to-[#4a8c3a]",
+              },
+              {
+                icon: Diamond,
+                title: "Client Trust",
+                points: [
+                  "Long-term partnerships",
+                  "Consistent delivery record",
+                  "Open & honest communication",
+                ],
+                accentColor: "#0d3d5c",
+                gradient: "from-[#0d3d5c] to-[#1e88e5]",
+              },
+              {
+                icon: Triangle,
+                title: "Technical Expertise",
+                points: [
+                  "Multi-sector domain depth",
+                  "Experienced core team",
+                  "Cross-disciplinary capability",
+                ],
+                accentColor: "#6aa84f",
+                gradient: "from-[#6aa84f] to-[#4a8c3a]",
+              },
+            ].map((value, index) => (
+              <CoreValueCard
+                key={value.title}
+                icon={value.icon}
+                title={value.title}
+                points={value.points}
+                accentColor={value.accentColor}
+                gradient={value.gradient}
+                index={index}
+              />
+            ))}
           </div>
         </div>
       </section>

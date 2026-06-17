@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Blog, { IBlog } from '@/lib/models/Blog';
 import { v2 as cloudinary } from 'cloudinary';
+import redis from '@/lib/redis';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -151,6 +152,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       console.log('Blog updated successfully:', blog);
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('blogs:published:page1')
+          console.log('Blog cache invalidated')
+        } catch (cacheError) {
+          console.error('Redis cache invalidation error:', cacheError)
+        }
+      }
+      
       return res.status(200).json({ success: true, data: blog });
     }
 
@@ -176,6 +188,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await Blog.findByIdAndDelete(id);
 
       console.log('Blog deleted successfully');
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('blogs:published:page1')
+          console.log('Blog cache invalidated')
+        } catch (cacheError) {
+          console.error('Redis cache invalidation error:', cacheError)
+        }
+      }
+      
       return res.status(200).json({ success: true, message: 'Blog deleted successfully' });
     }
 

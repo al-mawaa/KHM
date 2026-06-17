@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Testimonial, { ITestimonial } from '@/lib/models/Testimonial';
+import redis from '@/lib/redis';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
@@ -54,8 +55,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
       
+      // Cache approved testimonials only
+      if (status === 'approved' && !search && !featured && redis) {
+        const cacheKey = 'testimonials:approved'
+        try {
+          const cached = await redis.get(cacheKey)
+          if (cached) {
+            return res.status(200).json({ success: true, data: cached, fromCache: true })
+          }
+        } catch (cacheError) {
+          console.error('Redis error:', cacheError)
+        }
+      }
+      
       const testimonials = await Testimonial.find(filter)
         .sort(sortOptions);
+      
+      // After fetch, cache for 5 minutes (only approved testimonials without filters)
+      if (status === 'approved' && !search && !featured && redis) {
+        try {
+          await redis.set('testimonials:approved', JSON.stringify(testimonials), { ex: 300 })
+        } catch (cacheError) {
+          console.error('Redis error:', cacheError)
+        }
+      }
       
       console.log(`Found ${testimonials.length} testimonials with filter:`, filter);
       return res.status(200).json({

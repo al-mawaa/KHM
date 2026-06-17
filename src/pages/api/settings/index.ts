@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Settings, { ISettings } from '@/lib/models/Settings';
+import redis from '@/lib/redis';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -11,6 +12,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'GET') {
       console.log('📖 Fetching website settings...');
+      
+      // Check cache first
+      const cacheKey = 'settings:website'
+      if (redis) {
+        try {
+          const cached = await redis.get(cacheKey)
+          if (cached) {
+            console.log('Serving settings from Redis cache')
+            return res.status(200).json({ success: true, data: cached, fromCache: true })
+          }
+        } catch (cacheError) {
+          console.error('Redis cache read error:', cacheError)
+        }
+      }
       
       // Disable caching for this endpoint to always get fresh data
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
@@ -32,6 +47,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       } else {
         console.log('✅ Settings found in database:', settings._id);
         console.log('📊 Settings data:', JSON.stringify(settings, null, 2));
+      }
+      
+      // After fetching, cache for 15 minutes
+      if (redis) {
+        try {
+          await redis.set(cacheKey, JSON.stringify(settings), { ex: 900 })
+          console.log('Settings cached in Redis')
+        } catch (cacheError) {
+          console.error('Redis cache write error:', cacheError)
+        }
       }
       
       console.log('📤 Sending response with status 200');
@@ -141,6 +166,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       console.log('✅ Settings updated successfully:', settings?._id);
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('settings:website')
+          console.log('Settings cache invalidated')
+        } catch (cacheError) {
+          console.error('Redis cache invalidation error:', cacheError)
+        }
+      }
+      
       return res.status(200).json({ success: true, data: settings });
     }
 

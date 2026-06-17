@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Testimonial, { ITestimonial, TestimonialStatus } from '@/lib/models/Testimonial';
+import redis from '@/lib/redis';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
@@ -53,6 +54,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await testimonial.save();
 
       console.log('Testimonial status updated successfully:', testimonial);
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('testimonials:approved')
+        } catch (cacheError) {
+          console.error('Redis error:', cacheError)
+        }
+      }
+      
       return res.status(200).json({
         success: true,
         message: `Testimonial status updated to ${status}`,

@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Service, { IService } from '@/lib/models/Service';
 import { v2 as cloudinary } from 'cloudinary';
+import redis from '@/lib/redis';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -47,6 +48,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       console.log('Service updated successfully:', service);
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('services:all')
+          console.log('Services cache invalidated')
+        } catch (cacheError) {
+          console.error('Redis cache invalidation error:', cacheError)
+        }
+      }
+      
       return res.status(200).json({ success: true, data: service });
     }
 
@@ -72,6 +84,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await Service.findByIdAndDelete(id);
 
       console.log('Service deleted successfully');
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('services:all')
+          console.log('Services cache invalidated')
+        } catch (cacheError) {
+          console.error('Redis cache invalidation error:', cacheError)
+        }
+      }
+      
       return res.status(200).json({ success: true, message: 'Service deleted successfully' });
     }
 

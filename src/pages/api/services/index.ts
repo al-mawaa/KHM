@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Service, { IService } from '@/lib/models/Service';
+import redis from '@/lib/redis';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
@@ -10,7 +11,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     if (req.method === 'GET') {
       console.log('Fetching all services...');
+      
+      // Check Redis cache first
+      const cacheKey = 'services:all'
+      if (redis) {
+        try {
+          const cached = await redis.get(cacheKey)
+          if (cached) {
+            console.log('Serving services from Redis cache')
+            return res.status(200).json({ success: true, data: cached, fromCache: true })
+          }
+        } catch (cacheError) {
+          console.error('Redis cache read error:', cacheError)
+          // Continue without cache if Redis fails
+        }
+      }
+
       const services = await Service.find({}).sort({ createdAt: -1 });
+      
+      // Store in Redis cache for 5 minutes
+      if (redis) {
+        try {
+          await redis.set(cacheKey, JSON.stringify(services), { ex: 300 })
+          console.log('Services cached in Redis')
+        } catch (cacheError) {
+          console.error('Redis cache write error:', cacheError)
+        }
+      }
+
       console.log(`Found ${services.length} services`);
       return res.status(200).json({ success: true, data: services });
     }
@@ -38,6 +66,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       console.log('Service created successfully:', service);
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('services:all')
+          console.log('Services cache invalidated')
+        } catch (cacheError) {
+          console.error('Redis cache invalidation error:', cacheError)
+        }
+      }
+      
       return res.status(201).json({ success: true, data: service });
     }
 

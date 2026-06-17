@@ -153,12 +153,15 @@ export function HomeTestimonials() {
   };
 
   return (
-    <section className="bg-[#f4f6f8] py-14 lg:py-16">
+    <section className="bg-white py-10 lg:py-12 border-t border-b border-gray-100">
       <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
-          <h2 className="text-center font-display text-2xl font-bold uppercase text-[#1a5276] sm:text-3xl">
-            Testimonials
-          </h2>
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-[#25a244]" />
+            <h2 className="font-display text-2xl font-bold uppercase text-[#1a5276] sm:text-3xl tracking-wide">
+              Testimonials
+            </h2>
+          </div>
           <button
             onClick={() => setModalOpen(true)}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1a5276] text-white rounded-lg font-semibold hover:bg-[#1a5276]/90 transition-colors text-sm"
@@ -191,46 +194,48 @@ export function HomeTestimonials() {
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               } : false}
-              spaceBetween={24}
+              spaceBetween={20}
               slidesPerView={1}
-              breakpoints={{ 768: { slidesPerView: 2 } }}
+              breakpoints={{ 
+                640: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
+              }}
               className="!pb-2"
             >
               {testimonials.map((t) => (
                 <SwiperSlide key={t._id}>
-                  <article className="relative flex flex-col min-h-[380px] rounded-lg border border-gray-200 bg-white p-8 pt-12 shadow-sm">
+                  <article className="relative flex flex-col rounded-xl border border-gray-100 bg-white p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
                     {t.isFeatured && (
-                      <div className="absolute top-4 right-4 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                        <Star className="h-3 w-3 mr-1 fill-current" /> Featured
+                      <div className="absolute top-3 right-3 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f5c518]/20 text-[#1a5276]">
+                        <Star className="h-2.5 w-2.5 mr-1 fill-current text-[#f5c518]" /> Featured
                       </div>
                     )}
-                    <Quote className="absolute left-6 top-4 h-10 w-10 text-[#b8d4e8]" fill="currentColor" />
-                    <p className="relative text-sm leading-relaxed text-gray-600 italic min-h-[120px] flex items-start">"{t.feedback}"</p>
-                    <div className="mt-4">
+                    <Quote className="absolute left-5 top-4 h-7 w-7 text-[#1a5276]/20" fill="currentColor" />
+                    <p className="relative text-sm leading-relaxed text-gray-600 italic line-clamp-3 mt-4">"{t.feedback}"</p>
+                    <div className="mt-3 flex gap-0.5">
                       {renderStars(t.rating)}
                     </div>
-                    <div className="mt-6 flex items-center gap-3 border-t border-gray-100 pt-5">
+                    <div className="mt-4 flex items-center gap-3 border-t border-gray-100 pt-4">
                       {t.profileImage ? (
                         <img 
                           src={t.profileImage} 
                           alt={t.name}
-                          className="h-12 w-12 rounded-full object-cover"
+                          className="h-10 w-10 rounded-full object-cover ring-2 ring-[#1a5276]/20"
                           loading="lazy"
                         />
                       ) : (
-                        <div className="grid h-12 w-12 place-items-center rounded-full bg-[#1a5276] text-sm font-bold text-white">
+                        <div className="grid h-10 w-10 place-items-center rounded-full bg-[#1a5276] text-xs font-bold text-white shrink-0">
                           {getInitials(t.name)}
                         </div>
                       )}
-                      <div>
-                        <p className="font-semibold text-[#1a5276]">{t.name}</p>
-                        {t.designation && <p className="text-xs text-gray-600">{t.designation}</p>}
-                        {t.companyName && <p className="text-xs text-gray-500">{t.companyName}</p>}
-                        <p className="text-xs text-gray-500">{t.industryType}</p>
-                        {t.city && <p className="text-xs text-gray-400">{t.city}</p>}
+                      <div className="min-w-0">
+                        <p className="font-semibold text-[#1a5276] text-sm truncate">{t.name}</p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {t.designation ? t.designation : t.industryType}
+                          {t.companyName ? ` · ${t.companyName}` : ''}
+                        </p>
                       </div>
                     </div>
-                    <Quote className="absolute bottom-4 right-6 h-8 w-8 rotate-180 text-gray-200" />
                   </article>
                 </SwiperSlide>
               ))}

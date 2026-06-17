@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Blog, { IBlog } from '@/lib/models/Blog';
+import redis from '@/lib/redis';
 
 // Helper function to generate slug from title
 function generateSlug(title: string): string {
@@ -72,6 +73,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const limitNum = parseInt(limit as string) || 6;
       const skip = (pageNum - 1) * limitNum;
 
+      // Only cache the default listing (no search/filter params)
+      const isDefaultRequest = !search && !category && page === '1' || !page
+
+      const cacheKey = `blogs:published:page${page || 1}` 
+
+      if (isDefaultRequest && redis) {
+        try {
+          const cached = await redis.get(cacheKey)
+          if (cached) {
+            console.log('Serving blogs from Redis cache')
+            return res.status(200).json({ success: true, ...(cached as any), fromCache: true })
+          }
+        } catch (cacheError) {
+          console.error('Redis cache read error:', cacheError)
+        }
+      }
+
       // Select fields for performance optimization
       // If 'fields' query param is set to 'listing', only fetch fields needed for listing page
       const selectFields = fields === 'listing'
@@ -86,6 +104,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .limit(limitNum);
 
       const total = await Blog.countDocuments(filter);
+
+      // After fetching, store in cache (10 minutes for blogs)
+      if (isDefaultRequest && redis) {
+        try {
+          await redis.set(cacheKey, JSON.stringify({ data: blogs, pagination: { page: pageNum, limit: limitNum, total, totalPages: Math.ceil(total / limitNum) } }), { ex: 600 })
+          console.log('Blogs cached in Redis')
+        } catch (cacheError) {
+          console.error('Redis cache write error:', cacheError)
+        }
+      }
 
       console.log(`✅ Found ${blogs.length} blogs (page ${pageNum}, limit ${limitNum}, total ${total})`);
       return res.status(200).json({
@@ -157,6 +185,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       console.log('✅ Blog created successfully:', blog._id);
+      
+      // Invalidate cache
+      if (redis) {
+        try {
+          await redis.del('blogs:published:page1')
+          console.log('Blog cache invalidated')
+        } catch (cacheError) {
+          console.error('Redis cache invalidation error:', cacheError)
+        }
+      }
+      
       return res.status(201).json({ success: true, data: blog });
     }
 

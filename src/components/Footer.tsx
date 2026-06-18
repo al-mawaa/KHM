@@ -95,10 +95,6 @@ export function Footer() {
               </a>
             </li>
           </ul>
-          <p className="mt-4 text-xs text-white/50 flex items-center gap-2">
-            <Hash className="h-3 w-3 text-[#f5c518]" aria-hidden />
-            <span>CIN: U71100PN2026PTC255526</span>
-          </p>
         </div>
       </div>
       <div className="border-t border-white/10">

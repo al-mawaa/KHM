@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'POST') {
       console.log('➕ Creating gallery item with body:', req.body);
-      const { title, imageUrl, description } = req.body;
+      const { title, imageUrl, description, category } = req.body;
 
       if (!title || !imageUrl) {
         console.log('❌ Validation failed: missing required fields');
@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         title,
         imageUrl,
         description,
+        category,
       });
 
       console.log('✅ Gallery item created successfully:', galleryItem._id);

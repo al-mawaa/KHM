@@ -198,7 +198,11 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
   };
 
   const handleTitleChange = (value: string) => {
-    setFormData({ ...formData, title: value, slug: generateSlug(value) });
+    setFormData({
+      ...formData,
+      title: value,
+      slug: value.trim() ? generateSlug(value) : formData.slug,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -249,11 +253,10 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Field label="Title">
+      <Field label="Title (optional)">
         <Input
           value={formData.title}
           onChange={(e) => handleTitleChange(e.target.value)}
-          required
           placeholder="Service title"
         />
       </Field>
@@ -294,7 +297,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         />
       </Field>
       
-      <Field label="Points (one per line)">
+      <Field label="Points (optional, one per line)">
         <Textarea
           rows={6}
           value={pointsText}
@@ -303,7 +306,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         />
       </Field>
 
-      <Field label="Service Image">
+      <Field label="Service Image (optional)">
         <div
           className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
             selectedFile || previewImage

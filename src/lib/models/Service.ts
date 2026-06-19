@@ -1,12 +1,12 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
 
 export interface IService extends Document {
-  title: string;
+  title?: string;
   slug: string;
   description: string;
   icon: string;
   category: string;
-  points: string[];
+  points?: string[];
   image?: string;
   imagePublicId?: string;
   createdAt: Date;
@@ -17,7 +17,6 @@ const ServiceSchema = new Schema<IService>(
   {
     title: {
       type: String,
-      required: [true, 'Title is required'],
       trim: true,
     },
     slug: {

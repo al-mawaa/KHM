@@ -29,7 +29,7 @@ export function ServiceCard({ service, index = 0 }: ServiceCardProps) {
           {service.image ? (
             <Image
               src={service.image}
-              alt={service.title}
+              alt={service.title || service.category || 'Service'}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -46,7 +46,7 @@ export function ServiceCard({ service, index = 0 }: ServiceCardProps) {
         {/* Content */}
         <div className="p-6">
           <h3 className="text-[22px] font-bold text-[#1a5276] mb-3 leading-tight group-hover:text-[#25a244] transition-colors">
-            {service.title}
+            {service.title || service.category || 'Service'}
           </h3>
           
           <p className="text-[15px] leading-7 text-slate-600 mb-4 line-clamp-3">

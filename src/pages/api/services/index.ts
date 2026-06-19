@@ -47,22 +47,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Creating service with body:', req.body);
       const { title, slug, description, icon, category, points, image } = req.body;
 
-      if (!title || !slug || !description || !category) {
+      if (!slug || !description || !category) {
         console.log('Validation failed: missing required fields');
         return res.status(400).json({ 
           success: false, 
-          message: 'Title, slug, description, and category are required' 
+          message: 'Slug, description, and category are required' 
         });
       }
 
       const service = await Service.create({
-        title,
+        title: title?.trim() || '',
         slug,
         description,
         icon: icon || 'Droplets',
         category,
         points: points || [],
-        image,
+        image: image || '',
       });
 
       console.log('Service created successfully:', service);

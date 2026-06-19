@@ -4,7 +4,7 @@ export interface IService extends Document {
   title?: string;
   slug: string;
   description: string;
-  icon: string;
+  icon?: string;
   category: string;
   points?: string[];
   image?: string;
@@ -33,8 +33,8 @@ const ServiceSchema = new Schema<IService>(
     },
     icon: {
       type: String,
-      required: [true, 'Icon is required'],
       default: 'Droplets',
+      trim: true,
     },
     category: {
       type: String,

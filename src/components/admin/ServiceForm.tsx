@@ -245,7 +245,14 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
       await deleteFile(oldImagePublicId);
     }
 
-    onSubmit({ ...formData, points: pointsArray, image, imagePublicId });
+    onSubmit({
+      ...formData,
+      title: formData.title?.trim() || '',
+      icon: formData.icon?.trim() || 'Droplets',
+      points: pointsArray,
+      image: image || '',
+      imagePublicId: imagePublicId || '',
+    });
     setUploading(false);
     setUploadProgress(0);
     isSubmittingRef.current = false;
@@ -261,7 +268,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         />
       </Field>
       
-      <Field label="Slug">
+      <Field label="Slug (required)">
         <Input
           value={formData.slug}
           onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
@@ -270,7 +277,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         />
       </Field>
       
-      <Field label="Category">
+      <Field label="Category (required)">
         <Input
           value={formData.category}
           onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -279,7 +286,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         />
       </Field>
       
-      <Field label="Icon (lucide-react icon name)">
+      <Field label="Icon (optional)">
         <Input
           value={formData.icon}
           onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
@@ -287,7 +294,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         />
       </Field>
       
-      <Field label="Description">
+      <Field label="Description (required)">
         <Textarea
           rows={4}
           value={formData.description}

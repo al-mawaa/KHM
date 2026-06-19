@@ -36,9 +36,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Updating service:', id, 'with body:', req.body);
       const { title, slug, description, icon, category, points, image, imagePublicId } = req.body;
 
+      if (!slug || !description || !category) {
+        return res.status(400).json({
+          success: false,
+          message: 'Slug, description, and category are required',
+        });
+      }
+
       const service = await Service.findByIdAndUpdate(
         id,
-        { title, slug, description, icon, category, points, image, imagePublicId },
+        {
+          title: title?.trim() || '',
+          slug,
+          description,
+          icon: icon?.trim() || 'Droplets',
+          category,
+          points: points || [],
+          image: image || '',
+          imagePublicId: imagePublicId || '',
+        },
         { new: true, runValidators: true }
       );
 

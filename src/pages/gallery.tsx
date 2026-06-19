@@ -8,6 +8,8 @@ import {
 
   ChevronRight,
 
+  ChevronDown,
+
   X,
 
   ChevronLeft,
@@ -197,12 +199,18 @@ export default function GalleryPage() {
   };
 
   // Extract unique categories from items with backward compatibility
-  const categories = ["All", ...Array.from(new Set(galleryItems.map((item) => item.category || "General").filter((cat): cat is string => Boolean(cat))))];
+  const categoryNames = Array.from(
+    new Set(galleryItems.map((item) => item.category || "General").filter(Boolean))
+  ).sort();
 
   // Filter gallery items based on selected category with backward compatibility
   const filteredItems = selectedCategory === "All"
     ? galleryItems
     : galleryItems.filter((item) => (item.category || "General") === selectedCategory);
+
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [selectedCategory]);
 
 
 
@@ -435,26 +443,56 @@ export default function GalleryPage() {
 
 
       {/* Category Filter Section */}
-      <section className="py-8 bg-gradient-to-r from-[#1a5276] to-[#154360]">
+      <section className="py-8 bg-white">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="flex flex-wrap gap-3 justify-center">
-            {categories.map((category) => (
-              <motion.button
-                key={category}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                  selectedCategory === category
-                    ? "bg-[#0d3d5c] text-white shadow-lg"
-                    : "bg-white/10 text-white border border-white/30 hover:bg-[#6aa84f] hover:text-white"
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedCategory("All")}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                  selectedCategory === "All"
+                    ? "bg-[#1a5276] text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                {category}
-              </motion.button>
-            ))}
+                All
+              </button>
+              {categoryNames.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    selectedCategory === category
+                      ? "bg-[#1a5276] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
+              <label htmlFor="gallery-category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Filter by Category
+              </label>
+              <div className="relative w-full sm:w-56">
+                <select
+                  id="gallery-category-filter"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                >
+                  <option value="All">All Categories</option>
+                  {categoryNames.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              </div>
+            </div>
           </div>
         </div>
       </section>

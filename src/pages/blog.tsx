@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, Loader2, FileText, Search, Clock, Calendar } from "lucide-react";
+import { ChevronRight, Loader2, FileText, Search, Clock, Calendar, ChevronDown } from "lucide-react";
 import { BlogCta } from "@/components/BlogCta";
 import { trackBlogSearch, trackPagination } from "@/lib/analytics";
 import { PageHero } from "@/components/PageHero";
@@ -27,6 +27,15 @@ interface PaginationData {
   totalPages: number;
 }
 
+const BLOG_CATEGORIES = [
+  "Water Treatment",
+  "Wastewater Treatment",
+  "Industrial Filtration",
+  "RO Systems",
+  "ETP/STP",
+  "Case Studies",
+];
+
 export default function BlogPage() {
   useVisitorTracking('Blog');
   
@@ -34,10 +43,12 @@ export default function BlogPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState<PaginationData | null>(null);
+  const [categoryNames, setCategoryNames] = useState<string[]>(BLOG_CATEGORIES);
 
-  const fetchBlogs = async (page: number = 1, search: string = '') => {
+  const fetchBlogs = async (page: number = 1, search: string = '', category: string = 'All') => {
     try {
       setLoading(true);
       setError(null);
@@ -51,6 +62,10 @@ export default function BlogPage() {
 
       if (search) {
         params.append('search', search);
+      }
+
+      if (category && category !== 'All') {
+        params.append('category', category);
       }
 
       const res = await fetch(`/api/blog?${params.toString()}`);
@@ -71,16 +86,40 @@ export default function BlogPage() {
   };
 
   useEffect(() => {
-    fetchBlogs(currentPage, searchQuery);
-  }, [currentPage]);
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/blog?published=true&limit=200&fields=listing');
+        const data = await res.json();
+        if (data.success) {
+          const fromPosts = data.data
+            .map((b: BlogPost) => b.category)
+            .filter((cat: string | undefined): cat is string => Boolean(cat));
+          setCategoryNames(Array.from(new Set([...BLOG_CATEGORIES, ...fromPosts])).sort());
+        }
+      } catch (err) {
+        console.error('Error fetching blog categories:', err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetchBlogs(currentPage, searchQuery, selectedCategory);
+  }, [currentPage, selectedCategory]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    fetchBlogs(1, searchQuery);
+    fetchBlogs(1, searchQuery, selectedCategory);
     if (searchQuery) {
       trackBlogSearch(searchQuery);
     }
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
   };
 
   const formatDate = (dateString: string) => {
@@ -135,6 +174,59 @@ export default function BlogPage() {
             )}
           </div>
 
+          {/* Category Filter */}
+          <div className="mt-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => handleCategoryChange("All")}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                  selectedCategory === "All"
+                    ? "bg-[#1a5276] text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                All
+              </button>
+              {categoryNames.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => handleCategoryChange(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    selectedCategory === category
+                      ? "bg-[#1a5276] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
+              <label htmlFor="blog-category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Filter by Category
+              </label>
+              <div className="relative w-full sm:w-56">
+                <select
+                  id="blog-category-filter"
+                  value={selectedCategory}
+                  onChange={(e) => handleCategoryChange(e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                >
+                  <option value="All">All Categories</option>
+                  {categoryNames.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              </div>
+            </div>
+          </div>
+
           {loading ? (
             <div className="mt-10 flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-[#1a5276]" />
@@ -146,7 +238,11 @@ export default function BlogPage() {
           ) : blogs.length === 0 ? (
             <div className="mt-10 text-center py-12">
               <FileText className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500 text-lg">No Blog Posts Available</p>
+              <p className="text-gray-500 text-lg">
+                {selectedCategory !== "All"
+                  ? `No blog posts found in "${selectedCategory}"`
+                  : "No Blog Posts Available"}
+              </p>
               <p className="text-gray-400 text-sm mt-2">Check back later for new content</p>
             </div>
           ) : (

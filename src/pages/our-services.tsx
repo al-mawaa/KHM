@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Cpu, Map, Wrench, Loader2 } from "lucide-react";
+import { CheckCircle2, Cpu, Map, Wrench, Loader2, ChevronDown } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { ServiceCard } from "@/components/services/ServiceCard";
 import { IService } from "@/lib/models/Service";
@@ -116,6 +116,7 @@ const technologies = [
 export default function OurServicesPage() {
   const [services, setServices] = useState<IService[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -134,6 +135,12 @@ export default function OurServicesPage() {
 
     fetchServices();
   }, []);
+
+  const categoryNames = Array.from(new Set(services.map((s) => s.category).filter(Boolean))).sort();
+  const filteredServices =
+    selectedCategory === "All"
+      ? services
+      : services.filter((s) => s.category === selectedCategory);
 
   return (
     <>
@@ -163,13 +170,67 @@ export default function OurServicesPage() {
             </p>
           </motion.div>
 
+          <div className="mb-12 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedCategory("All")}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                  selectedCategory === "All"
+                    ? "bg-[#1a5276] text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                All
+              </button>
+              {categoryNames.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    selectedCategory === category
+                      ? "bg-[#1a5276] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
+              <label htmlFor="service-category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Filter by Category
+              </label>
+              <div className="relative w-full sm:w-56">
+                <select
+                  id="service-category-filter"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                >
+                  <option value="All">All Categories</option>
+                  {categoryNames.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              </div>
+            </div>
+          </div>
+
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
             </div>
+          ) : filteredServices.length === 0 ? (
+            <div className="text-center py-12 text-slate-500">
+              No services found in this category.
+            </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-              {services.map((service, index) => (
+              {filteredServices.map((service, index) => (
                 <ServiceCard key={service._id?.toString()} service={service} index={index} />
               ))}
             </div>

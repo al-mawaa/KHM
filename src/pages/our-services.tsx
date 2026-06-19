@@ -136,7 +136,9 @@ export default function OurServicesPage() {
     fetchServices();
   }, []);
 
-  const categoryNames = Array.from(new Set(services.map((s) => s.category).filter(Boolean))).sort();
+  const categoryNames = Array.from(
+    new Set(services.map((s) => s.category).filter((cat): cat is string => Boolean(cat)))
+  ).sort();
   const filteredServices =
     selectedCategory === "All"
       ? services

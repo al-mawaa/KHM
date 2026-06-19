@@ -135,7 +135,6 @@ export default function ContactPage() {
           <div className="lg:col-span-2 space-y-4">
             {[
               { I: MapPin, t: "Office", d: settings.address },
-              { I: FileBadge, t: "CIN", d: "U71100PN2026PTC255526" },
               ...phones.map((phone) => ({
                 I: Phone,
                 t: "Phone",

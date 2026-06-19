@@ -33,11 +33,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'PUT') {
       console.log('Updating gallery item:', id, 'with body:', req.body);
-      const { title, imageUrl, imagePublicId, description } = req.body;
+      const { title, imageUrl, imagePublicId, description, category } = req.body;
 
       const galleryItem = await Gallery.findByIdAndUpdate(
         id,
-        { title, imageUrl, imagePublicId, description },
+        { title, imageUrl, imagePublicId, description, category },
         { new: true, runValidators: true }
       );
 

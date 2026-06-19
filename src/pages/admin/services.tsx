@@ -129,7 +129,7 @@ export default function AdminServicesPage() {
             <Card key={s._id?.toString()} className="p-5">
               {s.image && <img src={s.image} alt={s.title || s.category || 'Service'} className="mb-3 h-32 w-full object-cover rounded-lg" />}
               <div className="text-[10px] uppercase tracking-wider font-bold text-aqua-foreground">{s.icon}</div>
-              <h3 className="mt-1 font-display font-bold">{s.title || 'Untitled Service'}</h3>
+              <h3 className="mt-1 font-display font-bold">{s.title}</h3>
               <p className="mt-1 text-sm text-slate-600 line-clamp-3">{s.description}</p>
               <div className="mt-4 flex gap-2">
                 <Button variant="secondary" onClick={() => handleEditService(s)}><Pencil className="h-3.5 w-3.5" /> Edit</Button>

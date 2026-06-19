@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import connectDB from '@/lib/mongodb';
 import Service, { IService } from '@/lib/models/Service';
 import redis from '@/lib/redis';
+import { resolveUniqueSlug, validateServicePayload } from '@/lib/service-validation';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await connectDB();
@@ -45,24 +46,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'POST') {
       console.log('Creating service with body:', req.body);
-      const { title, slug, description, icon, category, points, image } = req.body;
 
-      if (!slug || !description || !category) {
-        console.log('Validation failed: missing required fields');
-        return res.status(400).json({ 
-          success: false, 
-          message: 'Slug, description, and category are required' 
-        });
+      const validation = validateServicePayload(req.body);
+      if (!validation.ok) {
+        return res.status(400).json({ success: false, message: validation.message });
       }
 
+      const { title, image, points, slug, description, category, icon, imagePublicId } = validation.data;
+      const uniqueSlug = await resolveUniqueSlug(title, slug);
+
       const service = await Service.create({
-        title: title?.trim() || '',
-        slug,
+        title,
+        slug: uniqueSlug,
         description,
-        icon: icon || 'Droplets',
+        icon,
         category,
-        points: points || [],
-        image: image || '',
+        points,
+        image,
+        imagePublicId,
       });
 
       console.log('Service created successfully:', service);

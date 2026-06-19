@@ -212,13 +212,26 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
       return;
     }
 
-    isSubmittingRef.current = true;
-    setUploading(true);
-
     const pointsArray = pointsText
       .split('\n')
       .map((p) => p.trim())
       .filter((p) => p.length > 0);
+
+    if (!formData.title?.trim()) {
+      toast.error('Title is required');
+      return;
+    }
+    if (pointsArray.length === 0) {
+      toast.error('At least one point is required');
+      return;
+    }
+    if (!formData.image && !previewImage && !selectedFile) {
+      toast.error('Service image is required');
+      return;
+    }
+
+    isSubmittingRef.current = true;
+    setUploading(true);
 
     let image = formData.image;
     let imagePublicId = formData.imagePublicId;
@@ -241,16 +254,27 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
       }
     }
 
+    if (!image) {
+      toast.error('Service image is required');
+      setUploading(false);
+      setUploadProgress(0);
+      isSubmittingRef.current = false;
+      return;
+    }
+
     if (service && oldImagePublicId && oldImagePublicId !== imagePublicId) {
       await deleteFile(oldImagePublicId);
     }
 
     onSubmit({
       ...formData,
-      title: formData.title?.trim() || '',
+      title: formData.title.trim(),
+      slug: formData.slug?.trim() || generateSlug(formData.title),
+      description: formData.description?.trim() || '',
+      category: formData.category?.trim() || '',
       icon: formData.icon?.trim() || 'Droplets',
       points: pointsArray,
-      image: image || '',
+      image,
       imagePublicId: imagePublicId || '',
     });
     setUploading(false);
@@ -260,28 +284,27 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Field label="Title (optional)">
+      <Field label="Title (required)">
         <Input
           value={formData.title}
           onChange={(e) => handleTitleChange(e.target.value)}
+          required
           placeholder="Service title"
         />
       </Field>
       
-      <Field label="Slug (required)">
+      <Field label="Slug (optional)">
         <Input
           value={formData.slug}
           onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-          required
-          placeholder="service-slug"
+          placeholder="Auto-generated from title if empty"
         />
       </Field>
       
-      <Field label="Category (required)">
+      <Field label="Category (optional)">
         <Input
           value={formData.category}
           onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-          required
           placeholder="e.g., Water Supply, Civil Infrastructure"
         />
       </Field>
@@ -294,26 +317,26 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }: ServiceF
         />
       </Field>
       
-      <Field label="Description (required)">
+      <Field label="Description (optional)">
         <Textarea
           rows={4}
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          required
           placeholder="Service description"
         />
       </Field>
       
-      <Field label="Points (optional, one per line)">
+      <Field label="Points (required, one per line)">
         <Textarea
           rows={6}
           value={pointsText}
           onChange={(e) => setPointsText(e.target.value)}
+          required
           placeholder="Point 1&#10;Point 2&#10;Point 3"
         />
       </Field>
 
-      <Field label="Service Image (optional)">
+      <Field label="Service Image (required)">
         <div
           className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
             selectedFile || previewImage

@@ -38,6 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 : 0,
           isActive: doc.isActive !== undefined ? doc.isActive : doc.status !== "Inactive",
           role: doc.role || "employee",
+          remark: doc.remark || doc.bio || "",
+          parentId: doc.parentId ? String(doc.parentId) : null,
         };
       });
 
@@ -55,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === "POST") {
-      const { name, designation, role, department, image, imagePublicId, order, isActive } =
+      const { name, designation, role, department, remark, parentId, image, imagePublicId, order, isActive } =
         req.body;
 
       if (!name || !designation || !role) {
@@ -74,6 +76,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         designation,
         role,
         department: department || "",
+        remark: remark || "",
+        parentId: parentId || null,
         image: image || "",
         imagePublicId: imagePublicId || "",
         order: order ?? 0,

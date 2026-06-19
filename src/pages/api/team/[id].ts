@@ -36,12 +36,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               : 0,
         isActive: doc.isActive !== undefined ? doc.isActive : doc.status !== "Inactive",
         role: doc.role || "employee",
+        remark: doc.remark || doc.bio || "",
+        parentId: doc.parentId ? String(doc.parentId) : null,
       };
       return res.status(200).json({ success: true, data: normalized });
     }
 
     if (req.method === "PUT") {
-      const { name, designation, role, department, image, imagePublicId, order, isActive } =
+      const { name, designation, role, department, remark, parentId, image, imagePublicId, order, isActive } =
         req.body;
 
       if (!name || !designation || !role) {
@@ -56,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const member = await TeamMember.findByIdAndUpdate(
         id,
-        { name, designation, role, department, image, imagePublicId, order, isActive },
+        { name, designation, role, department, remark, parentId: parentId || null, image, imagePublicId, order, isActive },
         { new: true, runValidators: true },
       );
 

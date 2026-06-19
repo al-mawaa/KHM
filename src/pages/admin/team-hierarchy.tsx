@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { Card, Button, Field, Input, Select, Modal, Confirm } from "@/components/admin/ui";
+import { Card, Button, Field, Input, Select, Modal, Confirm, Textarea } from "@/components/admin/ui";
 import {
   Plus,
   Pencil,
@@ -21,6 +21,8 @@ interface TeamMember {
   designation: string;
   role: "director" | "subdirector" | "employee";
   department?: string;
+  remark?: string;
+  parentId?: string | null;
   image?: string;
   imagePublicId?: string;
   order: number;
@@ -69,6 +71,8 @@ export default function AdminTeamHierarchyPage() {
     designation: "",
     role: "employee",
     department: "",
+    remark: "",
+    parentId: null,
     image: "",
     imagePublicId: "",
     order: items.length + 1,
@@ -279,6 +283,11 @@ export default function AdminTeamHierarchyPage() {
     }
   };
 
+  const getParentName = (parentId?: string | null) => {
+    if (!parentId) return "—";
+    return items.find((i) => i._id === parentId)?.name || "—";
+  };
+
   const formatRoleLabel = (role: string) => {
     switch (role) {
       case "director":
@@ -396,6 +405,7 @@ export default function AdminTeamHierarchyPage() {
                   <th className="px-6 py-4">Designation</th>
                   <th className="px-6 py-4">Role Badge</th>
                   <th className="px-6 py-4">Department</th>
+                  <th className="px-6 py-4">Reports To</th>
                   <th className="px-6 py-4 text-center">Order</th>
                   <th className="px-6 py-4 text-center">Active</th>
                   <th className="px-6 py-4 text-right">Actions</th>
@@ -430,6 +440,9 @@ export default function AdminTeamHierarchyPage() {
                     </td>
                     <td className="px-6 py-4 text-slate-500 whitespace-nowrap">
                       {m.department || "—"}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500 whitespace-nowrap">
+                      {getParentName(m.parentId)}
                     </td>
                     <td className="px-6 py-4 text-center text-slate-500 font-medium whitespace-nowrap">
                       {m.order}
@@ -529,6 +542,33 @@ export default function AdminTeamHierarchyPage() {
                 />
               </Field>
             </div>
+
+            <Field label="Reports To (optional)">
+              <Select
+                value={edit.parentId || ""}
+                onChange={(e) =>
+                  setEdit({ ...edit, parentId: e.target.value ? e.target.value : null })
+                }
+              >
+                <option value="">No parent — top level</option>
+                {items
+                  .filter((m) => m._id !== edit._id)
+                  .map((m) => (
+                    <option key={m._id} value={m._id}>
+                      {m.name} — {m.designation}
+                    </option>
+                  ))}
+              </Select>
+            </Field>
+
+            <Field label="Remark (shown when user clicks member on About page)">
+              <Textarea
+                rows={4}
+                value={edit.remark || ""}
+                onChange={(e) => setEdit({ ...edit, remark: e.target.value })}
+                placeholder="Role details, responsibilities, experience..."
+              />
+            </Field>
 
             <div className="grid sm:grid-cols-2 gap-4 items-center">
               <Field label="Order number (for sorting)">

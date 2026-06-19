@@ -4,8 +4,13 @@ import { Card, Button, Field, Input, Textarea, Select, Modal, Confirm } from "@/
 import { Plus, Pencil, Trash2, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
-const CATS = ["Government", "Residential", "Industrial", "Commercial"] as const;
 const STATUS_OPTIONS = ["Active", "Upcoming"] as const;
+
+interface ProjectCategory {
+  _id: string;
+  name: string;
+  order: number;
+}
 
 interface Project {
   _id?: string;
@@ -25,9 +30,14 @@ interface Project {
 
 export default function AdminProjectsPage() {
   const [items, setItems] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<ProjectCategory[]>([]);
   const [edit, setEdit] = useState<Project | null>(null);
   const [del, setDel] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("All");
+  const [categoryEdit, setCategoryEdit] = useState<ProjectCategory | null>(null);
+  const [categoryDel, setCategoryDel] = useState<string | null>(null);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -36,6 +46,18 @@ export default function AdminProjectsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/project-categories');
+      const data = await res.json();
+      if (data.success) {
+        setCategories(data.data);
+      }
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  };
 
   const fetchProjects = async () => {
     try {
@@ -60,12 +82,59 @@ export default function AdminProjectsPage() {
   };
 
   useEffect(() => {
+    fetchCategories();
     fetchProjects();
   }, []);
 
+  const saveCategory = async (category: ProjectCategory | { name: string }) => {
+    try {
+      const isEdit = '_id' in category && category._id;
+      const url = isEdit ? `/api/project-categories/${category._id}` : '/api/project-categories';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: category.name }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success(isEdit ? 'Category updated' : 'Category added');
+        await fetchCategories();
+        setCategoryEdit(null);
+        setNewCategoryName("");
+        setShowCategoryForm(false);
+      } else {
+        toast.error(data.message || 'Failed to save category');
+      }
+    } catch (err) {
+      console.error('Error saving category:', err);
+      toast.error('Failed to save category');
+    }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      const res = await fetch(`/api/project-categories/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success('Category deleted');
+        await fetchCategories();
+        setCategoryDel(null);
+      } else {
+        toast.error(data.message || 'Failed to delete category');
+      }
+    } catch (err) {
+      console.error('Error deleting category:', err);
+      toast.error('Failed to delete category');
+    }
+  };
+
   const blank = (): Project => ({ 
     title: "", 
-    category: "", 
+    category: categories[0]?.name || "", 
     location: "", 
     description: "",
     department: "",
@@ -281,13 +350,48 @@ export default function AdminProjectsPage() {
         </div>
       )}
       
+      <Card className="mb-6 p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h2 className="font-display font-bold text-slate-900">Project Categories</h2>
+          <Button variant="secondary" onClick={() => { setShowCategoryForm(true); setCategoryEdit(null); setNewCategoryName(""); }}>
+            <Plus className="h-4 w-4" /> Add Category
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {categories.map((c) => (
+            <div key={c._id} className="flex items-center gap-1 rounded-full bg-slate-100 pl-3 pr-1 py-1">
+              <span className="text-xs font-semibold text-slate-700">{c.name}</span>
+              <button
+                type="button"
+                onClick={() => setCategoryEdit(c)}
+                className="p-1 rounded-full hover:bg-slate-200 text-slate-500"
+                aria-label={`Edit ${c.name}`}
+              >
+                <Pencil className="h-3 w-3" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setCategoryDel(c._id)}
+                className="p-1 rounded-full hover:bg-red-100 text-red-500"
+                aria-label={`Delete ${c.name}`}
+              >
+                <Trash2 className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+          {categories.length === 0 && (
+            <p className="text-sm text-slate-500">No categories yet. Add one to get started.</p>
+          )}
+        </div>
+      </Card>
+
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex gap-1.5 flex-wrap">
-          {["All", ...Array.from(new Set(items.map((i) => i.category)))].map((c) => (
+          {["All", ...categories.map((c) => c.name)].map((c) => (
             <button key={c} onClick={() => setFilter(c)} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${filter === c ? "bg-aqua text-aqua-foreground" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>{c}</button>
           ))}
         </div>
-        <Button onClick={() => setEdit(blank())}><Plus className="h-4 w-4" /> Add Project</Button>
+        <Button onClick={() => setEdit(blank())} disabled={categories.length === 0}><Plus className="h-4 w-4" /> Add Project</Button>
       </div>
 
       {loading ? (
@@ -318,7 +422,14 @@ export default function AdminProjectsPage() {
         {edit && (
           <form onSubmit={(e) => { e.preventDefault(); save(edit); }} className="space-y-4">
             <Field label="Title"><Input value={edit.title} onChange={(e) => setEdit({ ...edit, title: e.target.value })} required /></Field>
-            <Field label="Category"><Input value={edit.category} onChange={(e) => setEdit({ ...edit, category: e.target.value })} required /></Field>
+            <Field label="Category">
+              <Select value={edit.category} onChange={(e) => setEdit({ ...edit, category: e.target.value })} required>
+                <option value="">Select category</option>
+                {categories.map((c) => (
+                  <option key={c._id} value={c.name}>{c.name}</option>
+                ))}
+              </Select>
+            </Field>
             <Field label="Location"><Input value={edit.location} onChange={(e) => setEdit({ ...edit, location: e.target.value })} required /></Field>
             <Field label="Description"><Textarea rows={4} value={edit.description} onChange={(e) => setEdit({ ...edit, description: e.target.value })} required /></Field>
             <Field label="Department"><Input value={edit.department} onChange={(e) => setEdit({ ...edit, department: e.target.value })} required /></Field>
@@ -410,6 +521,54 @@ export default function AdminProjectsPage() {
         )}
       </Modal>
       <Confirm open={!!del} onClose={() => setDel(null)} onConfirm={() => handleDelete(del!)} message="Delete this project?" />
+
+      <Modal
+        open={showCategoryForm || !!categoryEdit}
+        onClose={() => { setShowCategoryForm(false); setCategoryEdit(null); setNewCategoryName(""); }}
+        title={categoryEdit ? "Edit Category" : "Add Category"}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const name = categoryEdit ? categoryEdit.name : newCategoryName;
+            if (!name.trim()) return;
+            if (categoryEdit) {
+              saveCategory({ ...categoryEdit, name: name.trim() });
+            } else {
+              saveCategory({ name: name.trim() });
+            }
+          }}
+          className="space-y-4"
+        >
+          <Field label="Category Name">
+            <Input
+              value={categoryEdit ? categoryEdit.name : newCategoryName}
+              onChange={(e) => {
+                if (categoryEdit) {
+                  setCategoryEdit({ ...categoryEdit, name: e.target.value });
+                } else {
+                  setNewCategoryName(e.target.value);
+                }
+              }}
+              placeholder="e.g. Commercial"
+              required
+            />
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button variant="secondary" type="button" onClick={() => { setShowCategoryForm(false); setCategoryEdit(null); setNewCategoryName(""); }}>
+              Cancel
+            </Button>
+            <Button type="submit">Save</Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Confirm
+        open={!!categoryDel}
+        onClose={() => setCategoryDel(null)}
+        onConfirm={() => handleDeleteCategory(categoryDel!)}
+        message="Delete this category? Projects using it must be reassigned first."
+      />
     </AdminShell>
   );
 }

@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { ChevronDown, Eye } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
@@ -19,27 +21,42 @@ interface Project {
   updatedAt: string;
 }
 
+interface ProjectCategory {
+  _id: string;
+  name: string;
+  order: number;
+}
+
 export default function ProjectsPage() {
   useVisitorTracking('Projects');
   
   const [projects, setProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<ProjectCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  const fetchProjects = async () => {
+  const fetchData = async () => {
     try {
-      console.log('Fetching projects from API...');
       setLoading(true);
       setError(null);
-      const res = await fetch('/api/projects');
-      const data = await res.json();
-      console.log('API response:', data);
-      
-      if (data.success) {
-        setProjects(data.data);
+
+      const [projectsRes, categoriesRes] = await Promise.all([
+        fetch('/api/projects'),
+        fetch('/api/project-categories'),
+      ]);
+
+      const projectsData = await projectsRes.json();
+      const categoriesData = await categoriesRes.json();
+
+      if (projectsData.success) {
+        setProjects(projectsData.data);
       } else {
-        setError(data.message || 'Failed to fetch projects');
+        setError(projectsData.message || 'Failed to fetch projects');
+      }
+
+      if (categoriesData.success) {
+        setCategories(categoriesData.data);
       }
     } catch (err) {
       console.error('Error fetching projects:', err);
@@ -50,13 +67,14 @@ export default function ProjectsPage() {
   };
 
   useEffect(() => {
-    fetchProjects();
+    fetchData();
   }, []);
 
   const activeProjects = projects
     .filter((p) => p.status === "Active")
     .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
     .map((p, index) => ({
+      id: p._id,
       srNo: index + 1,
       projectName: p.title,
       department: p.department,
@@ -69,6 +87,7 @@ export default function ProjectsPage() {
     .filter((p) => p.status === "Upcoming")
     .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
     .map((p, index) => ({
+      id: p._id,
       srNo: activeProjects.length + index + 1,
       projectName: p.title,
       department: p.department,
@@ -77,7 +96,7 @@ export default function ProjectsPage() {
       status: p.status,
     }));
 
-  const uniqueCategories = Array.from(new Set(projects.map((p) => p.category)));
+  const categoryNames = categories.map((c) => c.name);
 
   return (
     <>
@@ -89,30 +108,54 @@ export default function ProjectsPage() {
       {/* Category Filter Section */}
       <section className="py-8 bg-white">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="flex flex-wrap gap-2 justify-center">
-            <button
-              onClick={() => setSelectedCategory("All")}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                selectedCategory === "All"
-                  ? "bg-[#1a5276] text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              All
-            </button>
-            {uniqueCategories.map((category) => (
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-wrap gap-2">
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => setSelectedCategory("All")}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                  selectedCategory === category
+                  selectedCategory === "All"
                     ? "bg-[#1a5276] text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                {category}
+                All
               </button>
-            ))}
+              {categoryNames.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    selectedCategory === category
+                      ? "bg-[#1a5276] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
+              <label htmlFor="category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+                Filter by Category
+              </label>
+              <div className="relative w-full sm:w-56">
+                <select
+                  id="category-filter"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                >
+                  <option value="All">All Categories</option>
+                  {categoryNames.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -153,7 +196,7 @@ export default function ProjectsPage() {
                 {activeProjects.length === 0 ? (
                   <div className="text-center py-12 text-slate-500">No active projects found</div>
                 ) : (
-                  <ProjectTable projects={activeProjects} />
+                  <ProjectTable projects={activeProjects} showViewAction />
                 )}
               </motion.div>
             </div>
@@ -211,6 +254,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 interface ProjectTableItem {
+  id: string;
   srNo: number;
   projectName: string;
   department: string;
@@ -219,7 +263,13 @@ interface ProjectTableItem {
   status: string;
 }
 
-function ProjectTable({ projects }: { projects: ProjectTableItem[] }) {
+function ProjectTable({
+  projects,
+  showViewAction = false,
+}: {
+  projects: ProjectTableItem[];
+  showViewAction?: boolean;
+}) {
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
       <table className="w-full">
@@ -243,12 +293,17 @@ function ProjectTable({ projects }: { projects: ProjectTableItem[] }) {
             <th className="px-6 py-4 text-left text-[15px] font-semibold uppercase tracking-wide">
               Status
             </th>
+            {showViewAction && (
+              <th className="px-6 py-4 text-center text-[15px] font-semibold uppercase tracking-wide">
+                Details
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {projects.map((project, index) => (
             <tr
-              key={project.srNo}
+              key={project.id}
               className={`transition-all duration-200 hover:bg-gray-50 hover:shadow-md ${
                 index % 2 === 0 ? "bg-white" : "bg-gray-50/50"
               }`}
@@ -271,6 +326,21 @@ function ProjectTable({ projects }: { projects: ProjectTableItem[] }) {
               <td className="px-6 py-4">
                 <StatusBadge status={project.status} />
               </td>
+              {showViewAction && project.status === "Active" && (
+                <td className="px-6 py-4 text-center">
+                  <Link
+                    href={`/projects/${project.id}`}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#1a5276]/10 text-[#1a5276] transition-colors hover:bg-[#1a5276] hover:text-white"
+                    title="View project details"
+                    aria-label={`View details for ${project.projectName}`}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Link>
+                </td>
+              )}
+              {showViewAction && project.status !== "Active" && (
+                <td className="px-6 py-4" />
+              )}
             </tr>
           ))}
         </tbody>

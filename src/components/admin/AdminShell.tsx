@@ -27,6 +27,7 @@ const menu = [
   { to: "/admin/gallery", label: "Gallery", icon: Image },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
   { to: "/admin/careers", label: "Careers", icon: Briefcase },
+  { to: "/admin/job-enquiries", label: "Job Enquiries", icon: MessageSquare },
   { to: "/admin/leads", label: "Contact Leads", icon: Users },
   { to: "/admin/team", label: "Team Members", icon: UsersRound },
   { to: "/admin/team-hierarchy", label: "Team Hierarchy", icon: UsersRound },

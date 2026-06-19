@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin } from "lucide-react";
+import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin, MessageSquare } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
@@ -32,11 +32,16 @@ export default function CareersPage() {
   
   // Application modal state
   const [applicationModalOpen, setApplicationModalOpen] = useState(false);
+  const [enquiryModalOpen, setEnquiryModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<CareerJob | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [enquirySubmitting, setEnquirySubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [enquiryUploading, setEnquiryUploading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [enquiryError, setEnquiryError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [enquirySuccess, setEnquirySuccess] = useState(false);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -50,6 +55,19 @@ export default function CareersPage() {
     linkedinUrl: '',
     expectedSalary: '',
     coverLetter: '',
+    resumeUrl: '',
+    resumePublicId: '',
+    resumeFile: null as File | null,
+  });
+
+  const [enquiryForm, setEnquiryForm] = useState({
+    fullName: '',
+    email: '',
+    phoneNumber: '',
+    departmentInterested: '',
+    totalExperience: '',
+    currentLocation: '',
+    message: '',
     resumeUrl: '',
     resumePublicId: '',
     resumeFile: null as File | null,
@@ -84,7 +102,7 @@ export default function CareersPage() {
 
   // Lock body scroll when modal opens
   useEffect(() => {
-    if (applicationModalOpen) {
+    if (applicationModalOpen || enquiryModalOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -92,7 +110,7 @@ export default function CareersPage() {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [applicationModalOpen]);
+  }, [applicationModalOpen, enquiryModalOpen]);
 
   // ESC key to close modal
   useEffect(() => {
@@ -100,10 +118,13 @@ export default function CareersPage() {
       if (e.key === 'Escape' && applicationModalOpen) {
         closeApplicationModal();
       }
+      if (e.key === 'Escape' && enquiryModalOpen) {
+        closeEnquiryModal();
+      }
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
-  }, [applicationModalOpen]);
+  }, [applicationModalOpen, enquiryModalOpen]);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'Not specified';
@@ -140,66 +161,76 @@ export default function CareersPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleEnquiryInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setEnquiryForm({ ...enquiryForm, [e.target.name]: e.target.value });
+  };
 
-    // Validate file type
+  const uploadResume = async (
+    file: File,
+    onSuccess: (url: string, publicId: string, fileRef: File) => void,
+    setUploadingState: (v: boolean) => void,
+    setErrorState: (msg: string | null) => void
+  ) => {
     const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     if (!allowedTypes.includes(file.type)) {
-      setSubmitError('Only PDF, DOC, and DOCX files are allowed');
+      setErrorState('Only PDF, DOC, and DOCX files are allowed');
       return;
     }
-
-    // Validate file size (3.5MB to account for base64 overhead)
     if (file.size > 3.5 * 1024 * 1024) {
-      setSubmitError('File size must be less than 3.5MB');
+      setErrorState('File size must be less than 3.5MB');
       return;
     }
 
     try {
-      setUploading(true);
-      setSubmitError(null);
-
-      // Convert file to base64 for Vercel compatibility
+      setUploadingState(true);
+      setErrorState(null);
       const reader = new FileReader();
-      
       reader.onload = async () => {
         const base64 = reader.result as string;
-        
         const response = await fetch('/api/upload-resume', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            file: base64,
-            fileName: file.name,
-            mimeType: file.type,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file: base64, fileName: file.name, mimeType: file.type }),
         });
-
         const data = await response.json();
-        
         if (data.success) {
-          setFormData({ ...formData, resumeUrl: data.filePath, resumePublicId: data.publicId, resumeFile: file });
+          onSuccess(data.filePath, data.publicId, file);
         } else {
-          setSubmitError(data.message || 'Failed to upload resume');
+          setErrorState(data.message || 'Failed to upload resume');
         }
-        setUploading(false);
+        setUploadingState(false);
       };
-
       reader.onerror = () => {
-        setSubmitError('Failed to read file');
-        setUploading(false);
+        setErrorState('Failed to read file');
+        setUploadingState(false);
       };
-
       reader.readAsDataURL(file);
-    } catch (err) {
-      console.error('Resume upload error:', err);
-      setSubmitError('Failed to upload resume. Please try again.');
-      setUploading(false);
+    } catch {
+      setErrorState('Failed to upload resume. Please try again.');
+      setUploadingState(false);
     }
+  };
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await uploadResume(
+      file,
+      (url, publicId, fileRef) => setFormData({ ...formData, resumeUrl: url, resumePublicId: publicId, resumeFile: fileRef }),
+      setUploading,
+      setSubmitError
+    );
+  };
+
+  const handleEnquiryResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await uploadResume(
+      file,
+      (url, publicId, fileRef) => setEnquiryForm({ ...enquiryForm, resumeUrl: url, resumePublicId: publicId, resumeFile: fileRef }),
+      setEnquiryUploading,
+      setEnquiryError
+    );
   };
 
   const validateForm = () => {
@@ -342,6 +373,110 @@ export default function CareersPage() {
     });
   };
 
+  const openEnquiryModal = () => {
+    setEnquiryModalOpen(true);
+    setEnquiryError(null);
+    setEnquirySuccess(false);
+    setEnquiryForm({
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      departmentInterested: '',
+      totalExperience: '',
+      currentLocation: '',
+      message: '',
+      resumeUrl: '',
+      resumePublicId: '',
+      resumeFile: null,
+    });
+  };
+
+  const closeEnquiryModal = () => {
+    setEnquiryModalOpen(false);
+    setEnquiryError(null);
+    setEnquirySuccess(false);
+    setEnquiryForm({
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      departmentInterested: '',
+      totalExperience: '',
+      currentLocation: '',
+      message: '',
+      resumeUrl: '',
+      resumePublicId: '',
+      resumeFile: null,
+    });
+  };
+
+  const validateEnquiryForm = () => {
+    if (!enquiryForm.fullName.trim()) {
+      setEnquiryError('Full name is required');
+      return false;
+    }
+    if (!enquiryForm.email.trim()) {
+      setEnquiryError('Email is required');
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(enquiryForm.email)) {
+      setEnquiryError('Please enter a valid email address');
+      return false;
+    }
+    if (!enquiryForm.phoneNumber.trim()) {
+      setEnquiryError('Phone number is required');
+      return false;
+    }
+    if (!enquiryForm.departmentInterested.trim()) {
+      setEnquiryError('Department or role is required');
+      return false;
+    }
+    if (!enquiryForm.message.trim()) {
+      setEnquiryError('Message is required');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmitEnquiry = async () => {
+    if (!validateEnquiryForm()) return;
+
+    try {
+      setEnquirySubmitting(true);
+      setEnquiryError(null);
+
+      const res = await fetch('/api/careers/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(enquiryForm),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setEnquirySuccess(true);
+        setEnquiryForm({
+          fullName: '',
+          email: '',
+          phoneNumber: '',
+          departmentInterested: '',
+          totalExperience: '',
+          currentLocation: '',
+          message: '',
+          resumeUrl: '',
+          resumePublicId: '',
+          resumeFile: null,
+        });
+      } else {
+        setEnquiryError(data.message || 'Failed to submit enquiry');
+      }
+    } catch {
+      setEnquiryError('Failed to submit enquiry. Please try again.');
+    } finally {
+      setEnquirySubmitting(false);
+    }
+  };
+
   return (
     <>
       <PageHero
@@ -357,12 +492,21 @@ export default function CareersPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
           >
-            <h2 className="text-[32px] font-bold text-[#1a5276]">
-              Open Positions
-            </h2>
-            <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
+            <div>
+              <h2 className="text-[32px] font-bold text-[#1a5276]">
+                Open Positions
+              </h2>
+              <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
+            </div>
+            <button
+              onClick={openEnquiryModal}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#1a5276] bg-white px-6 py-3 text-sm font-semibold text-[#1a5276] transition-all hover:bg-[#1a5276] hover:text-white"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Job Enquiry
+            </button>
           </motion.div>
 
           {error ? (
@@ -392,7 +536,14 @@ export default function CareersPage() {
             >
               <Briefcase className="h-16 w-16 text-gray-300 mb-4" />
               <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Open Positions Available</h3>
-              <p className="text-gray-500">Please check back later for future opportunities.</p>
+              <p className="text-gray-500 mb-6">Please check back later for future opportunities.</p>
+              <button
+                onClick={openEnquiryModal}
+                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-6 py-3 text-sm font-semibold text-white transition-all hover:from-[#25a244] hover:to-[#1a5276]"
+              >
+                <MessageSquare className="h-4 w-4" />
+                Submit Job Enquiry
+              </button>
             </motion.div>
           ) : (
             <motion.div
@@ -744,6 +895,222 @@ export default function CareersPage() {
                           </>
                         ) : (
                           'Submit Application'
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Job Enquiry Modal */}
+      <AnimatePresence>
+        {enquiryModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={closeEnquiryModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="enquiry-modal-title"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <div>
+                  <h3 id="enquiry-modal-title" className="text-2xl font-bold text-[#1a5276]">Job Enquiry</h3>
+                  <p className="text-sm text-gray-600 mt-1">Share your details and we will contact you when a suitable role opens.</p>
+                </div>
+                <button
+                  onClick={closeEnquiryModal}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  aria-label="Close modal"
+                >
+                  <X className="h-5 w-5 text-gray-600" />
+                </button>
+              </div>
+
+              <div className="p-6">
+                {enquirySuccess ? (
+                  <div className="text-center py-12">
+                    <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-4" />
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Enquiry Submitted Successfully</h3>
+                    <p className="text-gray-600 mb-6">Thank you for your interest. Our HR team will review your enquiry and get in touch.</p>
+                    <button
+                      onClick={closeEnquiryModal}
+                      className="bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-8 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300"
+                    >
+                      Close
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {enquiryError && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                        <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-red-700">{enquiryError}</p>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          Full Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="fullName"
+                          value={enquiryForm.fullName}
+                          onChange={handleEnquiryInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent"
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          Email Address <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={enquiryForm.email}
+                          onChange={handleEnquiryInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent"
+                          placeholder="your.email@example.com"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          Phone Number <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          value={enquiryForm.phoneNumber}
+                          onChange={handleEnquiryInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent"
+                          placeholder="+91 98765 43210"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          Department / Role Interested In <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="departmentInterested"
+                          value={enquiryForm.departmentInterested}
+                          onChange={handleEnquiryInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent"
+                          placeholder="e.g. Civil Engineering, Project Manager"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Total Experience</label>
+                        <input
+                          type="text"
+                          name="totalExperience"
+                          value={enquiryForm.totalExperience}
+                          onChange={handleEnquiryInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent"
+                          placeholder="e.g. 5 years"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Current Location</label>
+                        <input
+                          type="text"
+                          name="currentLocation"
+                          value={enquiryForm.currentLocation}
+                          onChange={handleEnquiryInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent"
+                          placeholder="City, State"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Message <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        name="message"
+                        value={enquiryForm.message}
+                        onChange={handleEnquiryInputChange}
+                        rows={4}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1a5276] focus:border-transparent resize-none"
+                        placeholder="Tell us about your skills, preferred role, and why you want to join KHM..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Resume (Optional)</label>
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleEnquiryResumeUpload}
+                        disabled={enquiryUploading || enquirySubmitting}
+                        className="hidden"
+                        id="enquiry-resume-upload"
+                      />
+                      <label
+                        htmlFor="enquiry-resume-upload"
+                        className={`flex flex-col items-center justify-center gap-3 px-4 py-8 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+                          enquiryForm.resumeUrl
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-300 hover:border-[#1a5276] hover:bg-gray-50'
+                        } ${enquiryUploading || enquirySubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {enquiryUploading ? (
+                          <>
+                            <Loader2 className="h-8 w-8 text-[#1a5276] animate-spin" />
+                            <span className="text-sm text-gray-600">Uploading...</span>
+                          </>
+                        ) : enquiryForm.resumeUrl ? (
+                          <>
+                            <FileText className="h-8 w-8 text-green-600" />
+                            <span className="text-sm font-medium text-green-700">{enquiryForm.resumeFile?.name}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-8 w-8 text-gray-400" />
+                            <span className="text-sm text-gray-600">Upload Resume (PDF, DOC, DOCX)</span>
+                          </>
+                        )}
+                      </label>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                      <button
+                        onClick={closeEnquiryModal}
+                        disabled={enquirySubmitting || enquiryUploading}
+                        className="w-full sm:flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSubmitEnquiry}
+                        disabled={enquirySubmitting || enquiryUploading}
+                        className="w-full sm:flex-1 bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {enquirySubmitting ? (
+                          <>
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          'Submit Enquiry'
                         )}
                       </button>
                     </div>

@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Service, { IService } from '@/lib/models/Service';
 import { v2 as cloudinary } from 'cloudinary';
 import redis from '@/lib/redis';
+import { resolveUniqueSlug, validateServicePayload } from '@/lib/service-validation';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,11 +35,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'PUT') {
       console.log('Updating service:', id, 'with body:', req.body);
-      const { title, slug, description, icon, category, points, image, imagePublicId } = req.body;
+
+      const validation = validateServicePayload(req.body);
+      if (!validation.ok) {
+        return res.status(400).json({ success: false, message: validation.message });
+      }
+
+      const { title, image, points, slug, description, category, icon, imagePublicId } = validation.data;
+      const uniqueSlug = await resolveUniqueSlug(title, slug, id as string);
 
       const service = await Service.findByIdAndUpdate(
         id,
-        { title, slug, description, icon, category, points, image, imagePublicId },
+        {
+          title,
+          slug: uniqueSlug,
+          description,
+          icon,
+          category,
+          points,
+          image,
+          imagePublicId,
+        },
         { new: true, runValidators: true }
       );
 

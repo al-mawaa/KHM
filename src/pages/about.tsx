@@ -392,10 +392,13 @@ export default function AboutPage() {
 
       <DirectorsSection />
 
-      {/* Team Hierarchy Section */}
-      <section className="py-20 bg-white">
+      {/* Team Hierarchy — managed in Admin → Team Hierarchy */}
+      <section id="management-team" className="scroll-mt-32 py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <SectionHeader eyebrow="Our Team" title="Meet Our Team" />
+          <p className="mx-auto mt-3 mb-6 max-w-xl text-center text-sm text-slate-600">
+            Click on any member&apos;s photo or name to view their message and role details.
+          </p>
           <TeamTree />
         </div>
       </section>

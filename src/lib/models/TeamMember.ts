@@ -6,6 +6,8 @@ export interface ITeamMember extends Document {
   designation: string;
   role: "director" | "subdirector" | "employee";
   department?: string;
+  remark?: string;
+  parentId?: mongoose.Types.ObjectId | string | null;
   image?: string;
   imagePublicId?: string;
   order: number;
@@ -45,6 +47,16 @@ const TeamMemberSchema = new Schema<ITeamMember>(
     department: {
       type: String,
       trim: true,
+    },
+    remark: {
+      type: String,
+      trim: true,
+      maxlength: 5000,
+    },
+    parentId: {
+      type: Schema.Types.ObjectId,
+      ref: "TeamMember",
+      default: null,
     },
     image: {
       type: String,

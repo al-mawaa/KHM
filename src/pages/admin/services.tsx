@@ -127,7 +127,7 @@ export default function AdminServicesPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
             <Card key={s._id?.toString()} className="p-5">
-              {s.image && <img src={s.image} alt={s.title} className="mb-3 h-32 w-full object-cover rounded-lg" />}
+              {s.image && <img src={s.image} alt={s.title || s.category || 'Service'} className="mb-3 h-32 w-full object-cover rounded-lg" />}
               <div className="text-[10px] uppercase tracking-wider font-bold text-aqua-foreground">{s.icon}</div>
               <h3 className="mt-1 font-display font-bold">{s.title}</h3>
               <p className="mt-1 text-sm text-slate-600 line-clamp-3">{s.description}</p>

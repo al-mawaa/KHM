@@ -99,6 +99,7 @@ export default function ProjectDetailPage() {
         title={project.title}
         subtitle={project.scope}
         breadcrumb="Projects"
+        backgroundImage={project.image || "/images/hero-plant.jpg"}
       />
 
       <section className="py-12 bg-white">

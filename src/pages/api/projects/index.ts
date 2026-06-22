@@ -20,24 +20,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('➕ Creating project with body:', req.body);
       const { title, category, location, description, department, state, scope, status, type, image } = req.body;
 
-      if (!title || !category || !location || !description || !department || !state || !scope || !status || !type) {
+      if (!title?.trim() || !category?.trim() || !location?.trim() || !state?.trim() || !status?.trim()) {
         console.log('❌ Validation failed: missing required fields');
-        return res.status(400).json({ 
-          success: false, 
-          message: 'All fields are required' 
+        return res.status(400).json({
+          success: false,
+          message: 'Title, category, location, state, and status are required',
         });
       }
 
       const project = await Project.create({
-        title,
-        category,
-        location,
-        description,
-        department,
-        state,
-        scope,
-        status,
-        type,
+        title: title.trim(),
+        category: category.trim(),
+        location: location.trim(),
+        description: description?.trim() || '',
+        department: department?.trim() || '',
+        state: state.trim(),
+        scope: scope?.trim() || '',
+        status: status.trim(),
+        type: type?.trim() || '',
         image,
       });
 

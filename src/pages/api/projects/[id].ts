@@ -35,9 +35,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Updating project:', id, 'with body:', req.body);
       const { title, category, location, description, department, state, scope, status, type, image, imagePublicId } = req.body;
 
+      if (!title?.trim() || !category?.trim() || !location?.trim() || !state?.trim() || !status?.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Title, category, location, state, and status are required',
+        });
+      }
+
       const project = await Project.findByIdAndUpdate(
         id,
-        { title, category, location, description, department, state, scope, status, type, image, imagePublicId },
+        {
+          title: title.trim(),
+          category: category.trim(),
+          location: location.trim(),
+          description: description?.trim() || '',
+          department: department?.trim() || '',
+          state: state.trim(),
+          scope: scope?.trim() || '',
+          status: status.trim(),
+          type: type?.trim() || '',
+          image,
+          imagePublicId,
+        },
         { new: true, runValidators: true }
       );
 

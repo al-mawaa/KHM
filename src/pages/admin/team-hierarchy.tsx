@@ -561,7 +561,7 @@ export default function AdminTeamHierarchyPage() {
               </Select>
             </Field>
 
-            <Field label="Remark (shown when user clicks member on About page)">
+            <Field label="Message (shown when user clicks member on About page)">
               <Textarea
                 rows={4}
                 value={edit.remark || ""}

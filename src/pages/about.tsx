@@ -397,7 +397,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <SectionHeader eyebrow="Our Team" title="Meet Our Team" />
           <p className="mx-auto mt-3 mb-6 max-w-xl text-center text-sm text-slate-600">
-            Click on any member&apos;s photo or name to view their remark and role details.
+            Click on any member&apos;s photo or name to view their message and role details.
           </p>
           <TeamTree />
         </div>

@@ -194,7 +194,6 @@ function RoleModal({ member, onClose }: { member: TeamMember; onClose: () => voi
             )}
           </div>
           <div className="mt-5 rounded-xl bg-slate-50 p-4 text-left">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Remark</p>
             <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
               {member.remark?.trim() ||
                 `${member.name} serves as ${member.designation}${member.department ? ` in ${member.department}` : ""}.`}

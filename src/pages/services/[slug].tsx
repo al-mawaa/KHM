@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight, Loader2, FileText, CheckCircle2, ArrowRight, Award, DollarSign, Shield, Leaf, Clock, Users, Wrench } from "lucide-react";
 import Head from "next/head";
+import { PageHero } from "@/components/PageHero";
 import { IService } from "@/lib/models/Service";
 
 export default function ServiceDetailPage() {
@@ -150,6 +151,13 @@ export default function ServiceDetailPage() {
         />
       </Head>
 
+      <PageHero
+        title={service.title}
+        subtitle={service.description || ""}
+        breadcrumb="Our Services"
+        backgroundImage={service.image || "/images/hero-plant.jpg"}
+      />
+
       {/* Overview Section */}
       <section className="py-8 lg:py-16 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
@@ -180,12 +188,13 @@ export default function ServiceDetailPage() {
 
             {/* Service Image */}
             {service.image && (
-              <div className="relative h-[400px] lg:h-[500px] rounded-xl overflow-hidden shadow-xl">
+              <div className="rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-xl">
                 <Image
                   src={service.image}
                   alt={service.title}
-                  fill
-                  className="object-cover"
+                  width={1200}
+                  height={800}
+                  className="h-auto w-full object-contain"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority
                 />

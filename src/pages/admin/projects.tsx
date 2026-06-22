@@ -249,6 +249,11 @@ export default function AdminProjectsPage() {
   };
 
   const save = async (p: Project) => {
+    if (!p.title.trim() || !p.category.trim() || !p.location.trim() || !p.state.trim() || !p.status.trim()) {
+      toast.error('Please fill in title, category, location, state, and status');
+      return;
+    }
+
     try {
       console.log('Saving project:', p);
       setSaving(true);
@@ -431,13 +436,17 @@ export default function AdminProjectsPage() {
               </Select>
             </Field>
             <Field label="Location"><Input value={edit.location} onChange={(e) => setEdit({ ...edit, location: e.target.value })} required /></Field>
-            <Field label="Description"><Textarea rows={4} value={edit.description} onChange={(e) => setEdit({ ...edit, description: e.target.value })} required /></Field>
-            <Field label="Department"><Input value={edit.department} onChange={(e) => setEdit({ ...edit, department: e.target.value })} required /></Field>
+            <Field label="Description"><Textarea rows={4} value={edit.description} onChange={(e) => setEdit({ ...edit, description: e.target.value })} /></Field>
+            <Field label="Department"><Input value={edit.department} onChange={(e) => setEdit({ ...edit, department: e.target.value })} /></Field>
             <Field label="State"><Input value={edit.state} onChange={(e) => setEdit({ ...edit, state: e.target.value })} required /></Field>
-            <Field label="Scope"><Input value={edit.scope} onChange={(e) => setEdit({ ...edit, scope: e.target.value })} required /></Field>
+            <Field label="Scope"><Input value={edit.scope} onChange={(e) => setEdit({ ...edit, scope: e.target.value })} /></Field>
             <Field label="Cost"><Input value={edit.cost || ""} onChange={(e) => setEdit({ ...edit, cost: e.target.value })} /></Field>
-            <Field label="Status"><Select value={edit.status} onChange={(e) => setEdit({ ...edit, status: e.target.value as typeof edit.status })}>{STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}</Select></Field>
-            <Field label="Type"><Input value={edit.type} onChange={(e) => setEdit({ ...edit, type: e.target.value })} required /></Field>
+            <Field label="Status">
+              <Select value={edit.status} onChange={(e) => setEdit({ ...edit, status: e.target.value as typeof edit.status })} required>
+                {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
+              </Select>
+            </Field>
+            <Field label="Type"><Input value={edit.type} onChange={(e) => setEdit({ ...edit, type: e.target.value })} /></Field>
             <Field label="Project Image">
               <div
                 className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${

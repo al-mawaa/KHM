@@ -35,13 +35,13 @@ const ProjectSchema = new Schema<IProject>(
     },
     description: {
       type: String,
-      required: [true, 'Description is required'],
       trim: true,
+      default: '',
     },
     department: {
       type: String,
-      required: [true, 'Department is required'],
       trim: true,
+      default: '',
     },
     state: {
       type: String,
@@ -50,8 +50,8 @@ const ProjectSchema = new Schema<IProject>(
     },
     scope: {
       type: String,
-      required: [true, 'Scope is required'],
       trim: true,
+      default: '',
     },
     status: {
       type: String,
@@ -61,8 +61,8 @@ const ProjectSchema = new Schema<IProject>(
     },
     type: {
       type: String,
-      required: [true, 'Type is required'],
       trim: true,
+      default: '',
     },
     image: {
       type: String,

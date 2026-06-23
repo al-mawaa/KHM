@@ -1,9 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useState, useEffect } from "react";
 import { Quote, MessageCircle, X, Star, Loader2 } from "lucide-react";
-import { Autoplay } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 
 interface TestimonialItem {
   _id: string;
@@ -22,8 +18,6 @@ interface TestimonialItem {
 }
 
 export function HomeTestimonials() {
-  const reduceMotion = useReducedMotion();
-  const swiperRef = useRef<any>(null);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -143,14 +137,30 @@ export function HomeTestimonials() {
     return (
       <div className="flex gap-0.5 text-amber-500">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Star 
-            key={i} 
-            className={`h-4 w-4 ${i < rating ? 'fill-current' : ''}`} 
+          <Star
+            key={i}
+            className={`h-4 w-4 ${i < rating ? 'fill-current' : ''}`}
           />
         ))}
       </div>
     );
   };
+
+  // Sanitize testimonial content
+  const sanitizeFeedback = (feedback: string) => {
+    // Remove URLs
+    let sanitized = feedback.replace(/https?:\/\/[^\s]+/g, '');
+    // Remove www. URLs
+    sanitized = sanitized.replace(/www\.[^\s]+/g, '');
+    // Remove extra whitespace
+    sanitized = sanitized.replace(/\s+/g, ' ').trim();
+    return sanitized;
+  };
+
+  // Duplicate testimonials for infinite scroll
+  const duplicatedTestimonials = testimonials.length > 0
+    ? [...testimonials, ...testimonials, ...testimonials]
+    : [];
 
   return (
     <section className="bg-white py-10 lg:py-12 border-t border-b border-gray-100">
@@ -184,62 +194,49 @@ export function HomeTestimonials() {
             <p className="text-gray-500">No testimonials available yet.</p>
           </div>
         ) : (
-          <div className="testimonials-swiper relative">
-            <Swiper
-              ref={swiperRef}
-              modules={[Autoplay]}
-              navigation={false}
-              autoplay={!reduceMotion ? {
-                delay: 5000,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
-              } : false}
-              spaceBetween={20}
-              slidesPerView={1}
-              breakpoints={{ 
-                640: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 }
-              }}
-              className="!pb-2"
-            >
-              {testimonials.map((t) => (
-                <SwiperSlide key={t._id}>
-                  <article className="relative flex flex-col rounded-xl border border-gray-100 bg-white p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
-                    {t.isFeatured && (
-                      <div className="absolute top-3 right-3 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f5c518]/20 text-[#1a5276]">
-                        <Star className="h-2.5 w-2.5 mr-1 fill-current text-[#f5c518]" /> Featured
+          <div className="testimonial-container relative overflow-hidden">
+            <div className="testimonial-track flex gap-6 will-change-transform">
+              {duplicatedTestimonials.map((t, index) => (
+                <article
+                  key={`${t._id}-${index}`}
+                  className="flex-shrink-0 w-[calc(33.333%-16px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] h-[280px] rounded-xl border border-gray-100 bg-white p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                >
+                  {t.isFeatured && (
+                    <div className="absolute top-3 right-3 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f5c518]/20 text-[#1a5276]">
+                      <Star className="h-2.5 w-2.5 mr-1 fill-current text-[#f5c518]" /> Featured
+                    </div>
+                  )}
+                  <Quote className="absolute left-5 top-4 h-7 w-7 text-[#1a5276]/20" fill="currentColor" />
+                  <p className="relative text-sm leading-relaxed text-gray-600 italic line-clamp-4 mt-4 flex-1 overflow-hidden break-words">
+                    "{sanitizeFeedback(t.feedback)}"
+                  </p>
+                  <div className="mt-3 flex gap-0.5">
+                    {renderStars(t.rating)}
+                  </div>
+                  <div className="mt-4 flex items-center gap-3 border-t border-gray-100 pt-4">
+                    {t.profileImage ? (
+                      <img
+                        src={t.profileImage}
+                        alt={t.name}
+                        className="h-10 w-10 rounded-full object-cover ring-2 ring-[#1a5276]/20"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="grid h-10 w-10 place-items-center rounded-full bg-[#1a5276] text-xs font-bold text-white shrink-0">
+                        {getInitials(t.name)}
                       </div>
                     )}
-                    <Quote className="absolute left-5 top-4 h-7 w-7 text-[#1a5276]/20" fill="currentColor" />
-                    <p className="relative text-sm leading-relaxed text-gray-600 italic line-clamp-3 mt-4">"{t.feedback}"</p>
-                    <div className="mt-3 flex gap-0.5">
-                      {renderStars(t.rating)}
+                    <div className="min-w-0">
+                      <p className="font-semibold text-[#1a5276] text-sm truncate">{t.name}</p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {t.designation ? t.designation : t.industryType}
+                        {t.companyName ? ` · ${t.companyName}` : ''}
+                      </p>
                     </div>
-                    <div className="mt-4 flex items-center gap-3 border-t border-gray-100 pt-4">
-                      {t.profileImage ? (
-                        <img 
-                          src={t.profileImage} 
-                          alt={t.name}
-                          className="h-10 w-10 rounded-full object-cover ring-2 ring-[#1a5276]/20"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="grid h-10 w-10 place-items-center rounded-full bg-[#1a5276] text-xs font-bold text-white shrink-0">
-                          {getInitials(t.name)}
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <p className="font-semibold text-[#1a5276] text-sm truncate">{t.name}</p>
-                        <p className="text-xs text-gray-500 truncate">
-                          {t.designation ? t.designation : t.industryType}
-                          {t.companyName ? ` · ${t.companyName}` : ''}
-                        </p>
-                      </div>
-                    </div>
-                  </article>
-                </SwiperSlide>
+                  </div>
+                </article>
               ))}
-            </Swiper>
+            </div>
           </div>
         )}
       </div>

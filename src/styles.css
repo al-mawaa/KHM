@@ -151,8 +151,33 @@
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
 .animate-ripple { animation: ripple 3s ease-out infinite; }
 .animate-float { animation: float-y 5s ease-in-out infinite; }
+
+/* Testimonial carousel - direct CSS selectors */
+.testimonial-track {
+  animation: marquee 12s linear infinite;
+}
+
+.testimonial-container:hover .testimonial-track {
+  animation-play-state: paused;
+}
+
+@media (max-width: 1023px) {
+  .testimonial-track {
+    animation-duration: 10s;
+  }
+}
+
+@media (max-width: 639px) {
+  .testimonial-track {
+    animation-duration: 8s;
+  }
+}
 
 /* Hero Swiper — cinematic zoom on active slide */
 @keyframes hero-kenburns {

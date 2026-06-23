@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronRight, Loader2, FileText, Calendar, Tag, Clock } from "lucide-react";
 import Head from "next/head";
 import { trackBlogView, trackBlogShare } from "@/lib/analytics";
+import { PageHero } from "@/components/PageHero";
 
 interface BlogPost {
   _id: string;
@@ -167,27 +168,18 @@ export default function BlogDetailPage() {
         />
       </Head>
 
+      <PageHero
+        title={blog.title}
+        subtitle={blog.excerpt || "Industry insights, innovations, and expert knowledge from KHM Infra."}
+        breadcrumb="Home > Blog > Current Article"
+        backgroundImage={blog.featuredImage || "/images/hero-plant.jpg"}
+      />
+
       <article className="bg-white pt-0 pb-8 lg:pb-12">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6 pt-6">
           <div className="grid gap-12 lg:grid-cols-[1fr,350px]">
             {/* Main Content */}
             <div className="min-w-0">
-              {/* Featured Image */}
-              {blog.featuredImage && (
-                <div className="mb-6 overflow-hidden rounded-lg">
-                  <div className="relative aspect-[3/2] w-full bg-gray-100">
-                    <Image
-                      src={blog.featuredImage}
-                      alt={blog.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                      priority
-                    />
-                  </div>
-                </div>
-              )}
-
               {/* Title */}
               <h1 className="font-display text-3xl font-bold uppercase leading-tight text-[#1a5276] sm:text-4xl lg:text-5xl">
                 {blog.title}

@@ -172,21 +172,20 @@ export default function BlogDetailPage() {
         title={blog.title}
         subtitle={blog.excerpt || "Industry insights, innovations, and expert knowledge from KHM Infra."}
         breadcrumb="Home > Blog > Current Article"
-        backgroundImage={blog.featuredImage || "/images/hero-plant.jpg"}
+        backgroundImage="/images/hero-plant.jpg"
       />
 
-      <article className="bg-white pt-0 pb-8 lg:pb-12">
-        <div className="mx-auto max-w-[1400px] px-4 lg:px-6 pt-6">
-          <div className="grid gap-12 lg:grid-cols-[1fr,350px]">
-            {/* Main Content */}
-            <div className="min-w-0">
-              {/* Title */}
-              <h1 className="font-display text-3xl font-bold uppercase leading-tight text-[#1a5276] sm:text-4xl lg:text-5xl">
+      {/* Overview Section */}
+      <section className="py-8 lg:py-16 bg-white">
+        <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
+          <div className="grid gap-12 lg:grid-cols-2">
+            <div>
+              <h2 className="font-display text-3xl font-bold uppercase text-[#1a5276] mb-6">
                 {blog.title}
-              </h1>
+              </h2>
 
               {/* Meta Information */}
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+              <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   <span>{formatDate(blog.createdAt)}</span>
@@ -206,7 +205,7 @@ export default function BlogDetailPage() {
 
               {/* Tags */}
               {blog.tags && blog.tags.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mb-8 flex flex-wrap gap-2">
                   {blog.tags.map((tag) => (
                     <span key={tag} className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
                       #{tag}
@@ -215,8 +214,37 @@ export default function BlogDetailPage() {
                 </div>
               )}
 
-              {/* Content */}
-              <div className="mt-8 prose prose-lg max-w-none">
+              {/* Short Description */}
+              <p className="text-lg leading-relaxed text-slate-600">
+                {blog.excerpt || "Industry insights, innovations, and expert knowledge from KHM Infra."}
+              </p>
+            </div>
+
+            {/* Blog Featured Image */}
+            {blog.featuredImage && (
+              <div className="rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-xl">
+                <Image
+                  src={blog.featuredImage}
+                  alt={blog.title}
+                  width={1200}
+                  height={800}
+                  className="h-auto w-full object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Full Content Section */}
+      <article className="bg-white py-8 lg:py-12">
+        <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
+          <div className="grid gap-12 lg:grid-cols-[1fr,350px]">
+            {/* Main Content */}
+            <div className="min-w-0">
+              <div className="prose prose-lg max-w-none">
                 <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
                   {blog.content}
                 </div>

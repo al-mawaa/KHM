@@ -99,9 +99,9 @@ export default function AdminTeamHierarchyPage() {
       return;
     }
 
-    const maxSize = 5 * 1024 * 1024;
+    const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      toast.error("File size exceeds 5MB limit.");
+      toast.error("File size exceeds 10MB limit.");
       return;
     }
 
@@ -654,7 +654,7 @@ export default function AdminTeamHierarchyPage() {
                         Drag and drop an image, or click to browse
                       </p>
                       <p className="text-xs text-slate-500 mt-1">
-                        JPG, JPEG, PNG, or WebP (max 5MB)
+                        JPG, JPEG, PNG, or WebP (max 10MB)
                       </p>
                     </div>
                     <Button

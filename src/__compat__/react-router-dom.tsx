@@ -1,7 +1,7 @@
 "use client";
 
 import NextLink from "next/link";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter as useNextRouter } from "next/router";
 import { useEffect } from "react";
 
 type LinkProps = {
@@ -39,7 +39,7 @@ export function NavLink({ to, ...props }: LinkProps) {
 }
 
 export function Navigate({ to, replace }: { to: string; replace?: boolean }) {
-  const router = useRouter();
+  const router = useNextRouter();
 
   useEffect(() => {
     if (replace) {
@@ -53,7 +53,7 @@ export function Navigate({ to, replace }: { to: string; replace?: boolean }) {
 }
 
 export function useNavigate() {
-  const router = useRouter();
+  const router = useNextRouter();
   return (to: string, options?: { replace?: boolean }) => {
     if (options?.replace) {
       router.replace(to);
@@ -64,13 +64,15 @@ export function useNavigate() {
 }
 
 export function useLocation() {
-  const pathname = usePathname() ?? "";
-  const searchParams = useSearchParams();
+  const router = useNextRouter();
+  const asPath = router.asPath ?? "/";
+  const [pathnamePart, searchPart] = asPath.split("?");
+  const [pathnameWithoutHash, hashPart] = pathnamePart.split("#");
 
   return {
-    pathname,
-    search: searchParams ? `?${searchParams.toString()}` : "",
-    hash: "",
+    pathname: pathnameWithoutHash || "/",
+    search: searchPart ? `?${searchPart}` : "",
+    hash: hashPart ? `#${hashPart}` : "",
     state: null,
   };
 }

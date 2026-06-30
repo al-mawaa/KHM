@@ -202,7 +202,6 @@ export default function AboutPage() {
                 </p>
               ))}
             </div>
-            <p className="mt-4 text-xs text-muted-foreground">CIN {ABOUT_US.cin}</p>
           </div>
         </div>
       </section>

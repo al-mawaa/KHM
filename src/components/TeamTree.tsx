@@ -76,7 +76,7 @@ function MemberCard({
   const title = size === "lg" ? "text-lg" : size === "md" ? "text-base" : "text-sm";
   const subtitle = size === "lg" ? "text-sm" : size === "md" ? "text-xs" : "text-[11px]";
   const cardWidth = size === "lg" ? "w-56" : size === "md" ? "w-52" : "w-48";
-  const ringSize = photo.split(" ")[0];
+  const ringSize = photo.split(" ").slice(0, 2).join(" ");
 
   return (
     <motion.button
@@ -200,21 +200,21 @@ function RoleModal({ member, onClose }: { member: TeamMember; onClose: () => voi
         initial={{ opacity: 0, scale: 0.95, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 12 }}
-        className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between bg-[#1a5276] px-5 py-4">
+        <div className="flex items-center justify-between bg-[#1a5276] px-5 py-4 flex-shrink-0">
           <h4 className="text-lg font-bold text-white">Member Details</h4>
           <button type="button" onClick={onClose} className="rounded-lg p-1 text-white/80 hover:bg-white/10">
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="p-6 text-center">
-          <div className="mx-auto h-24 w-24 overflow-hidden rounded-full border-4 border-[#1a5276]/20 shadow">
+        <div className="overflow-y-auto flex-1 p-6 text-center">
+          <div className="mx-auto h-32 w-32 overflow-hidden rounded-full border-4 border-[#1a5276]/20 shadow flex-shrink-0">
             {member.image ? (
-              <img src={member.image} alt={member.name} className="h-full w-full object-cover" />
+              <img src={member.image} alt={member.name} className="h-full w-full object-cover rounded-full" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-[#1a5276] text-xl font-bold text-white">
+              <div className="flex h-full w-full items-center justify-center bg-[#1a5276] text-2xl font-bold text-white rounded-full">
                 {getInitials(member.name)}
               </div>
             )}

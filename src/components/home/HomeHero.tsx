@@ -15,14 +15,14 @@ const heroSlides = [
 export function HomeHero() {
   return (
     <section
-      className="relative w-full overflow-hidden home-hero-section"
+      className="relative w-full overflow-hidden home-hero-section aspect-[16/9] sm:aspect-auto"
       aria-label="Hero"
       style={{
         marginTop: "calc(var(--site-header-height, 0px) * -1)",
       }}
     >
       <Swiper
-        className="h-full w-full hero-swiper"
+        className="h-auto w-full sm:h-full hero-swiper"
         modules={[Autoplay, EffectFade, Pagination]}
         effect="fade"
         speed={1200}
@@ -44,12 +44,12 @@ export function HomeHero() {
       >
         {heroSlides.map((slide, index) => (
           <SwiperSlide key={slide}>
-            <div className="relative h-full w-full">
+            <div className="relative aspect-[16/9] w-full h-full sm:h-full sm:aspect-auto">
               <Image
                 src={slide}
                 alt={`Hero slide ${index + 1}`}
                 fill
-                className="hero-bg-img object-cover"
+                className="hero-bg-img object-contain xl:object-cover"
                 sizes="100vw"
                 priority={index === 0}
                 quality={85}
@@ -84,10 +84,8 @@ export function HomeHero() {
 
         /* Responsive hero sizing - smooth breakpoints */
         .home-hero-section { height: 100vh; min-height: 600px; }
-        @media (max-width: 1279px) { .home-hero-section { height: 85vh; min-height: 560px; } }
-        @media (max-width: 1023px) { .home-hero-section { height: 82vh; min-height: 520px; } }
-        @media (max-width: 767px) { .home-hero-section { height: 78vh; min-height: 460px; } }
-        @media (max-width: 639px) { .home-hero-section { height: 70vh; min-height: 400px; } }
+        @media (max-width: 1199px) { .home-hero-section { height: 100vh; min-height: 500px; } }
+        @media (max-width: 767px) { .home-hero-section { height: auto !important; min-height: auto !important; } }
       `}</style>
     </section>
   );

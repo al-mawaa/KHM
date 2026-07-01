@@ -243,10 +243,10 @@ export function HomeTestimonials() {
 
       {/* Feedback Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4 pt-24" onClick={() => !submitting && setModalOpen(false)}>
-          <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl max-h-[70vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 sticky top-0 bg-white">
-              <h3 className="font-display text-lg font-bold text-[#1a5276]">Share Your Feedback</h3>
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-3 sm:p-4 pt-20 sm:pt-24" onClick={() => !submitting && setModalOpen(false)}>
+          <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl max-h-[85vh] sm:max-h-[70vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 bg-white">
+              <h3 className="font-display text-base sm:text-lg font-bold text-[#1a5276]">Share Your Feedback</h3>
               <button
                 onClick={() => !submitting && setModalOpen(false)}
                 className="text-gray-500 hover:text-gray-900 transition-colors"

@@ -272,18 +272,18 @@ export function HeroSwiperBanner() {
           {/* Right column — decorative industrial stack */}
           <div className="relative hidden min-h-[280px] lg:block">
             <motion.div
-              className="absolute -right-4 top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-gradient-to-br from-emerald-500/25 via-cyan-500/15 to-transparent blur-3xl"
+              className="absolute -right-4 top-1/2 h-[320px] sm:h-[360px] lg:h-[420px] w-[320px] sm:w-[360px] lg:w-[420px] -translate-y-1/2 rounded-full bg-gradient-to-br from-emerald-500/25 via-cyan-500/15 to-transparent blur-3xl"
               animate={reduceMotion ? undefined : { rotate: 360 }}
               transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
             />
             <motion.div
-              className="absolute right-8 top-8 h-32 w-32 rounded-full border border-emerald-400/20"
+              className="absolute right-4 sm:right-8 top-8 h-24 sm:h-32 w-24 sm:w-32 rounded-full border border-emerald-400/20"
               animate={reduceMotion ? undefined : { scale: [1, 1.06, 1] }}
               transition={{ duration: 5, repeat: Infinity }}
             />
             <svg
               viewBox="0 0 320 400"
-              className="relative ml-auto h-[360px] w-[280px] text-emerald-300/40"
+              className="relative ml-auto h-[280px] sm:h-[320px] lg:h-[360px] w-[220px] sm:w-[250px] lg:w-[280px] text-emerald-300/40"
               aria-hidden
             >
               <defs>

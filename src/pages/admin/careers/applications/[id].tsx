@@ -242,7 +242,7 @@ export default function CandidateProfile() {
     <AdminShell title="Candidate Profile">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <Button 
             variant="secondary" 
             onClick={() => router.push('/admin/careers')}
@@ -262,7 +262,7 @@ export default function CandidateProfile() {
         {/* Application Timeline */}
         <div className="bg-slate-50 rounded-lg p-4">
           <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-3">Application Timeline</div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between overflow-x-auto pb-2">
             {['Pending', 'Shortlisted', 'Interview Scheduled', 'Interview Completed', 'Selected', 'Hired'].map((stage, index) => {
               const currentStage = getTimelineStage(application.applicationStatus);
               const isCompleted = index <= currentStage;
@@ -302,7 +302,7 @@ export default function CandidateProfile() {
             <UserCheck className="h-4 w-4" /> Candidate Information
           </div>
           <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
                 <UserCheck className="h-4 w-4 text-slate-400" />
                 <div>
@@ -341,7 +341,7 @@ export default function CandidateProfile() {
             <Building className="h-4 w-4" /> Professional Information
           </div>
           <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
                 <Building className="h-4 w-4 text-slate-400" />
                 <div>
@@ -393,7 +393,7 @@ export default function CandidateProfile() {
             <FileText className="h-4 w-4" /> Application Information
           </div>
           <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
                 <Briefcase className="h-4 w-4 text-slate-400" />
                 <div>
@@ -530,7 +530,7 @@ export default function CandidateProfile() {
               <Mail className="h-4 w-4" /> Email History
             </div>
             <div className="bg-white border border-slate-200 rounded-lg p-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <div className="text-xs text-slate-500">Last Email Sent</div>
                   <div className="text-sm font-medium capitalize">{application.lastEmailSent.replace(/_/g, ' ')}</div>

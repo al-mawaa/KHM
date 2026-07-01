@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Counter } from "@/components/Counter";
 import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { rainwater, heroPlant } from "@/lib/images";
-import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin, Star, Recycle, Zap, Shield, Diamond, Triangle } from "lucide-react";
+import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin, Star, Recycle, Zap, Shield, Diamond, Triangle, Quote } from "lucide-react";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 import { TeamTree } from "@/components/TeamTree";
 import { useAdminCollection } from "@/lib/admin-store";
@@ -81,6 +81,62 @@ function CoreValueCard({ icon: Icon, title, points, accentColor, gradient, index
           </li>
         ))}
       </ul>
+    </motion.div>
+  );
+}
+
+function DirectorMessageCard({ image, name, qualification, role, message, imageLeft }: {
+  image: string;
+  name: string;
+  qualification: string;
+  role: string;
+  message: string;
+  imageLeft: boolean;
+}) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative rounded-[24px] bg-white p-[40px] md:p-[48px] shadow-[0_10px_40px_rgba(0,0,0,0.08)]"
+    >
+      {/* Green quotation icon in top-right corner */}
+      <div className="absolute top-8 right-8 text-[#69B345]">
+        <Quote size={64} />
+      </div>
+
+      <div className={`flex flex-col md:flex-row gap-8 md:gap-12 items-center ${imageLeft ? '' : 'md:flex-row-reverse'}`}>
+        {/* Director Photo */}
+        <div className="w-full md:w-[38%]">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-[400px] md:h-[500px] object-cover rounded-[20px]"
+          />
+        </div>
+
+        {/* Message Content */}
+        <div className="w-full md:w-[62%]">
+          <p className="text-[16px] leading-[1.8] text-[#64748B] mb-8">
+            {message}
+          </p>
+          <div className="space-y-2">
+            <h5 className="text-2xl font-semibold text-[#0F172A]" style={{ fontFamily: 'var(--font-signature)' }}>
+              {name}
+            </h5>
+            <p className="text-[15px] text-[#64748B]">
+              {qualification}
+            </p>
+            <p className="text-[15px] text-[#64748B]">
+              {role}
+            </p>
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }
@@ -389,12 +445,43 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Director Message Section */}
+      <section className="py-12 bg-white">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          {/* Section Header */}
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
+              Director's Message
+            </h2>
+            
+          </div>
+          <div className="flex flex-col gap-8">
+            <DirectorMessageCard
+              image="/images/der-1.png"
+              name="Mr. Hrishikesh Kaluskar"
+              qualification="B.E. Civil, M.E. Environmental Engineering"
+              role="Director, Technical"
+              message="At KHM Infra Innovations Pvt. Ltd., innovation and engineering excellence drive everything we do. We continuously enhance our processes, embrace emerging technologies, and strengthen our technical capabilities to deliver smarter and more sustainable infrastructure solutions. With robust multidisciplinary controls and a client-centric approach, we are committed to providing reliable, efficient, and best-in-class services that exceed expectations and contribute to a better future."
+              imageLeft={true}
+            />
+            <DirectorMessageCard
+              image="/images/der-2.png"
+              name="Ms. Smita Kaluskar"
+              qualification="Associate Chartered Accountant"
+              role="Director, Administration"
+              message="Our journey is guided by a commitment to responsible growth, operational excellence, and lasting value creation. We believe that strong systems, prudent management, and a dedicated team are essential to delivering meaningful outcomes for our clients and stakeholders. As we continue to grow, we remain focused on fostering trust, efficiency, and continuous improvement in everything we do. We look forward to building enduring relationships and supporting sustainable progress."
+              imageLeft={false}
+            />
+          </div>
+        </div>
+      </section>
+
       <DirectorsSection />
 
       {/* Team Hierarchy — managed in Admin → Team Hierarchy */}
       <section id="management-team" className="scroll-mt-32 py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <SectionHeader eyebrow="Our Team" title="Meet Our Team" />
+          <SectionHeader  title="Meet Our Management Team" />
           <p className="mx-auto mt-3 mb-6 max-w-xl text-center text-sm text-slate-600">
             Click on any member&apos;s photo or name to view their message and role details.
           </p>

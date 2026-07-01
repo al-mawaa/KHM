@@ -171,7 +171,7 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+      <div className="mt-6 sm:mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
         <Card className="p-5">
           <h3 className="font-display font-bold">Weekly Visitors</h3>
           <div className="mt-4 h-60">
@@ -202,7 +202,7 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+      <div className="mt-6 sm:mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
         <Card className="p-5">
           <div className="flex items-center justify-between">
             <h3 className="font-display font-bold">Recent Inquiries</h3>

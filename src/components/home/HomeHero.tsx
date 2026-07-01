@@ -1,5 +1,6 @@
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Image from "next/image";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -17,13 +18,11 @@ export function HomeHero() {
       className="relative w-full overflow-hidden home-hero-section"
       aria-label="Hero"
       style={{
-        height: "100vh",
-        minHeight: "600px",
         marginTop: "calc(var(--site-header-height, 0px) * -1)",
       }}
     >
       <Swiper
-        className="h-full w-full"
+        className="h-full w-full hero-swiper"
         modules={[Autoplay, EffectFade, Pagination]}
         effect="fade"
         speed={1200}
@@ -43,15 +42,18 @@ export function HomeHero() {
           crossFade: true,
         }}
       >
-        {heroSlides.map((slide) => (
+        {heroSlides.map((slide, index) => (
           <SwiperSlide key={slide}>
-            <div
-                className="relative h-full w-full bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${slide})`,
-                  backgroundPosition: "center center",
-                }}
-              >
+            <div className="relative h-full w-full">
+              <Image
+                src={slide}
+                alt={`Hero slide ${index + 1}`}
+                fill
+                className="hero-bg-img object-cover"
+                sizes="100vw"
+                priority={index === 0}
+                quality={85}
+              />
               <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
             </div>
           </SwiperSlide>
@@ -80,10 +82,12 @@ export function HomeHero() {
           background: rgba(255, 255, 255, 0.9);
         }
 
-        /* Responsive hero sizing */
+        /* Responsive hero sizing - smooth breakpoints */
         .home-hero-section { height: 100vh; min-height: 600px; }
-        @media (max-width: 1024px) { .home-hero-section { height: 85vh; min-height: 500px; } }
-        @media (max-width: 640px) { .home-hero-section { height: 70vh; min-height: 400px; } }
+        @media (max-width: 1279px) { .home-hero-section { height: 85vh; min-height: 560px; } }
+        @media (max-width: 1023px) { .home-hero-section { height: 82vh; min-height: 520px; } }
+        @media (max-width: 767px) { .home-hero-section { height: 78vh; min-height: 460px; } }
+        @media (max-width: 639px) { .home-hero-section { height: 70vh; min-height: 400px; } }
       `}</style>
     </section>
   );

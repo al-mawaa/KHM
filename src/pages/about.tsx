@@ -141,6 +141,74 @@ function DirectorMessageCard({ image, name, qualification, role, message, imageL
   );
 }
 
+function MentorMessageCard() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative rounded-[24px] bg-white p-[40px] md:p-[48px] shadow-[0_10px_40px_rgba(0,0,0,0.08)]"
+    >
+      {/* Green quotation icon in top-right corner */}
+      <div className="absolute top-8 right-8 text-[#69B345]">
+        <Quote size={64} />
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+        {/* Mentor Photo */}
+        <div className="w-full md:w-[38%]">
+          <img
+            src="/images/mentor.png"
+            alt="Mr. Madhav Kaluskar"
+            className="w-full h-[400px] md:h-[500px] object-cover rounded-[20px]"
+          />
+        </div>
+
+        {/* Message Content */}
+        <div className="w-full md:w-[62%]">
+          {/* Label */}
+          <p className="text-[18px] font-semibold text-[#0F172A] mb-6">
+            Our Mentor - Message
+          </p>
+
+          {/* Main Quote */}
+          <h3 className="text-[34px] sm:text-[38px] font-bold text-[#0F172A] leading-tight mb-6">
+            "If We Cannot Save the Environment, the Environment Will Not Save Us."
+          </h3>
+
+          {/* Body Message */}
+          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+            This powerful vision, embraced by M/s. KHM INFRA Innovations Pvt. Ltd. is both timely and deeply meaningful. In an era of mounting environmental challenges, it is truly heartening to witness a team of seasoned professionals and energetic young engineers unite with a shared purpose—to deliver sustainable solutions in water supply, wastewater management, solid waste management, river rejuvenation, and environmental monitoring.
+          </p>
+          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+            What stands out is the company's commitment to blending sound engineering principles with modern technologies like automation, digital systems, data analytics, and Artificial Intelligence (AI). This progressive approach not only addresses today's environmental needs but also anticipates tomorrow's, offering efficient, economical, and responsible solutions for society.
+          </p>
+          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+            As a mentor and well-wisher, I am genuinely pleased to see such dedication to environmental sustainability. My sincere hope is that KHM INFRA Innovations Pvt. Ltd. continues to uphold the highest standards of technical excellence, integrity, and innovation, steadily emerging as a trusted partner in sustainable infrastructure and environmental protection.
+          </p>
+          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+            My best wishes and blessings are with the entire KHM team. May their efforts help create a cleaner, healthier, and more sustainable future for generations to come.
+          </p>
+
+          {/* Signature */}
+          <div className="space-y-2">
+            <h5 className="text-2xl font-semibold text-[#0F172A]" style={{ fontFamily: 'var(--font-signature)' }}>
+              Mr. Madhav Kaluskar
+            </h5>
+            <p className="text-[15px] text-[#64748B]">
+              Senior Board Member
+            </p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function DirectorsSection() {
   const [team] = useAdminCollection("team");
 
@@ -473,6 +541,23 @@ export default function AboutPage() {
               imageLeft={false}
             />
           </div>
+        </div>
+      </section>
+
+      {/* Our Mentor Section */}
+      <section className="py-20 bg-white">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          {/* Section Header */}
+          <div className="mb-10 text-center">
+            <div className="mx-auto mb-4 h-1 w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#69B345]" />
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+              Our Mentor
+            </h2>
+            <p className="mt-3 text-base text-[#64748B]">
+              Guided by wisdom. Inspired by vision. Driven by purpose.
+            </p>
+          </div>
+          <MentorMessageCard />
         </div>
       </section>
 

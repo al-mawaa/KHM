@@ -12,12 +12,14 @@ export function HomeProject() {
           viewport={{ once: true }}
           className="overflow-hidden rounded-lg shadow-elegant"
         >
-          <img
-            src={siteImages.projectBuilding}
-            alt="KHM Infra Innovations office"
-            className="h-[260px] w-full object-cover sm:h-[320px]"
-            loading="lazy"
-          />
+          <div className="aspect-[16/9] w-full">
+            <img
+              src={siteImages.projectBuilding}
+              alt="KHM Infra Innovations office"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>

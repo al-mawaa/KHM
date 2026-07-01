@@ -165,7 +165,7 @@ export function HomeTestimonials() {
   return (
     <section className="bg-white py-10 lg:py-12 border-t border-b border-gray-100">
       <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 sm:mb-10">
           <div className="flex items-center gap-3">
             <div className="h-8 w-1 rounded-full bg-[#25a244]" />
             <h2 className="font-display text-2xl font-bold uppercase text-[#1a5276] sm:text-3xl tracking-wide">
@@ -174,7 +174,7 @@ export function HomeTestimonials() {
           </div>
           <button
             onClick={() => setModalOpen(true)}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1a5276] text-white rounded-lg font-semibold hover:bg-[#1a5276]/90 transition-colors text-sm"
+            className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-2.5 bg-[#1a5276] text-white rounded-lg font-semibold hover:bg-[#1a5276]/90 transition-colors text-sm min-h-[44px]"
           >
             <MessageCircle className="h-4 w-4" />
             Give Feedback
@@ -195,40 +195,40 @@ export function HomeTestimonials() {
           </div>
         ) : (
           <div className="testimonial-container relative overflow-hidden">
-            <div className="testimonial-track flex gap-6 will-change-transform">
+            <div className="testimonial-track flex gap-4 sm:gap-6 will-change-transform">
               {duplicatedTestimonials.map((t, index) => (
                 <article
                   key={`${t._id}-${index}`}
-                  className="flex-shrink-0 w-[calc(33.333%-16px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] h-[280px] rounded-xl border border-gray-100 bg-white p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                  className="flex-shrink-0 w-[90%] sm:w-[calc(50%-12px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] min-h-[280px] h-auto rounded-xl border border-gray-100 bg-white p-5 sm:p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
                 >
                   {t.isFeatured && (
                     <div className="absolute top-3 right-3 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f5c518]/20 text-[#1a5276]">
                       <Star className="h-2.5 w-2.5 mr-1 fill-current text-[#f5c518]" /> Featured
                     </div>
                   )}
-                  <Quote className="absolute left-5 top-4 h-7 w-7 text-[#1a5276]/20" fill="currentColor" />
-                  <p className="relative text-sm leading-relaxed text-gray-600 italic line-clamp-4 mt-4 flex-1 overflow-hidden break-words">
+                  <Quote className="absolute left-4 sm:left-5 top-3 sm:top-4 h-6 w-6 sm:h-7 sm:w-7 text-[#1a5276]/20" fill="currentColor" />
+                  <p className="relative text-[15px] sm:text-sm leading-[1.6] text-gray-600 italic line-clamp-4 mt-3 sm:mt-4 flex-1 overflow-hidden break-words">
                     "{sanitizeFeedback(t.feedback)}"
                   </p>
                   <div className="mt-3 flex gap-0.5">
                     {renderStars(t.rating)}
                   </div>
-                  <div className="mt-4 flex items-center gap-3 border-t border-gray-100 pt-4">
+                  <div className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3 border-t border-gray-100 pt-3 sm:pt-4">
                     {t.profileImage ? (
                       <img
                         src={t.profileImage}
                         alt={t.name}
-                        className="h-10 w-10 rounded-full object-cover ring-2 ring-[#1a5276]/20"
+                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full object-cover ring-2 ring-[#1a5276]/20"
                         loading="lazy"
                       />
                     ) : (
-                      <div className="grid h-10 w-10 place-items-center rounded-full bg-[#1a5276] text-xs font-bold text-white shrink-0">
+                      <div className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-full bg-[#1a5276] text-xs font-bold text-white shrink-0">
                         {getInitials(t.name)}
                       </div>
                     )}
                     <div className="min-w-0">
-                      <p className="font-semibold text-[#1a5276] text-sm truncate">{t.name}</p>
-                      <p className="text-xs text-gray-500 truncate">
+                      <p className="font-semibold text-[#1a5276] text-[15px] sm:text-sm truncate">{t.name}</p>
+                      <p className="text-[11px] sm:text-xs text-gray-500 truncate">
                         {t.designation ? t.designation : t.industryType}
                         {t.companyName ? ` · ${t.companyName}` : ''}
                       </p>

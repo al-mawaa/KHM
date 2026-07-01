@@ -4,7 +4,7 @@ import { siteImages } from "@/lib/site-images";
 export function HomeAbout() {
   return (
     <section id="about" className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
-      <div className="mx-auto grid max-w-[1600px] items-center gap-8 px-4 sm:px-5 md:px-8 lg:grid-cols-[3fr_2fr] lg:gap-14 lg:px-10 xl:gap-20">
+      <div className="mx-auto grid max-w-[1600px] items-center gap-6 px-4 sm:gap-8 sm:px-5 md:gap-10 md:px-8 lg:grid-cols-[3fr_2fr] lg:gap-14 lg:px-10 xl:gap-20">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}

@@ -194,6 +194,13 @@
   }
 }
 
+/* Responsive object-position for hero images on mobile */
+@media (max-width: 639px) {
+  .hero-bg-img {
+    object-position: center 30%;
+  }
+}
+
 /* Swiper nav / pagination tuned for dark hero */
 .hero-swiper .swiper-button-prev,
 .hero-swiper .swiper-button-next {

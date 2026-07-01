@@ -36,6 +36,7 @@
   --color-surface: var(--surface);
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-signature: "Dancing Script", cursive, serif;
 }
 
 :root {
@@ -190,6 +191,13 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-swiper .swiper-slide-active .hero-bg-img {
     animation: none;
+  }
+}
+
+/* Responsive object-position for hero images on mobile */
+@media (max-width: 639px) {
+  .hero-bg-img {
+    object-position: center 30%;
   }
 }
 
@@ -400,6 +408,28 @@
   }
 }
 
+@media (min-width: 768px) {
+  .product-hero-main {
+    height: 450px;
+  }
+
+  .product-hero-side {
+    height: 219px;
+  }
+
+  .product-img-pair-cell {
+    height: 270px;
+  }
+
+  .product-img-card {
+    height: 360px;
+  }
+
+  .product-img-banner {
+    height: 450px;
+  }
+}
+
 @media (min-width: 1024px) {
   .product-hero-main {
     height: 480px;
@@ -466,6 +496,12 @@
 @media (min-width: 640px) {
   .infrastructure-page-hero {
     height: 440px;
+  }
+}
+
+@media (min-width: 768px) {
+  .infrastructure-page-hero {
+    height: 480px;
   }
 }
 

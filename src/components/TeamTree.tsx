@@ -75,7 +75,7 @@ function MemberCard({
     size === "lg" ? "h-28 w-28 text-2xl" : size === "md" ? "h-24 w-24 text-xl" : "h-20 w-20 text-lg";
   const title = size === "lg" ? "text-lg" : size === "md" ? "text-base" : "text-sm";
   const subtitle = size === "lg" ? "text-sm" : size === "md" ? "text-xs" : "text-[11px]";
-  const cardWidth = size === "lg" ? "w-56" : size === "md" ? "w-52" : "w-48";
+  const cardWidth = size === "lg" ? "w-48 sm:w-52 md:w-56" : size === "md" ? "w-44 sm:w-48 md:w-52" : "w-40 sm:w-44 md:w-48";
   const ringSize = photo.split(" ").slice(0, 2).join(" ");
 
   return (
@@ -84,7 +84,7 @@ function MemberCard({
       onClick={() => onSelect(member)}
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
-      className={`group relative flex ${cardWidth} cursor-pointer flex-col items-center rounded-2xl border border-[#e8dcc8] bg-gradient-to-b from-[#faf6f0] to-[#f3ebe0] p-5 text-center shadow-[0_8px_30px_rgba(26,82,118,0.08)] transition-shadow hover:border-[#1a5276]/25 hover:shadow-[0_14px_40px_rgba(26,82,118,0.14)] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/30`}
+      className={`group relative flex ${cardWidth} cursor-pointer flex-col items-center rounded-2xl border border-[#e8dcc8] bg-gradient-to-b from-[#faf6f0] to-[#f3ebe0] p-4 sm:p-5 text-center shadow-[0_8px_30px_rgba(26,82,118,0.08)] transition-shadow hover:border-[#1a5276]/25 hover:shadow-[0_14px_40px_rgba(26,82,118,0.14)] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/30`}
       aria-label={`View details for ${member.name}`}
     >
       <div
@@ -152,6 +152,14 @@ function ConnectorHorizontal({ width }: { width: number }) {
   );
 }
 
+function ConnectorHorizontalResponsive({ width }: { width: number }) {
+  return (
+    <div className="relative h-[3px] w-full max-w-[640px]" style={{ width: `${Math.min(width, 640)}px` }}>
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#1a5276]/20 via-[#1a5276]/35 to-[#1a5276]/20" />
+    </div>
+  );
+}
+
 function OrgNode({
   node,
   depth,
@@ -171,9 +179,9 @@ function OrgNode({
         <>
           <ConnectorVertical className="h-10" />
           {children.length > 1 && (
-            <ConnectorHorizontal width={Math.min(children.length * 180, 640)} />
+            <ConnectorHorizontalResponsive width={Math.min(children.length * 180, 640)} />
           )}
-          <div className="flex flex-wrap items-start justify-center gap-8 md:gap-14 lg:gap-16">
+          <div className="flex flex-wrap items-start justify-center gap-6 sm:gap-8 md:gap-14 lg:gap-16">
             {children.map((child) => (
               <div key={child._id} className="flex flex-col items-center">
                 {children.length > 1 && <ConnectorVertical className="h-5" />}
@@ -193,7 +201,7 @@ function RoleModal({ member, onClose }: { member: TeamMember; onClose: () => voi
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-3 sm:p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
@@ -203,27 +211,27 @@ function RoleModal({ member, onClose }: { member: TeamMember; onClose: () => voi
         className="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between bg-[#1a5276] px-5 py-4 flex-shrink-0">
-          <h4 className="text-lg font-bold text-white">Member Details</h4>
+        <div className="flex items-center justify-between bg-[#1a5276] px-4 sm:px-5 py-3 sm:py-4 flex-shrink-0">
+          <h4 className="text-base sm:text-lg font-bold text-white">Member Details</h4>
           <button type="button" onClick={onClose} className="rounded-lg p-1 text-white/80 hover:bg-white/10">
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="overflow-y-auto flex-1 p-6 text-center">
-          <div className="mx-auto h-32 w-32 overflow-hidden rounded-full border-4 border-[#1a5276]/20 shadow flex-shrink-0">
+        <div className="overflow-y-auto flex-1 p-4 sm:p-6 text-center">
+          <div className="mx-auto h-28 w-28 sm:h-32 sm:w-32 overflow-hidden rounded-full border-4 border-[#1a5276]/20 shadow flex-shrink-0">
             {member.image ? (
               <img src={member.image} alt={member.name} className="h-full w-full object-cover rounded-full" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-[#1a5276] text-2xl font-bold text-white rounded-full">
+              <div className="flex h-full w-full items-center justify-center bg-[#1a5276] text-xl sm:text-2xl font-bold text-white rounded-full">
                 {getInitials(member.name)}
               </div>
             )}
           </div>
-          <h3 className="mt-4 text-xl font-bold text-[#1a5276]">{member.name}</h3>
-          <p className="mt-1 text-sm font-semibold text-gray-600">{member.designation}</p>
+          <h3 className="mt-3 sm:mt-4 text-lg sm:text-xl font-bold text-[#1a5276]">{member.name}</h3>
+          <p className="mt-1 text-xs sm:text-sm font-semibold text-gray-600">{member.designation}</p>
           <div className="mt-3 flex flex-wrap justify-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#1a5276]/10 px-3 py-1 text-xs font-semibold text-[#1a5276]">
-              <Briefcase className="h-3.5 w-3.5" />
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#1a5276]/10 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold text-[#1a5276]">
+              <Briefcase className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {member.role === "director"
                 ? "Director"
                 : member.role === "subdirector"
@@ -231,14 +239,14 @@ function RoleModal({ member, onClose }: { member: TeamMember; onClose: () => voi
                   : "Team Member"}
             </span>
             {member.department && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#25a244]/10 px-3 py-1 text-xs font-semibold text-[#25a244]">
-                <Building2 className="h-3.5 w-3.5" />
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#25a244]/10 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold text-[#25a244]">
+                <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 {member.department}
               </span>
             )}
           </div>
-          <div className="mt-5 rounded-xl bg-slate-50 p-4 text-left">
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+          <div className="mt-4 sm:mt-5 rounded-xl bg-slate-50 p-3 sm:p-4 text-left">
+            <p className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-slate-700">
               {member.remark?.trim() ||
                 `${member.name} serves as ${member.designation}${member.department ? ` in ${member.department}` : ""}.`}
             </p>
@@ -294,11 +302,11 @@ export function TeamTree() {
 
   return (
     <>
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center overflow-visible px-4 py-10 pb-16">
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center overflow-x-auto overflow-y-visible px-4 py-10 pb-16">
         <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-[radial-gradient(ellipse_at_top,_rgba(26,82,118,0.06)_0%,_transparent_55%)]" />
 
         {usesParentTree && roots ? (
-          <div className="flex flex-wrap items-start justify-center gap-10 md:gap-16 lg:gap-20">
+          <div className="flex flex-wrap items-start justify-center gap-6 sm:gap-10 md:gap-16 lg:gap-20 min-w-max">
             {roots.map((root) => (
               <OrgNode key={root._id} node={root} depth={0} onSelect={setSelected} />
             ))}
@@ -307,7 +315,7 @@ export function TeamTree() {
           <>
             {directors.length > 0 && (
               <div className="flex w-full flex-col items-center">
-                <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+                <div className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 min-w-max">
                   {directors.map((member) => (
                     <MemberCard key={member._id} member={member} size="lg" onSelect={setSelected} />
                   ))}
@@ -318,9 +326,9 @@ export function TeamTree() {
             {subdirectors.length > 0 && (
               <div className="flex w-full flex-col items-center">
                 {subdirectors.length > 1 && (
-                  <ConnectorHorizontal width={Math.min(subdirectors.length * 200, 560)} />
+                  <ConnectorHorizontalResponsive width={Math.min(subdirectors.length * 200, 560)} />
                 )}
-                <div className="flex w-full flex-wrap justify-center gap-8 md:gap-14 lg:gap-20">
+                <div className="flex w-full flex-wrap justify-center gap-6 sm:gap-8 md:gap-14 lg:gap-20 min-w-max">
                   {subdirectors.map((member) => (
                     <div key={member._id} className="flex flex-col items-center">
                       {subdirectors.length > 1 && <ConnectorVertical className="h-5" />}
@@ -334,9 +342,9 @@ export function TeamTree() {
             {employees.length > 0 && (
               <div className="flex w-full flex-col items-center">
                 {employees.length > 1 && (
-                  <ConnectorHorizontal width={Math.min(employees.length * 180, 720)} />
+                  <ConnectorHorizontalResponsive width={Math.min(employees.length * 180, 720)} />
                 )}
-                <div className="flex w-full flex-wrap justify-center gap-8 md:gap-12 lg:gap-16">
+                <div className="flex w-full flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 lg:gap-16 min-w-max">
                   {employees.map((member) => (
                     <div key={member._id} className="flex flex-col items-center">
                       {employees.length > 1 && <ConnectorVertical className="h-5" />}

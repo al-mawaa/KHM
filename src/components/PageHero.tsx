@@ -12,9 +12,8 @@ interface PageHeroProps {
 export function PageHero({ title, subtitle, breadcrumb, backgroundImage = "/images/hero-plant.jpg" }: PageHeroProps) {
   return (
     <section
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] xl:h-[450px]"
       style={{
-        height: "350px",
         marginTop: "calc(var(--site-header-height, 0px) * -1)",
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
@@ -40,64 +39,22 @@ export function PageHero({ title, subtitle, breadcrumb, backgroundImage = "/imag
         >
           {/* Breadcrumb */}
           {breadcrumb && (
-            <div
-              className="mb-5 flex items-center gap-2 text-sm"
-              style={{
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
+            <div className="mb-4 sm:mb-5 flex items-center gap-2 text-xs sm:text-sm text-white/80">
               <span>{breadcrumb}</span>
             </div>
           )}
 
           {/* Title */}
-          <h1
-            className="font-bold leading-[1.1] text-white"
-            style={{
-              fontSize: "60px",
-            }}
-          >
+          <h1 className="font-bold leading-[1.1] text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[60px]">
             {title}
           </h1>
 
           {/* Subtitle */}
-          <p
-            className="mt-4 max-w-[800px] leading-[1.7]"
-            style={{
-              fontSize: "20px",
-              color: "rgba(255,255,255,0.9)",
-            }}
-          >
+          <p className="mt-4 max-w-[800px] leading-[1.7] text-sm sm:text-base md:text-lg lg:text-xl text-white/90">
             {subtitle}
           </p>
         </motion.div>
       </div>
-
-      {/* Responsive Styles */}
-      <style jsx>{`
-        @media (max-width: 1024px) {
-          section {
-            height: 300px !important;
-          }
-          h1 {
-            font-size: 48px !important;
-          }
-          p {
-            font-size: 18px !important;
-          }
-        }
-        @media (max-width: 640px) {
-          section {
-            height: 250px !important;
-          }
-          h1 {
-            font-size: 36px !important;
-          }
-          p {
-            font-size: 16px !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

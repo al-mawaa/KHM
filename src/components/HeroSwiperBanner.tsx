@@ -90,7 +90,7 @@ export function HeroSwiperBanner() {
 
   return (
     <section
-      className="relative isolate min-h-[100svh] w-full overflow-hidden"
+      className="relative isolate min-h-auto sm:min-h-[100svh] w-full overflow-hidden"
       aria-label="Hero banner"
     >
       {/* Swiper full-bleed background */}
@@ -112,8 +112,8 @@ export function HeroSwiperBanner() {
           grabCursor
         >
           {SLIDES.map((slide, index) => (
-            <SwiperSlide key={slide.src + index} className="!h-full">
-              <div className="relative h-full min-h-[100svh] w-full overflow-hidden">
+            <SwiperSlide key={slide.src + index} className="!h-full sm:!h-full">
+              <div className="relative aspect-[16/9] min-h-[400px] sm:h-full sm:min-h-[100svh] sm:aspect-auto w-full overflow-hidden bg-[#041a12]">
                 <img
                   src={slide.src}
                   alt={slide.alt}
@@ -122,7 +122,7 @@ export function HeroSwiperBanner() {
                   loading={index === 0 ? "eager" : "lazy"}
                   fetchPriority={index === 0 ? "high" : "low"}
                   decoding="async"
-                  className="hero-bg-img absolute inset-0 h-full w-full object-cover object-center"
+                  className="hero-bg-img absolute inset-0 h-full w-full object-contain sm:object-cover object-center"
                   data-swiper-parallax={reduceMotion ? undefined : "-8%"}
                 />
                 {/* Green-forward industrial overlay (logo: leaf green + aqua + navy) */}
@@ -188,13 +188,13 @@ export function HeroSwiperBanner() {
       </div>
 
       {/* Foreground content */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center px-4 pb-16 pt-6 lg:px-8 lg:pb-20">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.42fr)] lg:items-center">
+      <div className="relative z-10 mx-auto flex min-h-auto sm:min-h-[100svh] max-w-7xl flex-col justify-center px-4 pb-12 pt-10 sm:pb-14 sm:pt-8 lg:px-8 lg:pb-20 lg:pt-6">
+        <div className="grid gap-8 lg:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.42fr)] lg:items-center">
           <motion.div
             variants={reduceMotion ? undefined : container}
             initial={reduceMotion ? false : "hidden"}
             animate={reduceMotion ? false : "show"}
-            className="max-w-3xl"
+            className="max-w-3xl mx-auto lg:mx-0"
           >
             <motion.div variants={reduceMotion ? undefined : item}>
               <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/35 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-100 shadow-[0_0_24px_oklch(0.72_0.16_155/0.25)] backdrop-blur-md">
@@ -205,7 +205,7 @@ export function HeroSwiperBanner() {
 
             <motion.h1
               variants={reduceMotion ? undefined : item}
-              className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl"
+              className="mt-6 font-display text-[36px] font-bold leading-[1.15] tracking-tight text-white sm:text-4xl sm:leading-[1.1] lg:text-6xl xl:text-7xl"
             >
               <span className="block">Advanced</span>
               <span className="mt-1 block bg-gradient-to-r from-emerald-200 via-teal-200 to-cyan-200 bg-clip-text text-transparent drop-shadow-sm">
@@ -219,17 +219,17 @@ export function HeroSwiperBanner() {
 
             <motion.p
               variants={reduceMotion ? undefined : item}
-              className="mt-6 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg"
+              className="mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg lg:mt-6"
             >
               Delivering sustainable and high-performance industrial water treatment systems for infrastructure,
               manufacturing, and global industries.
             </motion.p>
 
-            <motion.div variants={reduceMotion ? undefined : item} className="mt-8 flex flex-wrap gap-3">
+            <motion.div variants={reduceMotion ? undefined : item} className="mt-7 flex flex-col gap-3 sm:flex-row sm:gap-3 lg:mt-8">
               <motion.button
                 type="button"
                 onClick={() => openQuoteInquiry("Consultation")}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_32px_oklch(0.65_0.14_165/0.45)]"
+                className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 px-7 py-3.5 text-sm font-semibold text-white shadow-[0_0_32px_oklch(0.65_0.14_165/0.45)] sm:w-auto sm:px-7 min-h-[44px]"
                 whileHover={reduceMotion ? undefined : { scale: 1.02 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.98 }}
               >
@@ -241,7 +241,7 @@ export function HeroSwiperBanner() {
 
               <Link
                 to="/projects"
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:border-emerald-300/50 hover:bg-white/15"
+                className="group relative inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl border border-white/25 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-colors hover:border-emerald-300/50 hover:bg-white/15 sm:w-auto min-h-[44px]"
               >
                 <span className="absolute inset-0 rounded-xl opacity-0 shadow-[inset_0_0_0_1px_oklch(0.85_0.12_155/0.4)] transition-opacity group-hover:opacity-100" />
                 Explore Projects
@@ -251,7 +251,7 @@ export function HeroSwiperBanner() {
             {/* Stats */}
             <motion.div
               variants={reduceMotion ? undefined : item}
-              className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:max-w-4xl"
+              className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:mt-12 lg:max-w-4xl"
             >
               {STATS.map((s) => (
                 <motion.div
@@ -270,20 +270,20 @@ export function HeroSwiperBanner() {
           </motion.div>
 
           {/* Right column — decorative industrial stack */}
-          <div className="relative hidden min-h-[280px] lg:block">
+          <div className="relative hidden min-h-[280px] md:block lg:block">
             <motion.div
-              className="absolute -right-4 top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-gradient-to-br from-emerald-500/25 via-cyan-500/15 to-transparent blur-3xl"
+              className="absolute -right-4 top-1/2 h-[320px] sm:h-[360px] lg:h-[420px] w-[320px] sm:w-[360px] lg:w-[420px] -translate-y-1/2 rounded-full bg-gradient-to-br from-emerald-500/25 via-cyan-500/15 to-transparent blur-3xl"
               animate={reduceMotion ? undefined : { rotate: 360 }}
               transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
             />
             <motion.div
-              className="absolute right-8 top-8 h-32 w-32 rounded-full border border-emerald-400/20"
+              className="absolute right-4 sm:right-8 top-8 h-24 sm:h-32 w-24 sm:w-32 rounded-full border border-emerald-400/20"
               animate={reduceMotion ? undefined : { scale: [1, 1.06, 1] }}
               transition={{ duration: 5, repeat: Infinity }}
             />
             <svg
               viewBox="0 0 320 400"
-              className="relative ml-auto h-[360px] w-[280px] text-emerald-300/40"
+              className="relative ml-auto h-[280px] sm:h-[320px] lg:h-[360px] w-[220px] sm:w-[250px] lg:w-[280px] text-emerald-300/40"
               aria-hidden
             >
               <defs>

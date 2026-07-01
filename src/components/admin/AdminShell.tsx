@@ -29,7 +29,6 @@ const menu = [
   { to: "/admin/careers", label: "Careers", icon: Briefcase },
   { to: "/admin/job-enquiries", label: "Job Enquiries", icon: MessageSquare },
   { to: "/admin/leads", label: "Contact Leads", icon: Users },
-  { to: "/admin/team", label: "Team Members", icon: UsersRound },
   { to: "/admin/team-hierarchy", label: "Team Hierarchy", icon: UsersRound },
   { to: "/admin/settings", label: "Website Settings", icon: SettingsIcon },
 ] as const;

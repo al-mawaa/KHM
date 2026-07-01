@@ -625,7 +625,7 @@ export default function CareersPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm"
             onClick={closeApplicationModal}
             role="dialog"
             aria-modal="true"
@@ -636,10 +636,10 @@ export default function CareersPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="w-full max-w-4xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.25)] my-4 md:my-0"
+              className="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl max-h-[90vh] md:max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.25)] my-4 md:my-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between shadow-sm">
+              <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between shadow-sm">
                 <div>
                   <h3 id="modal-title" className="text-2xl font-bold text-[#1a5276]">Apply for Position</h3>
                   {selectedJob && (
@@ -655,7 +655,7 @@ export default function CareersPage() {
                 </button>
               </div>
 
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {submitSuccess ? (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -913,7 +913,7 @@ export default function CareersPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm"
             onClick={closeEnquiryModal}
             role="dialog"
             aria-modal="true"
@@ -924,10 +924,10 @@ export default function CareersPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
+              className="w-full max-w-xl sm:max-w-2xl md:max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between">
                 <div>
                   <h3 id="enquiry-modal-title" className="text-2xl font-bold text-[#1a5276]">Job Enquiry</h3>
                   <p className="text-sm text-gray-600 mt-1">Share your details and we will contact you when a suitable role opens.</p>
@@ -941,7 +941,7 @@ export default function CareersPage() {
                 </button>
               </div>
 
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {enquirySuccess ? (
                   <div className="text-center py-12">
                     <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-4" />

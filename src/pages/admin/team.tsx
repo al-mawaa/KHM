@@ -341,7 +341,8 @@ export default function AdminTeamPage() {
         <>
           {/* Table */}
           <div className="rounded-xl border border-slate-200 overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
               <thead className="bg-slate-50 text-xs text-slate-500 uppercase tracking-wider">
                 <tr>
                   <th className="px-4 py-3 text-left">Member</th>
@@ -435,6 +436,7 @@ export default function AdminTeamPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Pagination */}

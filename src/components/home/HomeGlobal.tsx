@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Counter } from "@/components/Counter";
 import { KEY_ASSETS } from "@/lib/home-content";
 
@@ -14,13 +15,16 @@ export function HomeGlobal() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative mx-auto mt-8 w-full max-w-[1200px] px-0"
+            className="relative mx-auto mt-8 w-full max-w-[1200px] px-0 aspect-[16/9]"
           >
-            <img
+            <Image
               src="/images/Hero1.png"
               alt="Global presence map"
-              className="w-full rounded-2xl shadow-lg"
+              fill
+              className="rounded-2xl shadow-lg object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
               loading="lazy"
+              quality={85}
             />
           </motion.div>
         </div>

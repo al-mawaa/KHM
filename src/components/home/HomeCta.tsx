@@ -15,7 +15,7 @@ export function HomeCta() {
         </h2>
         <Link
           to="/contact"
-          className="shrink-0 rounded bg-[#25a244] px-10 py-3.5 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-[#1f8a38]"
+          className="shrink-0 rounded bg-[#25a244] px-8 py-3.5 sm:px-10 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-[#1f8a38] min-h-[44px]"
         >
           Contact Us
         </Link>

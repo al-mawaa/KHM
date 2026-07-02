@@ -125,7 +125,7 @@ function DirectorMessageCard({ image, name, qualification, role, message, imageL
             {message}
           </p>
           <div className="space-y-2">
-            <h5 className="text-2xl font-semibold text-[#0F172A]" style={{ fontFamily: 'var(--font-signature)' }}>
+            <h5 className="text-2xl font-bold text-[#0F172A]">
               {name}
             </h5>
             <p className="text-[15px] text-[#64748B]">
@@ -196,7 +196,7 @@ function MentorMessageCard() {
 
           {/* Signature */}
           <div className="space-y-2">
-            <h5 className="text-2xl font-semibold text-[#0F172A]" style={{ fontFamily: 'var(--font-signature)' }}>
+            <h5 className="text-2xl font-bold text-[#0F172A]">
               Mr. Madhav Kaluskar
             </h5>
             <p className="text-[15px] text-[#64748B]">

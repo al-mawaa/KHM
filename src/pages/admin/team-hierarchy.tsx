@@ -403,7 +403,6 @@ export default function AdminTeamHierarchyPage() {
                   <th className="px-6 py-4">Photo</th>
                   <th className="px-6 py-4">Name</th>
                   <th className="px-6 py-4">Designation</th>
-                  <th className="px-6 py-4">Role Badge</th>
                   <th className="px-6 py-4">Department</th>
                   <th className="px-6 py-4">Reports To</th>
                   <th className="px-6 py-4 text-center">Order</th>
@@ -431,13 +430,6 @@ export default function AdminTeamHierarchyPage() {
                       {m.name}
                     </td>
                     <td className="px-6 py-4 text-slate-600 whitespace-nowrap">{m.designation}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${getRoleBadgeClass(m.role)}`}
-                      >
-                        {formatRoleLabel(m.role)}
-                      </span>
-                    </td>
                     <td className="px-6 py-4 text-slate-500 whitespace-nowrap">
                       {m.department || "—"}
                     </td>
@@ -522,26 +514,13 @@ export default function AdminTeamHierarchyPage() {
               </Field>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Field label="Role (required)">
-                <Select
-                  value={edit.role}
-                  onChange={(e) => setEdit({ ...edit, role: e.target.value as any })}
-                  required
-                >
-                  <option value="director">Director</option>
-                  <option value="subdirector">Sub Director</option>
-                  <option value="employee">Employee</option>
-                </Select>
-              </Field>
-              <Field label="Department (optional)">
-                <Input
-                  value={edit.department || ""}
-                  onChange={(e) => setEdit({ ...edit, department: e.target.value })}
-                  placeholder="e.g. Engineering, HR"
-                />
-              </Field>
-            </div>
+            <Field label="Department (optional)">
+              <Input
+                value={edit.department || ""}
+                onChange={(e) => setEdit({ ...edit, department: e.target.value })}
+                placeholder="e.g. Engineering, HR"
+              />
+            </Field>
 
             <Field label="Reports To (optional)">
               <Select

@@ -72,10 +72,10 @@ function MemberCard({
   onSelect: (m: TeamMember) => void;
 }) {
   const photo =
-    size === "lg" ? "h-28 w-28 text-2xl" : size === "md" ? "h-24 w-24 text-xl" : "h-20 w-20 text-lg";
-  const title = size === "lg" ? "text-lg" : size === "md" ? "text-base" : "text-sm";
-  const subtitle = size === "lg" ? "text-sm" : size === "md" ? "text-xs" : "text-[11px]";
-  const cardWidth = size === "lg" ? "w-48 sm:w-52 md:w-56" : size === "md" ? "w-44 sm:w-48 md:w-52" : "w-40 sm:w-44 md:w-48";
+    size === "lg" ? "h-24 w-24 text-xl" : size === "md" ? "h-20 w-20 text-lg" : "h-16 w-16 text-base";
+  const title = size === "lg" ? "text-base" : size === "md" ? "text-sm" : "text-xs";
+  const subtitle = size === "lg" ? "text-xs" : size === "md" ? "text-[11px]" : "text-[10px]";
+  const cardWidth = size === "lg" ? "w-40 sm:w-44 md:w-48" : size === "md" ? "w-36 sm:w-40 md:w-44" : "w-32 sm:w-36 md:w-40";
   const ringSize = photo.split(" ").slice(0, 2).join(" ");
 
   return (
@@ -179,9 +179,9 @@ function OrgNode({
         <>
           <ConnectorVertical className="h-10" />
           {children.length > 1 && (
-            <ConnectorHorizontalResponsive width={Math.min(children.length * 180, 640)} />
+            <ConnectorHorizontalResponsive width={Math.min(children.length * 140, 560)} />
           )}
-          <div className="flex flex-wrap items-start justify-center gap-6 sm:gap-8 md:gap-14 lg:gap-16">
+          <div className="flex flex-wrap items-start justify-center gap-3 sm:gap-5 md:gap-7 lg:gap-8">
             {children.map((child) => (
               <div key={child._id} className="flex flex-col items-center">
                 {children.length > 1 && <ConnectorVertical className="h-5" />}
@@ -302,11 +302,11 @@ export function TeamTree() {
 
   return (
     <>
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center overflow-x-auto overflow-y-visible px-4 py-10 pb-16">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center overflow-visible px-4 py-10 pb-16">
         <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-[radial-gradient(ellipse_at_top,_rgba(26,82,118,0.06)_0%,_transparent_55%)]" />
 
         {usesParentTree && roots ? (
-          <div className="flex flex-wrap items-start justify-center gap-6 sm:gap-10 md:gap-16 lg:gap-20 min-w-max">
+          <div className="flex flex-wrap items-start justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
             {roots.map((root) => (
               <OrgNode key={root._id} node={root} depth={0} onSelect={setSelected} />
             ))}
@@ -315,7 +315,7 @@ export function TeamTree() {
           <>
             {directors.length > 0 && (
               <div className="flex w-full flex-col items-center">
-                <div className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 min-w-max">
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8">
                   {directors.map((member) => (
                     <MemberCard key={member._id} member={member} size="lg" onSelect={setSelected} />
                   ))}
@@ -326,9 +326,9 @@ export function TeamTree() {
             {subdirectors.length > 0 && (
               <div className="flex w-full flex-col items-center">
                 {subdirectors.length > 1 && (
-                  <ConnectorHorizontalResponsive width={Math.min(subdirectors.length * 200, 560)} />
+                  <ConnectorHorizontalResponsive width={Math.min(subdirectors.length * 160, 480)} />
                 )}
-                <div className="flex w-full flex-wrap justify-center gap-6 sm:gap-8 md:gap-14 lg:gap-20 min-w-max">
+                <div className="flex w-full flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
                   {subdirectors.map((member) => (
                     <div key={member._id} className="flex flex-col items-center">
                       {subdirectors.length > 1 && <ConnectorVertical className="h-5" />}
@@ -342,9 +342,9 @@ export function TeamTree() {
             {employees.length > 0 && (
               <div className="flex w-full flex-col items-center">
                 {employees.length > 1 && (
-                  <ConnectorHorizontalResponsive width={Math.min(employees.length * 180, 720)} />
+                  <ConnectorHorizontalResponsive width={Math.min(employees.length * 140, 560)} />
                 )}
-                <div className="flex w-full flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 lg:gap-16 min-w-max">
+                <div className="flex w-full flex-wrap justify-center gap-3 sm:gap-5 md:gap-7 lg:gap-8">
                   {employees.map((member) => (
                     <div key={member._id} className="flex flex-col items-center">
                       {employees.length > 1 && <ConnectorVertical className="h-5" />}

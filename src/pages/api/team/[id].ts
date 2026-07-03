@@ -35,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               ? doc.displayOrder
               : 0,
         isActive: doc.isActive !== undefined ? doc.isActive : doc.status !== "Inactive",
-        role: doc.role || "employee",
         remark: doc.remark || doc.bio || "",
         parentId: doc.parentId ? String(doc.parentId) : null,
       };
@@ -43,22 +42,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === "PUT") {
-      const { name, designation, role, department, remark, parentId, image, imagePublicId, order, isActive } =
-        req.body;
+      const { name, designation, department, remark, parentId, image, imagePublicId, order, isActive } = req.body;
 
-      if (!name || !designation || !role) {
+      if (!name || !designation) {
         return res
           .status(400)
-          .json({ success: false, message: "Name, designation, and role are required." });
-      }
-
-      if (role !== "director" && role !== "subdirector" && role !== "employee") {
-        return res.status(400).json({ success: false, message: "Invalid role value." });
+          .json({ success: false, message: "Name and designation are required." });
       }
 
       const member = await TeamMember.findByIdAndUpdate(
         id,
-        { name, designation, role, department, remark, parentId: parentId || null, image, imagePublicId, order, isActive },
+        { name, designation, department, remark, parentId: parentId || null, image, imagePublicId, order, isActive },
         { new: true, runValidators: true },
       );
 

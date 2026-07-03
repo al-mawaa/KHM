@@ -6,7 +6,6 @@ interface TeamMember {
   _id: string;
   name: string;
   designation: string;
-  role: "director" | "subdirector" | "employee";
   department?: string;
   remark?: string;
   parentId?: string | null;
@@ -50,16 +49,8 @@ function buildTree(members: TeamMember[]): TreeNode[] {
   return roots;
 }
 
-function roleLabel(role: TeamMember["role"]) {
-  if (role === "director") return "Director";
-  if (role === "subdirector") return "Co-Director";
-  return "Team Member";
-}
-
-function roleAccent(role: TeamMember["role"]) {
-  if (role === "director") return "from-[#1a5276] to-[#154360]";
-  if (role === "subdirector") return "from-[#25a244] to-[#1f8a38]";
-  return "from-slate-500 to-slate-600";
+function memberAccent() {
+  return "from-[#1a5276] to-[#154360]";
 }
 
 function MemberCard({
@@ -88,12 +79,12 @@ function MemberCard({
       aria-label={`View details for ${member.name}`}
     >
       <div
-        className={`absolute inset-x-5 top-0 h-1 rounded-b-full bg-gradient-to-r ${roleAccent(member.role)} opacity-80`}
+        className={`absolute inset-x-5 top-0 h-1 rounded-b-full bg-gradient-to-r ${memberAccent()} opacity-80`}
       />
 
       <div className="relative mt-1">
         <div
-          className={`absolute -inset-1 rounded-full bg-gradient-to-br ${roleAccent(member.role)} opacity-20 blur-sm transition-opacity group-hover:opacity-40`}
+          className={`absolute -inset-1 rounded-full bg-gradient-to-br ${memberAccent()} opacity-20 blur-sm transition-opacity group-hover:opacity-40`}
         />
         <div
           className={`relative ${ringSize} overflow-hidden rounded-full border-[3px] border-white shadow-md ring-2 ring-[#1a5276]/15 transition-transform group-hover:scale-[1.05]`}
@@ -102,7 +93,7 @@ function MemberCard({
             <img src={member.image} alt={member.name} className="h-full w-full object-cover" loading="lazy" />
           ) : (
             <div
-              className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${roleAccent(member.role)} font-display font-bold text-white ${photo.split(" ").slice(2).join(" ")}`}
+              className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${memberAccent()} font-display font-bold text-white ${photo.split(" ").slice(2).join(" ")}`}
             >
               {getInitials(member.name)}
             </div>
@@ -117,17 +108,14 @@ function MemberCard({
       </h4>
       <p className={`mt-0.5 font-medium text-slate-600 ${subtitle}`}>{member.designation}</p>
 
-      <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5">
-        <span className="inline-flex items-center rounded-full bg-[#1a5276]/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#1a5276]">
-          {roleLabel(member.role)}
-        </span>
-        {member.department && (
+      {member.department ? (
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5">
           <span className="inline-flex items-center gap-1 rounded-full bg-[#25a244]/12 px-2.5 py-0.5 text-[10px] font-semibold text-[#1f8a38]">
             <Building2 className="h-3 w-3 shrink-0" />
             {member.department}
           </span>
-        )}
-      </div>
+        </div>
+      ) : null}
 
       <span className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-[#1a5276]/50 opacity-0 transition-opacity group-hover:opacity-100">
         View profile
@@ -232,11 +220,7 @@ function RoleModal({ member, onClose }: { member: TeamMember; onClose: () => voi
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             <span className="inline-flex items-center gap-1 rounded-full bg-[#1a5276]/10 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold text-[#1a5276]">
               <Briefcase className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-              {member.role === "director"
-                ? "Director"
-                : member.role === "subdirector"
-                  ? "Co-Director / Manager"
-                  : "Team Member"}
+              {member.designation || "Team Member"}
             </span>
             {member.department && (
               <span className="inline-flex items-center gap-1 rounded-full bg-[#25a244]/10 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold text-[#25a244]">
@@ -296,10 +280,6 @@ export function TeamTree() {
   const usesParentTree = members.some((m) => m.parentId);
   const roots = usesParentTree ? buildTree(members) : null;
 
-  const directors = members.filter((m) => m.role === "director");
-  const subdirectors = members.filter((m) => m.role === "subdirector");
-  const employees = members.filter((m) => m.role === "employee");
-
   return (
     <>
       <div className="relative mx-auto flex w-full max-w-7xl flex-col items-center overflow-visible px-4 py-10 pb-16">
@@ -312,49 +292,11 @@ export function TeamTree() {
             ))}
           </div>
         ) : (
-          <>
-            {directors.length > 0 && (
-              <div className="flex w-full flex-col items-center">
-                <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8">
-                  {directors.map((member) => (
-                    <MemberCard key={member._id} member={member} size="lg" onSelect={setSelected} />
-                  ))}
-                </div>
-                {(subdirectors.length > 0 || employees.length > 0) && <ConnectorVertical className="h-10" />}
-              </div>
-            )}
-            {subdirectors.length > 0 && (
-              <div className="flex w-full flex-col items-center">
-                {subdirectors.length > 1 && (
-                  <ConnectorHorizontalResponsive width={Math.min(subdirectors.length * 160, 480)} />
-                )}
-                <div className="flex w-full flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
-                  {subdirectors.map((member) => (
-                    <div key={member._id} className="flex flex-col items-center">
-                      {subdirectors.length > 1 && <ConnectorVertical className="h-5" />}
-                      <MemberCard member={member} size="md" onSelect={setSelected} />
-                    </div>
-                  ))}
-                </div>
-                {employees.length > 0 && <ConnectorVertical className="h-10" />}
-              </div>
-            )}
-            {employees.length > 0 && (
-              <div className="flex w-full flex-col items-center">
-                {employees.length > 1 && (
-                  <ConnectorHorizontalResponsive width={Math.min(employees.length * 140, 560)} />
-                )}
-                <div className="flex w-full flex-wrap justify-center gap-3 sm:gap-5 md:gap-7 lg:gap-8">
-                  {employees.map((member) => (
-                    <div key={member._id} className="flex flex-col items-center">
-                      {employees.length > 1 && <ConnectorVertical className="h-5" />}
-                      <MemberCard member={member} size="sm" onSelect={setSelected} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
+          <div className="flex w-full flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+            {members.map((member) => (
+              <MemberCard key={member._id} member={member} size="md" onSelect={setSelected} />
+            ))}
+          </div>
         )}
       </div>
 

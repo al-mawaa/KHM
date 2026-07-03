@@ -4,7 +4,6 @@ export interface ITeamMember extends Document {
   // New fields for hierarchy
   name: string;
   designation: string;
-  role: "director" | "subdirector" | "employee";
   department?: string;
   remark?: string;
   parentId?: mongoose.Types.ObjectId | string | null;
@@ -37,11 +36,6 @@ const TeamMemberSchema = new Schema<ITeamMember>(
     designation: {
       type: String,
       required: [true, "Designation is required"],
-      trim: true,
-    },
-    role: {
-      type: String,
-      enum: ["director", "subdirector", "employee"],
       trim: true,
     },
     department: {

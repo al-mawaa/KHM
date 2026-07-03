@@ -19,7 +19,6 @@ interface TeamMember {
   _id?: string;
   name: string;
   designation: string;
-  role: "director" | "subdirector" | "employee";
   department?: string;
   remark?: string;
   parentId?: string | null;
@@ -33,7 +32,6 @@ export default function AdminTeamHierarchyPage() {
   const [items, setItems] = useState<TeamMember[]>([]);
   const [edit, setEdit] = useState<TeamMember | null>(null);
   const [del, setDel] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "director" | "subdirector" | "employee">("all");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -69,7 +67,6 @@ export default function AdminTeamHierarchyPage() {
   const blank = (): TeamMember => ({
     name: "",
     designation: "",
-    role: "employee",
     department: "",
     remark: "",
     parentId: null,
@@ -79,11 +76,7 @@ export default function AdminTeamHierarchyPage() {
     isActive: true,
   });
 
-  // ─── Stats Cards calculations ───
   const totalCount = items.length;
-  const directorsCount = items.filter((i) => i.role === "director").length;
-  const subDirectorsCount = items.filter((i) => i.role === "subdirector").length;
-  const employeesCount = items.filter((i) => i.role === "employee").length;
 
   // ─── Drag & Drop Image Handlers ───
   const handleFileSelect = (file: File | null) => {
@@ -258,7 +251,7 @@ export default function AdminTeamHierarchyPage() {
     }
   };
 
-  const filteredItems = filter === "all" ? items : items.filter((i) => i.role === filter);
+  const filteredItems = items;
 
   const initials = (name: string) => {
     if (!name) return "";
@@ -270,35 +263,9 @@ export default function AdminTeamHierarchyPage() {
       .toUpperCase();
   };
 
-  const getRoleBadgeClass = (role: string) => {
-    switch (role) {
-      case "director":
-        return "bg-purple-100 text-purple-800";
-      case "subdirector":
-        return "bg-blue-100 text-blue-800";
-      case "employee":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-slate-100 text-slate-800";
-    }
-  };
-
   const getParentName = (parentId?: string | null) => {
     if (!parentId) return "—";
     return items.find((i) => i._id === parentId)?.name || "—";
-  };
-
-  const formatRoleLabel = (role: string) => {
-    switch (role) {
-      case "director":
-        return "Director";
-      case "subdirector":
-        return "Sub Director";
-      case "employee":
-        return "Employee";
-      default:
-        return role;
-    }
   };
 
   return (
@@ -310,7 +277,7 @@ export default function AdminTeamHierarchyPage() {
       )}
 
       {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         <Card className="p-5 flex items-center gap-4">
           <div className="rounded-full bg-slate-100 p-3 text-[#1a5276]">
             <Users className="h-6 w-6" />
@@ -322,57 +289,14 @@ export default function AdminTeamHierarchyPage() {
             </div>
           </div>
         </Card>
-        <Card className="p-5 flex items-center gap-4">
-          <div className="rounded-full bg-purple-50 p-3 text-purple-600">
-            <Award className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-slate-800">{directorsCount}</div>
-            <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Directors
-            </div>
-          </div>
-        </Card>
-        <Card className="p-5 flex items-center gap-4">
-          <div className="rounded-full bg-blue-50 p-3 text-blue-600">
-            <ShieldAlert className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-slate-800">{subDirectorsCount}</div>
-            <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Sub Directors
-            </div>
-          </div>
-        </Card>
-        <Card className="p-5 flex items-center gap-4">
-          <div className="rounded-full bg-green-50 p-3 text-green-600">
-            <Users className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-slate-800">{employeesCount}</div>
-            <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Employees
-            </div>
-          </div>
-        </Card>
       </div>
 
       {/* Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="flex gap-1.5 flex-wrap">
-          {(["all", "director", "subdirector", "employee"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setFilter(t)}
-              className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
-                filter === t
-                  ? "bg-aqua text-aqua-foreground"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              {t === "all" ? "All Roles" : formatRoleLabel(t)}
-            </button>
-          ))}
+          <span className="rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700">
+            Showing all team members
+          </span>
         </div>
         <Button
           onClick={() => {
@@ -545,7 +469,7 @@ export default function AdminTeamHierarchyPage() {
                 rows={4}
                 value={edit.remark || ""}
                 onChange={(e) => setEdit({ ...edit, remark: e.target.value })}
-                placeholder="Role details, responsibilities, experience..."
+                placeholder="Profile details, responsibilities, experience..."
               />
             </Field>
 

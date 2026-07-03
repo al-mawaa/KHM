@@ -121,17 +121,17 @@ function DirectorMessageCard({ image, name, qualification, role, message, imageL
 
         {/* Message Content */}
         <div className="w-full md:w-[62%]">
-          <p className="text-[16px] leading-[1.8] text-[#64748B] mb-8">
+          <p className="text-[16px] leading-[1.8] text-black mb-8">
             {message}
           </p>
           <div className="space-y-2">
-            <h5 className="text-2xl font-bold text-[#0F172A]">
+            <h5 className="text-2xl font-bold text-black">
               {name}
             </h5>
-            <p className="text-[15px] text-[#64748B]">
+            <p className="text-[15px] text-black">
               {qualification}
             </p>
-            <p className="text-[15px] text-[#64748B]">
+            <p className="text-[15px] text-black">
               {role}
             </p>
           </div>
@@ -171,35 +171,35 @@ function MentorMessageCard() {
         {/* Message Content */}
         <div className="w-full md:w-[62%]">
           {/* Label */}
-          <p className="text-[18px] font-semibold text-[#0F172A] mb-6">
+          <p className="text-[18px] font-semibold text-black mb-6">
             Our Mentor - Message
           </p>
 
           {/* Main Quote */}
-          <h3 className="text-[34px] sm:text-[38px] font-bold text-[#0F172A] leading-tight mb-6">
+          <h3 className="text-[34px] sm:text-[38px] font-bold text-black leading-tight mb-6">
             "If We Cannot Save the Environment, the Environment Will Not Save Us."
           </h3>
 
           {/* Body Message */}
-          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+          <p className="text-[16px] leading-[1.8] text-black mb-8">
             This powerful vision, embraced by M/s. KHM INFRA Innovations Pvt. Ltd. is both timely and deeply meaningful. In an era of mounting environmental challenges, it is truly heartening to witness a team of seasoned professionals and energetic young engineers unite with a shared purpose—to deliver sustainable solutions in water supply, wastewater management, solid waste management, river rejuvenation, and environmental monitoring.
           </p>
-          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+          <p className="text-[16px] leading-[1.8] text-black mb-8">
             What stands out is the company's commitment to blending sound engineering principles with modern technologies like automation, digital systems, data analytics, and Artificial Intelligence (AI). This progressive approach not only addresses today's environmental needs but also anticipates tomorrow's, offering efficient, economical, and responsible solutions for society.
           </p>
-          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+          <p className="text-[16px] leading-[1.8] text-black mb-8">
             As a mentor and well-wisher, I am genuinely pleased to see such dedication to environmental sustainability. My sincere hope is that KHM INFRA Innovations Pvt. Ltd. continues to uphold the highest standards of technical excellence, integrity, and innovation, steadily emerging as a trusted partner in sustainable infrastructure and environmental protection.
           </p>
-          <p className="text-[16px] leading-[1.8] text-[#475569] mb-8">
+          <p className="text-[16px] leading-[1.8] text-black mb-8">
             My best wishes and blessings are with the entire KHM team. May their efforts help create a cleaner, healthier, and more sustainable future for generations to come.
           </p>
 
           {/* Signature */}
           <div className="space-y-2">
-            <h5 className="text-2xl font-bold text-[#0F172A]">
+            <h5 className="text-2xl font-bold text-black">
               Mr. Madhav Kaluskar
             </h5>
-            <p className="text-[15px] text-[#64748B]">
+            <p className="text-[15px] text-black">
               Senior Board Member
             </p>
           </div>
@@ -320,7 +320,7 @@ export default function AboutPage() {
               {ABOUT_US.paragraphs.map((paragraph) => (
                 <p
                   key={paragraph.slice(0, 48)}
-                  className="text-sm leading-relaxed text-muted-foreground sm:text-base"
+                  className="text-sm leading-relaxed text-black sm:text-base"
                 >
                   {paragraph}
                 </p>

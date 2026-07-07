@@ -46,12 +46,12 @@ export const HERO_SLIDES: HeroSlideConfig[] = [
 ];
 
 export const KEY_ASSETS = [
-  { value: 19, suffix: "+", label: "Years Industry Experience", color: "#17a2b8" },
-  { value: 5500, suffix: "+", label: "Projects Installed Worldwide", color: "#e83e8c" },
-  { value: 2200, suffix: "+", label: "Happy Customers", color: "#fd7e14" },
-  { value: 39, suffix: "+", label: "Countries Served", color: "#8bc34a" },
-  { value: 100, suffix: "K+", label: "Daily Treatment Capacity (L)", color: "#9c27b0" },
-  { value: 250, suffix: "+", label: "Engineering Professionals", color: "#f44336" },
+  { value: 19, suffix: "+", label: "Years Industry Experience", icon: "award" },
+  { value: 5500, suffix: "+", label: "Projects Installed Worldwide", icon: "building" },
+  { value: 2200, suffix: "+", label: "Happy Customers", icon: "users" },
+  { value: 39, suffix: "+", label: "Countries Served", icon: "globe" },
+  { value: 100, suffix: "K+", label: "Daily Treatment Capacity (L)", icon: "droplet" },
+  { value: 250, suffix: "+", label: "Engineering Professionals", icon: "hard-hat" },
 ] as const;
 
 export const TESTIMONIALS = [

@@ -85,16 +85,19 @@ function CoreValueCard({ icon: Icon, title, points, accentColor, gradient, index
   );
 }
 
-function DirectorMessageCard({ image, name, qualification, role, message, imageLeft }: {
+function DirectorMessageCard({ image, name, qualification, role, message }: {
   image: string;
   name: string;
   qualification: string;
   role: string;
   message: string;
-  imageLeft: boolean;
 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  // Auto-adjust text size based on message length
+  const messageLength = message.length;
+  const textSize = messageLength > 300 ? 'text-[16px]' : 'text-[18px]';
 
   return (
     <motion.div
@@ -102,39 +105,55 @@ function DirectorMessageCard({ image, name, qualification, role, message, imageL
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="relative rounded-[24px] bg-white p-[40px] md:p-[48px] shadow-[0_10px_40px_rgba(0,0,0,0.08)]"
+      whileHover={{ y: -8 }}
+      className="relative rounded-[24px] bg-white border border-[#E5E7EB] shadow-[0_8px_30px_rgba(11,95,165,0.08)] overflow-hidden transition-all duration-[0.4s] hover:shadow-[0_16px_50px_rgba(11,95,165,0.15)] hover:border-[#0B5FA5]/30"
     >
-      {/* Green quotation icon in top-right corner */}
-      <div className="absolute top-8 right-8 text-[#69B345]">
-        <Quote size={64} />
+      {/* Subtle quote icon behind content */}
+      <div className="absolute top-1/2 right-8 -translate-y-1/2 text-[#2BA84A] opacity-[0.06] pointer-events-none z-0">
+        <Quote size={180} />
       </div>
 
-      <div className={`flex flex-col md:flex-row gap-8 md:gap-12 items-center ${imageLeft ? '' : 'md:flex-row-reverse'}`}>
-        {/* Director Photo */}
-        <div className="w-full md:w-[38%]">
-          <img
-            src={image}
-            alt={name}
-            className="w-full h-[400px] md:h-[500px] object-cover rounded-[20px]"
-          />
+      <div className="flex flex-col h-full">
+        {/* Image Section - Top */}
+        <div className="relative w-full h-[300px]">
+          {/* Blue-green gradient border around image */}
+          <div className="absolute inset-3 rounded-[20px] bg-gradient-to-br from-[#0B5FA5]/5 to-[#2BA84A]/5" />
+          
+          {/* Image container with proper aspect ratio */}
+          <div className="relative h-full w-full p-3">
+            <div className="relative h-full w-full rounded-[20px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
+              <motion.img
+                src={image}
+                alt={name}
+                className="w-full h-full object-cover object-top"
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.4 }}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Message Content */}
-        <div className="w-full md:w-[62%]">
-          <p className="text-[16px] leading-[1.8] text-black mb-8">
+        {/* Content Section - Bottom */}
+        <div className="relative w-full p-6 flex flex-col justify-center z-10">
+          {/* Name */}
+          <h3 className="text-[32px] font-bold text-[#0B5FA5] leading-tight mb-2">
+            {name}
+          </h3>
+
+          {/* Designation */}
+          <p className="text-[20px] font-medium text-[#4B5563] mb-3">
+            {role}
+          </p>
+
+          {/* Qualifications */}
+          <p className="text-[16px] text-[#6B7280] mb-4 leading-relaxed">
+            {qualification}
+          </p>
+
+          {/* Message */}
+          <p className={`${textSize} leading-[1.7] text-[#4B5563]`}>
             {message}
           </p>
-          <div className="space-y-2">
-            <h5 className="text-2xl font-bold text-black">
-              {name}
-            </h5>
-            <p className="text-[15px] text-black">
-              {qualification}
-            </p>
-            <p className="text-[15px] text-black">
-              {role}
-            </p>
-          </div>
         </div>
       </div>
     </motion.div>
@@ -151,55 +170,61 @@ function MentorMessageCard() {
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="relative rounded-[24px] bg-white p-[40px] md:p-[48px] shadow-[0_10px_40px_rgba(0,0,0,0.08)]"
+      whileHover={{ y: -8 }}
+      className="relative rounded-[24px] bg-white border border-[#E5E7EB] shadow-[0_8px_30px_rgba(11,95,165,0.08)] overflow-hidden transition-all duration-[0.4s] hover:shadow-[0_16px_50px_rgba(11,95,165,0.15)] hover:border-[#0B5FA5]/30"
     >
-      {/* Green quotation icon in top-right corner */}
-      <div className="absolute top-8 right-8 text-[#69B345]">
-        <Quote size={64} />
+      {/* Subtle quote icon behind content */}
+      <div className="absolute top-1/2 right-8 -translate-y-1/2 text-[#2BA84A] opacity-[0.06] pointer-events-none z-0">
+        <Quote size={180} />
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
-        {/* Mentor Photo */}
-        <div className="w-full md:w-[38%]">
-          <img
-            src="/images/mentor.png"
-            alt="Mr. Madhav Kaluskar"
-            className="w-full h-[400px] md:h-[500px] object-cover rounded-[20px]"
-          />
+      <div className="flex flex-col lg:flex-row h-full">
+        {/* Image Section - Left */}
+        <div className="relative w-full lg:w-2/5 xl:w-1/3 p-6 flex items-center justify-center">
+          {/* Blue-green gradient border around image */}
+          <div className="absolute inset-3 rounded-[20px] bg-gradient-to-br from-[#0B5FA5]/5 to-[#2BA84A]/5" />
+          
+          {/* Image container with square aspect ratio */}
+          <div className="relative w-full pb-[100%] lg:pb-0 lg:h-full rounded-[20px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
+            <motion.img
+              src="/images/mentor.png"
+              alt="Mr. Madhav Kaluskar"
+              className="absolute inset-0 w-full h-full object-cover object-top rounded-[20px]"
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.4 }}
+            />
+          </div>
         </div>
 
-        {/* Message Content */}
-        <div className="w-full md:w-[62%]">
-          {/* Label */}
-          <p className="text-[18px] font-semibold text-black mb-6">
-            Our Mentor - Message
-          </p>
-
+        {/* Content Section - Right */}
+        <div className="relative w-full lg:w-3/5 xl:w-2/3 p-6 flex flex-col justify-center z-10">
           {/* Main Quote */}
-          <h3 className="text-[34px] sm:text-[38px] font-bold text-black leading-tight mb-6">
-            "If We Cannot Save the Environment, the Environment Will Not Save Us."
+          <h3 className="text-[24px] font-bold text-black leading-tight mb-3">
+            "If We Cannot Save the Environment,<br />               the Environment Will Not Save Us."
           </h3>
 
-          {/* Body Message */}
-          <p className="text-[16px] leading-[1.8] text-black mb-8">
-            This powerful vision, embraced by M/s. KHM INFRA Innovations Pvt. Ltd. is both timely and deeply meaningful. In an era of mounting environmental challenges, it is truly heartening to witness a team of seasoned professionals and energetic young engineers unite with a shared purpose—to deliver sustainable solutions in water supply, wastewater management, solid waste management, river rejuvenation, and environmental monitoring.
-          </p>
-          <p className="text-[16px] leading-[1.8] text-black mb-8">
-            What stands out is the company's commitment to blending sound engineering principles with modern technologies like automation, digital systems, data analytics, and Artificial Intelligence (AI). This progressive approach not only addresses today's environmental needs but also anticipates tomorrow's, offering efficient, economical, and responsible solutions for society.
-          </p>
-          <p className="text-[16px] leading-[1.8] text-black mb-8">
-            As a mentor and well-wisher, I am genuinely pleased to see such dedication to environmental sustainability. My sincere hope is that KHM INFRA Innovations Pvt. Ltd. continues to uphold the highest standards of technical excellence, integrity, and innovation, steadily emerging as a trusted partner in sustainable infrastructure and environmental protection.
-          </p>
-          <p className="text-[16px] leading-[1.8] text-black mb-8">
-            My best wishes and blessings are with the entire KHM team. May their efforts help create a cleaner, healthier, and more sustainable future for generations to come.
-          </p>
+          {/* Body Messages */}
+          <div className="space-y-3 text-[15px] leading-[1.7] text-[#4B5563]">
+            <p>
+              This powerful vision, embraced by M/s. KHM INFRA Innovations Pvt. Ltd. is both timely and deeply meaningful. In an era of mounting environmental challenges, it is truly heartening to witness a team of seasoned professionals and energetic young engineers unite with a shared purpose—to deliver sustainable solutions in water supply, wastewater management, solid waste management, river rejuvenation, and environmental monitoring.
+            </p>
+            <p>
+              What stands out is the company's commitment to blending sound engineering principles with modern technologies like automation, digital systems, data analytics, and Artificial Intelligence (AI). This progressive approach not only addresses today's environmental needs but also anticipates tomorrow's, offering efficient, economical, and responsible solutions for society.
+            </p>
+            <p>
+              As a mentor and well-wisher, I am genuinely pleased to see such dedication to environmental sustainability. My sincere hope is that KHM INFRA Innovations Pvt. Ltd. continues to uphold the highest standards of technical excellence, integrity, and innovation, steadily emerging as a trusted partner in sustainable infrastructure and environmental protection.
+            </p>
+            <p>
+              My best wishes and blessings are with the entire KHM team. May their efforts help create a cleaner, healthier, and more sustainable future for generations to come.
+            </p>
+          </div>
 
           {/* Signature */}
-          <div className="space-y-2">
-            <h5 className="text-2xl font-bold text-black">
+          <div className="mt-4 pt-3 border-t border-[#E5E7EB]">
+            <h4 className="text-[22px] font-bold text-black mb-1" style={{ fontFamily: 'cursive, "Brush Script MT", "Comic Sans MS", serif' }}>
               Mr. Madhav Kaluskar
-            </h5>
-            <p className="text-[15px] text-black">
+            </h4>
+            <p className="text-[16px] text-[#6B7280]">
               Senior Board Member
             </p>
           </div>
@@ -331,7 +356,7 @@ export default function AboutPage() {
       </section>
 
       <section
-        id="vision"
+        id="our-vision"
         className="scroll-mt-32 border-t border-border bg-[#f8fafc] py-20 lg:py-24"
       >
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -372,7 +397,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="mission" className="scroll-mt-32 border-t border-border bg-white py-20 lg:py-24">
+      <section id="our-mission" className="scroll-mt-32 border-t border-border bg-white py-20 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="rounded-2xl border border-border bg-card p-8 shadow-card">
@@ -400,7 +425,7 @@ export default function AboutPage() {
       </section>
 
       <section 
-        id="core-values" 
+        id="what-we-stand-for" 
         className="scroll-mt-32 border-t border-border py-20 lg:py-24 relative overflow-hidden"
         style={{
           background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)'
@@ -514,8 +539,27 @@ export default function AboutPage() {
       </section>
 
       {/* Director Message Section */}
-      <section className="py-12 bg-white">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <section 
+        id="directors-message" 
+        className="scroll-mt-36 py-20 relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)'
+        }}
+      >
+        {/* Subtle dotted pattern overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #0B5FA5 1px, transparent 1px)',
+            backgroundSize: '32px 32px'
+          }}
+        />
+        
+        {/* Soft blue-green radial gradients */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-[#0B5FA5]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#2BA84A]/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
           {/* Section Header */}
           <div className="mb-10 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
@@ -523,14 +567,13 @@ export default function AboutPage() {
             </h2>
             
           </div>
-          <div className="flex flex-col gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1400px] mx-auto">
             <DirectorMessageCard
               image="/images/der-1.png"
               name="Mr. Hrishikesh Kaluskar"
               qualification="B.E. Civil, M.E. Environmental Engineering"
               role="Director, Technical"
               message="At KHM Infra Innovations Pvt. Ltd., innovation and engineering excellence drive everything we do. We continuously enhance our processes, embrace emerging technologies, and strengthen our technical capabilities to deliver smarter and more sustainable infrastructure solutions. With robust multidisciplinary controls and a client-centric approach, we are committed to providing reliable, efficient, and best-in-class services that exceed expectations and contribute to a better future."
-              imageLeft={true}
             />
             <DirectorMessageCard
               image="/images/der-2.png"
@@ -538,15 +581,33 @@ export default function AboutPage() {
               qualification="Associate Chartered Accountant"
               role="Director, Administration"
               message="Our journey is guided by a commitment to responsible growth, operational excellence, and lasting value creation. We believe that strong systems, prudent management, and a dedicated team are essential to delivering meaningful outcomes for our clients and stakeholders. As we continue to grow, we remain focused on fostering trust, efficiency, and continuous improvement in everything we do. We look forward to building enduring relationships and supporting sustainable progress."
-              imageLeft={false}
             />
           </div>
         </div>
       </section>
 
       {/* Our Mentor Section */}
-      <section className="py-20 bg-white">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <section 
+        id="our-mentor" 
+        className="scroll-mt-36 py-20 relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)'
+        }}
+      >
+        {/* Subtle dotted pattern overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #2BA84A 1px, transparent 1px)',
+            backgroundSize: '32px 32px'
+          }}
+        />
+        
+        {/* Soft blue-green radial gradients */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0B5FA5]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#2BA84A]/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
           {/* Section Header */}
           <div className="mb-10 text-center">
             <div className="mx-auto mb-4 h-1 w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#69B345]" />

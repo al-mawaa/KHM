@@ -146,13 +146,11 @@ export default function ProjectDetailPage() {
 
             <div>
               {project.image ? (
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-gray-200 shadow-lg">
-                  <Image
+                <div className="w-full overflow-hidden rounded-2xl border border-gray-200 shadow-lg">
+                  <img
                     src={project.image}
                     alt={project.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="w-full h-auto object-contain"
                   />
                 </div>
               ) : (

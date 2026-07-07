@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Instagram,
@@ -9,6 +9,13 @@ import {
   MessageCircle,
   Phone,
   X,
+  ChevronDown,
+  Eye,
+  Target,
+  Shield,
+  User,
+  GraduationCap,
+  Users,
 } from "lucide-react";
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -119,13 +126,17 @@ function syncSiteHeaderHeight(el: HTMLElement) {
 
 export function Navbar() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { settings } = useWebsiteSettings();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [quoteService, setQuoteService] = useState("Consultation");
   const [scrolled, setScrolled] = useState(false);
+  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const socialLinks = getSocialLinks(settings);
   const phoneDisplay = getPhoneDisplay(settings.phone);
@@ -170,6 +181,90 @@ export function Navbar() {
   };
 
   const isCompanyActive = pathname.startsWith("/about");
+
+  // Dropdown menu items for About Us
+  const aboutDropdownItems = [
+    { id: "our-vision", label: "Our Vision", icon: Eye },
+    { id: "our-mission", label: "Our Mission", icon: Target },
+    { id: "what-we-stand-for", label: "What We Stand For", icon: Shield },
+    { id: "directors-message", label: "Director's Message", icon: User },
+    { id: "our-mentor", label: "Our Mentor", icon: GraduationCap },
+    { id: "management-team", label: "Meet Our Management Team", icon: Users },
+  ];
+
+  // Handle dropdown item click with smooth scrolling
+  const handleDropdownItemClick = (sectionId: string) => {
+    setAboutDropdownOpen(false);
+    
+    if (pathname === "/about") {
+      // Already on About page, just scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const navbarHeight = headerRef.current?.offsetHeight || 90;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+          
+          // Optional: Add highlight animation
+          element.classList.add("ring-2", "ring-[#69B345]", "ring-offset-2");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-[#69B345]", "ring-offset-2");
+          }, 1500);
+        }
+      }, 100);
+    } else {
+      // Navigate to About page with hash
+      navigate(`/about#${sectionId}`);
+    }
+  };
+
+  // Handle scroll to section when hash is present
+  useEffect(() => {
+    if (pathname === "/about" && window.location.hash) {
+      const sectionId = window.location.hash.replace("#", "");
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const navbarHeight = headerRef.current?.offsetHeight || 90;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+          
+          // Optional: Add highlight animation
+          element.classList.add("ring-2", "ring-[#69B345]", "ring-offset-2");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-[#69B345]", "ring-offset-2");
+          }, 1500);
+        }
+      }, 300);
+    }
+  }, [pathname]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setAboutDropdownOpen(false);
+      }
+    };
+
+    if (aboutDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [aboutDropdownOpen]);
 
   const openQuote = useCallback((service: string) => {
     setQuoteService(service);
@@ -279,14 +374,14 @@ export function Navbar() {
         }
       `}</style>
 
-      <header ref={headerRef} className="header-3d" data-scrolled={scrolled} style={scrolled ? { background: 'rgba(255,255,255,0.92)' } : {}}>
+      <header ref={headerRef} className="header-3d">
 
         {/* ── Main navbar ── */}
         <div
           style={{
-            borderBottom: scrolled ? "1px solid rgba(26,82,118,0.08)" : "1px solid rgba(226,232,240,0.8)",
-            background: scrolled ? "transparent" : "rgba(255,255,255,0.97)",
-            boxShadow: scrolled ? "none" : "0 2px 12px rgba(13,61,92,0.06), inset 0 -1px 0 rgba(226,232,240,0.6)",
+            borderBottom: "1px solid rgba(226,232,240,0.8)",
+            background: "#FFFFFF",
+            boxShadow: "0 2px 12px rgba(13,61,92,0.06), inset 0 -1px 0 rgba(226,232,240,0.6)",
           }}
         >
           <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 lg:px-8 min-h-[90px]">
@@ -299,23 +394,90 @@ export function Navbar() {
 
               {/* Desktop nav links */}
               <nav className="hidden flex-wrap items-center lg:flex" aria-label="Main">
-                {[
-                  { to: "/", label: "Home", active: pathname === "/" },
-                  { to: "/about", label: "About Us", active: isCompanyActive },
-                  { to: "/our-services", label: "Our Services", active: isActive("/our-services") },
-                  { to: "/projects", label: "Projects", active: isActive("/projects") },
-                  { to: "/gallery", label: "Gallery", active: isActive("/gallery") },
-                  { to: "/blog", label: "Blog", active: isActive("/blog") },
-                  { to: "/careers", label: "Careers", active: isActive("/careers") },
-                ].map(({ to, label, active }) => (
-                  <Link
-                    key={to}
-                    to={to}
-                    className={cn("nav-link-3d", active && "active")}
+                <Link
+                  to="/"
+                  className={cn("nav-link-3d", pathname === "/" && "active")}
+                >
+                  Home
+                </Link>
+                
+                {/* About Us with Dropdown */}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    className={cn(
+                      "nav-link-3d",
+                      isCompanyActive && "active"
+                    )}
+                    onClick={() => {
+                      navigate("/about");
+                      setAboutDropdownOpen(true);
+                    }}
+                    onMouseEnter={() => setAboutDropdownOpen(true)}
+                    aria-expanded={aboutDropdownOpen}
+                    aria-haspopup="true"
                   >
-                    {label}
-                  </Link>
-                ))}
+                    About Us
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  <AnimatePresence>
+                    {aboutDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                        className="absolute left-0 top-full mt-2 min-w-[260px] rounded-[14px] bg-white shadow-[0_10px_40px_rgba(13,61,92,0.15)] border border-[#E5E7EB] p-3 z-50"
+                        onMouseLeave={() => setAboutDropdownOpen(false)}
+                      >
+                        {aboutDropdownItems.map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() => handleDropdownItemClick(item.id)}
+                            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
+                          >
+                            <item.icon className="h-5 w-5 text-gray-500 transition-transform duration-200 group-hover:scale-110 group-hover:text-[#69B345]" />
+                            <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
+                              {item.label}
+                            </span>
+                            <div className="ml-auto h-1 w-0 rounded-full bg-[#69B345] transition-all duration-200 group-hover:w-8" />
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                
+                <Link
+                  to="/our-services"
+                  className={cn("nav-link-3d", isActive("/our-services") && "active")}
+                >
+                  Our Services
+                </Link>
+                <Link
+                  to="/projects"
+                  className={cn("nav-link-3d", isActive("/projects") && "active")}
+                >
+                  Projects
+                </Link>
+                <Link
+                  to="/gallery"
+                  className={cn("nav-link-3d", isActive("/gallery") && "active")}
+                >
+                  Gallery
+                </Link>
+                <Link
+                  to="/blog"
+                  className={cn("nav-link-3d", isActive("/blog") && "active")}
+                >
+                  Blog
+                </Link>
+                <Link
+                  to="/careers"
+                  className={cn("nav-link-3d", isActive("/careers") && "active")}
+                >
+                  Careers
+                </Link>
               </nav>
             </div>
 
@@ -394,7 +556,60 @@ export function Navbar() {
                 {/* Drawer links */}
                 <div className="flex-1 overflow-y-auto py-2">
                   <MobileNavLink to="/" label="Home" onNavigate={() => setMobileOpen(false)} active={isActive("/")} />
-                  <MobileNavLink to="/about" label="About Us" onNavigate={() => setMobileOpen(false)} active={isCompanyActive} />
+                  
+                  {/* About Us with Accordion */}
+                  <div className="px-5">
+                    <button
+                      onClick={() => {
+                        navigate("/about");
+                        setMobileAboutOpen(!mobileAboutOpen);
+                      }}
+                      className={cn(
+                        "flex w-full items-center justify-between py-4 text-sm font-medium transition-all duration-200",
+                        isCompanyActive ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
+                      )}
+                      style={
+                        isCompanyActive
+                          ? { background: "linear-gradient(90deg, rgba(26,82,118,0.06) 0%, transparent 100%)", borderLeft: "3px solid #1a5276", paddingLeft: "14px", marginLeft: "-17px" }
+                          : { borderLeft: "3px solid transparent", paddingLeft: "14px", marginLeft: "-17px" }
+                      }
+                    >
+                      <span>About Us</span>
+                    </button>
+                    
+                    <AnimatePresence>
+                      {mobileAboutOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="py-2 pl-4 space-y-1">
+                            {aboutDropdownItems.map((item) => (
+                              <Link
+                                key={item.id}
+                                to={`/about#${item.id}`}
+                                onClick={() => {
+                                  setMobileOpen(false);
+                                  setMobileAboutOpen(false);
+                                  handleDropdownItemClick(item.id);
+                                }}
+                                className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
+                              >
+                                <item.icon className="h-5 w-5 text-gray-500 transition-transform duration-200 group-hover:scale-110 group-hover:text-[#69B345]" />
+                                <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
+                                  {item.label}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  
                   <MobileNavLink to="/our-services" label="Our Services" onNavigate={() => setMobileOpen(false)} active={isActive("/our-services")} />
                   <MobileNavLink to="/projects" label="Projects" onNavigate={() => setMobileOpen(false)} active={isActive("/projects")} />
                   <MobileNavLink to="/gallery" label="Gallery" onNavigate={() => setMobileOpen(false)} active={isActive("/gallery")} />

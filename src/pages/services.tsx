@@ -19,7 +19,7 @@ export default function ServicesPage() {
               <h1 className="mt-2 font-display text-3xl font-bold uppercase text-[#1a5276] sm:text-4xl">
                 {SERVICES_PAGE.title}
               </h1>
-              <p className="mt-5 max-w-xl text-sm leading-relaxed text-gray-600 sm:text-base">{SERVICES_PAGE.intro}</p>
+              <p className="mt-5 max-w-xl text-sm leading-relaxed text-black sm:text-base">{SERVICES_PAGE.intro}</p>
               <Link
                 to="/contact"
                 className="mt-8 inline-flex rounded-full bg-[#25a244] px-8 py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-[#1f8a38]"
@@ -41,7 +41,7 @@ export default function ServicesPage() {
 
       {/* Breadcrumb */}
       <div className="border-b border-gray-200 bg-[#f4f6f8]">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
+        <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-black lg:px-6">
           <Link to="/" className="transition-colors hover:text-[#1a5276]">
             Home
           </Link>
@@ -81,7 +81,7 @@ export default function ServicesPage() {
                     {category.services.map((service) => (
                       <li
                         key={service}
-                        className="flex gap-2 text-sm leading-relaxed text-gray-700 before:mt-1.5 before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-[#1a5276] before:content-['']"
+                        className="flex gap-2 text-sm leading-relaxed text-black before:mt-1.5 before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:bg-[#1a5276] before:content-['']"
                       >
                         {service}
                       </li>

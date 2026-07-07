@@ -517,7 +517,7 @@ export default function CareersPage() {
             >
               <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
               <p className="text-lg text-red-600 font-medium">{error}</p>
-              <p className="text-sm text-gray-500 mt-2">Please try again later or contact support.</p>
+              <p className="text-sm text-black mt-2">Please try again later or contact support.</p>
             </motion.div>
           ) : loading ? (
             <motion.div
@@ -526,7 +526,7 @@ export default function CareersPage() {
               className="flex flex-col items-center justify-center py-16"
             >
               <Loader2 className="h-12 w-12 animate-spin text-[#1a5276] mb-4" />
-              <p className="text-lg text-gray-600">Loading open positions...</p>
+              <p className="text-lg text-black">Loading open positions...</p>
             </motion.div>
           ) : jobs.length === 0 ? (
             <motion.div
@@ -534,9 +534,9 @@ export default function CareersPage() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center py-16 text-center"
             >
-              <Briefcase className="h-16 w-16 text-gray-300 mb-4" />
-              <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Open Positions Available</h3>
-              <p className="text-gray-500 mb-6">Please check back later for future opportunities.</p>
+              <Briefcase className="h-16 w-16 text-black mb-4" />
+              <h3 className="text-2xl font-semibold text-black mb-2">No Open Positions Available</h3>
+              <p className="text-black mb-6">Please check back later for future opportunities.</p>
               <button
                 onClick={openEnquiryModal}
                 className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-6 py-3 text-sm font-semibold text-white transition-all hover:from-[#25a244] hover:to-[#1a5276]"
@@ -565,7 +565,7 @@ export default function CareersPage() {
                       <h3 className="text-xl font-bold text-[#1a5276] group-hover:text-[#25a244] transition-colors">
                         {job.title}
                       </h3>
-                      <p className="text-sm text-gray-600 mt-1">{job.department}</p>
+                      <p className="text-sm text-black mt-1">{job.department}</p>
                     </div>
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
                       Open
@@ -573,34 +573,34 @@ export default function CareersPage() {
                   </div>
 
                   <div className="space-y-3 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-black">
                       <MapPin className="h-4 w-4 text-[#1a5276]" />
                       <span>{job.location}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-black">
                       <Briefcase className="h-4 w-4 text-[#1a5276]" />
                       <span>{job.employmentType}</span>
                     </div>
                     {job.experienceRequired && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-black">
                         <Clock className="h-4 w-4 text-[#1a5276]" />
                         <span>{job.experienceRequired}</span>
                       </div>
                     )}
                     {job.numberOfOpenings && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-black">
                         <Users className="h-4 w-4 text-[#1a5276]" />
                         <span>{job.numberOfOpenings} opening{job.numberOfOpenings > 1 ? 's' : ''}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-black">
                       <Calendar className="h-4 w-4 text-[#1a5276]" />
                       <span>Deadline: {formatDate(job.applicationDeadline)}</span>
                     </div>
                   </div>
 
                   {job.description && (
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-4">
+                    <p className="text-sm text-black line-clamp-2 mb-4">
                       {job.description}
                     </p>
                   )}
@@ -643,7 +643,7 @@ export default function CareersPage() {
                 <div>
                   <h3 id="modal-title" className="text-2xl font-bold text-[#1a5276]">Apply for Position</h3>
                   {selectedJob && (
-                    <p className="text-sm text-gray-600 mt-1">{selectedJob.title} - {selectedJob.department}</p>
+                    <p className="text-sm text-black mt-1">{selectedJob.title} - {selectedJob.department}</p>
                   )}
                 </div>
                 <button
@@ -651,7 +651,7 @@ export default function CareersPage() {
                   className="p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[#1a5276]"
                   aria-label="Close modal"
                 >
-                  <X className="h-5 w-5 text-gray-600" />
+                  <X className="h-5 w-5 text-black" />
                 </button>
               </div>
 
@@ -663,8 +663,8 @@ export default function CareersPage() {
                     className="text-center py-12"
                   >
                     <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted Successfully</h3>
-                    <p className="text-gray-600 mb-6">Thank you for applying. Our HR team will review your application and contact you if shortlisted.</p>
+                    <h3 className="text-2xl font-bold text-black mb-2">Application Submitted Successfully</h3>
+                    <p className="text-black mb-6">Thank you for applying. Our HR team will review your application and contact you if shortlisted.</p>
                     <button
                       onClick={closeApplicationModal}
                       className="bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-8 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300"
@@ -683,7 +683,7 @@ export default function CareersPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Full Name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -697,7 +697,7 @@ export default function CareersPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Email Address <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -711,7 +711,7 @@ export default function CareersPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Phone Number <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -725,7 +725,7 @@ export default function CareersPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Current Location <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -739,7 +739,7 @@ export default function CareersPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Total Experience <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -753,7 +753,7 @@ export default function CareersPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Current Company <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -767,7 +767,7 @@ export default function CareersPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Current Designation <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -781,7 +781,7 @@ export default function CareersPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Expected Salary <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -796,11 +796,11 @@ export default function CareersPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-black mb-2">
                         LinkedIn Profile URL <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
-                        <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-black" />
                         <input
                           type="url"
                           name="linkedinUrl"
@@ -813,7 +813,7 @@ export default function CareersPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-black mb-2">
                         Resume <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
@@ -837,7 +837,7 @@ export default function CareersPage() {
                             {uploading ? (
                               <>
                                 <Loader2 className="h-8 w-8 text-[#1a5276] animate-spin" />
-                                <span className="text-sm font-medium text-gray-600">Uploading...</span>
+                                <span className="text-sm font-medium text-black">Uploading...</span>
                               </>
                             ) : formData.resumeUrl ? (
                               <>
@@ -849,10 +849,10 @@ export default function CareersPage() {
                               </>
                             ) : (
                               <>
-                                <Upload className="h-8 w-8 text-gray-400" />
+                                <Upload className="h-8 w-8 text-black" />
                                 <div className="text-center">
-                                  <span className="text-sm font-medium text-gray-700">Upload Resume</span>
-                                  <p className="text-xs text-gray-500 mt-1">PDF, DOC, DOCX (Max 3.5MB)</p>
+                                  <span className="text-sm font-medium text-black">Upload Resume</span>
+                                  <p className="text-xs text-black mt-1">PDF, DOC, DOCX (Max 3.5MB)</p>
                                 </div>
                               </>
                             )}
@@ -862,7 +862,7 @@ export default function CareersPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-black mb-2">
                         Cover Letter
                       </label>
                       <textarea
@@ -879,7 +879,7 @@ export default function CareersPage() {
                       <button
                         onClick={closeApplicationModal}
                         disabled={submitting || uploading}
-                        className="w-full sm:flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full sm:flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-black hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Cancel
                       </button>
@@ -930,14 +930,14 @@ export default function CareersPage() {
               <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between">
                 <div>
                   <h3 id="enquiry-modal-title" className="text-2xl font-bold text-[#1a5276]">Job Enquiry</h3>
-                  <p className="text-sm text-gray-600 mt-1">Share your details and we will contact you when a suitable role opens.</p>
+                  <p className="text-sm text-black mt-1">Share your details and we will contact you when a suitable role opens.</p>
                 </div>
                 <button
                   onClick={closeEnquiryModal}
                   className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   aria-label="Close modal"
                 >
-                  <X className="h-5 w-5 text-gray-600" />
+                  <X className="h-5 w-5 text-black" />
                 </button>
               </div>
 
@@ -945,8 +945,8 @@ export default function CareersPage() {
                 {enquirySuccess ? (
                   <div className="text-center py-12">
                     <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Enquiry Submitted Successfully</h3>
-                    <p className="text-gray-600 mb-6">Thank you for your interest. Our HR team will review your enquiry and get in touch.</p>
+                    <h3 className="text-2xl font-bold text-black mb-2">Enquiry Submitted Successfully</h3>
+                    <p className="text-black mb-6">Thank you for your interest. Our HR team will review your enquiry and get in touch.</p>
                     <button
                       onClick={closeEnquiryModal}
                       className="bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-8 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300"
@@ -965,7 +965,7 @@ export default function CareersPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Full Name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -978,7 +978,7 @@ export default function CareersPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Email Address <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -991,7 +991,7 @@ export default function CareersPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Phone Number <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -1004,7 +1004,7 @@ export default function CareersPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-black mb-2">
                           Department / Role Interested In <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -1017,7 +1017,7 @@ export default function CareersPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Total Experience</label>
+                        <label className="block text-sm font-semibold text-black mb-2">Total Experience</label>
                         <input
                           type="text"
                           name="totalExperience"
@@ -1028,7 +1028,7 @@ export default function CareersPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Current Location</label>
+                        <label className="block text-sm font-semibold text-black mb-2">Current Location</label>
                         <input
                           type="text"
                           name="currentLocation"
@@ -1041,7 +1041,7 @@ export default function CareersPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-black mb-2">
                         Message <span className="text-red-500">*</span>
                       </label>
                       <textarea
@@ -1055,7 +1055,7 @@ export default function CareersPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Resume (Optional)</label>
+                      <label className="block text-sm font-semibold text-black mb-2">Resume (Optional)</label>
                       <input
                         type="file"
                         accept=".pdf,.doc,.docx"
@@ -1075,7 +1075,7 @@ export default function CareersPage() {
                         {enquiryUploading ? (
                           <>
                             <Loader2 className="h-8 w-8 text-[#1a5276] animate-spin" />
-                            <span className="text-sm text-gray-600">Uploading...</span>
+                            <span className="text-sm text-black">Uploading...</span>
                           </>
                         ) : enquiryForm.resumeUrl ? (
                           <>
@@ -1084,8 +1084,8 @@ export default function CareersPage() {
                           </>
                         ) : (
                           <>
-                            <Upload className="h-8 w-8 text-gray-400" />
-                            <span className="text-sm text-gray-600">Upload Resume (PDF, DOC, DOCX)</span>
+                            <Upload className="h-8 w-8 text-black" />
+                            <span className="text-sm text-black">Upload Resume (PDF, DOC, DOCX)</span>
                           </>
                         )}
                       </label>
@@ -1095,7 +1095,7 @@ export default function CareersPage() {
                       <button
                         onClick={closeEnquiryModal}
                         disabled={enquirySubmitting || enquiryUploading}
-                        className="w-full sm:flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                        className="w-full sm:flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-black hover:bg-gray-50 transition-colors disabled:opacity-50"
                       >
                         Cancel
                       </button>

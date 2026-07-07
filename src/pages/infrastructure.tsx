@@ -38,7 +38,7 @@ export default function InfrastructurePage() {
         />
         <div className="infrastructure-page-hero__overlay" aria-hidden />
         <div className="infrastructure-page-hero__breadcrumb">
-          <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-gray-600 lg:px-6">
+          <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-3 text-xs font-medium uppercase tracking-wide text-black lg:px-6">
             <Link to="/" className="transition-colors hover:text-[#1a5276]">
               Home
             </Link>
@@ -54,7 +54,7 @@ export default function InfrastructurePage() {
           <h1 className="font-display text-3xl font-bold uppercase tracking-wide text-[#1a5276] sm:text-4xl">
             {title}
           </h1>
-          <p className="mx-auto mt-6 max-w-4xl text-base font-semibold leading-relaxed text-gray-700 sm:text-lg">
+          <p className="mx-auto mt-6 max-w-4xl text-base font-semibold leading-relaxed text-black sm:text-lg">
             {subtitle}
           </p>
 
@@ -78,7 +78,7 @@ export default function InfrastructurePage() {
                   >
                     <Icon className="h-6 w-6" strokeWidth={1.75} />
                   </div>
-                  <h3 className="text-sm font-bold uppercase tracking-wide text-gray-900">{item.title}</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-wide text-black">{item.title}</h3>
                   <p className="mt-2 text-base font-semibold text-[#1a5276]">{item.value}</p>
                 </motion.div>
               );
@@ -113,7 +113,7 @@ export default function InfrastructurePage() {
             <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-[#1a5276] sm:text-3xl">
               {teamWork.title}
             </h2>
-            <p className="mt-5 text-sm leading-relaxed text-gray-600 sm:text-base">{teamWork.body}</p>
+            <p className="mt-5 text-sm leading-relaxed text-black sm:text-base">{teamWork.body}</p>
           </div>
         </div>
       </section>
@@ -125,7 +125,7 @@ export default function InfrastructurePage() {
             <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-[#1a5276] sm:text-3xl">
               {designStandards.title}
             </h2>
-            <p className="mt-5 text-sm leading-relaxed text-gray-600 sm:text-base">{designStandards.body}</p>
+            <p className="mt-5 text-sm leading-relaxed text-black sm:text-base">{designStandards.body}</p>
           </div>
           <motion.div
             initial={{ opacity: 0, x: 16 }}
@@ -171,7 +171,7 @@ export default function InfrastructurePage() {
             <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-[#1a5276] sm:text-3xl">
               {manufacturing.title}
             </h2>
-            <p className="mt-5 text-sm leading-relaxed text-gray-600 sm:text-base">{manufacturing.body}</p>
+            <p className="mt-5 text-sm leading-relaxed text-black sm:text-base">{manufacturing.body}</p>
           </div>
         </div>
       </section>
@@ -183,7 +183,7 @@ export default function InfrastructurePage() {
             <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-[#1a5276] sm:text-3xl">
               {testing.title}
             </h2>
-            <p className="mt-5 text-sm leading-relaxed text-gray-600 sm:text-base">{testing.body}</p>
+            <p className="mt-5 text-sm leading-relaxed text-black sm:text-base">{testing.body}</p>
           </div>
           <motion.div
             initial={{ opacity: 0, x: 16 }}
@@ -217,10 +217,10 @@ export default function InfrastructurePage() {
                   <p className="text-xs font-semibold uppercase tracking-wider text-[#1a5276]">
                     KHM Infra Innovations Pvt. Ltd.
                   </p>
-                  <p className="mt-1 text-[10px] text-gray-500">Chakan, Pune, Maharashtra</p>
+                  <p className="mt-1 text-[10px] text-black">Chakan, Pune, Maharashtra</p>
                 </div>
-                <h3 className="mt-6 text-center font-display text-sm font-bold uppercase text-gray-900">{doc.title}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-gray-600">{doc.body}</p>
+                <h3 className="mt-6 text-center font-display text-sm font-bold uppercase text-black">{doc.title}</h3>
+                <p className="mt-4 text-sm leading-relaxed text-black">{doc.body}</p>
               </motion.article>
             ))}
           </div>

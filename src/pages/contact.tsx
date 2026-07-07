@@ -41,7 +41,7 @@ export default function ContactPage() {
               <div className="mt-8 rounded-2xl border border-eco/40 bg-eco/10 p-6 text-center">
                 <div className="text-2xl">🌊</div>
                 <h3 className="mt-2 font-display text-lg font-semibold">Thank you!</h3>
-                <p className="text-sm text-muted-foreground mt-1">Your enquiry has been received. We'll be in touch shortly.</p>
+                <p className="text-sm text-black mt-1">Your enquiry has been received. We'll be in touch shortly.</p>
               </div>
             ) : (
               <form
@@ -90,7 +90,7 @@ export default function ContactPage() {
                   { n: "company", l: "Company", t: "text" },
                 ].map((f) => (
                   <div key={f.n}>
-                    <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{f.l}</label>
+                    <label className="text-xs font-semibold uppercase tracking-wider text-black">{f.l}</label>
                     <input
                       type={f.t} name={f.n} required maxLength={120}
                       className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-aqua"
@@ -98,13 +98,13 @@ export default function ContactPage() {
                   </div>
                 ))}
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Service Required</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-black">Service Required</label>
                   <select name="service" required className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-aqua">
                     {["Sewage Treatment Plant","Effluent Treatment Plant","Water Recycling","Rain Water Harvesting","AMC & Maintenance","Consultancy","Other"].map(o => <option key={o}>{o}</option>)}
                   </select>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Message</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider text-black">Message</label>
                   <textarea name="message" rows={5} required maxLength={1000} className="mt-1.5 w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-aqua resize-none" />
                 </div>
                 {error && (
@@ -150,7 +150,7 @@ export default function ContactPage() {
                     <c.I className="h-5 w-5" />
                   </div>
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{c.t}</div>
+                    <div className="text-xs font-semibold uppercase tracking-wider text-black">{c.t}</div>
                     {"href" in c && c.href ? (
                       <a href={c.href} className="mt-0.5 font-semibold text-foreground hover:text-aqua-foreground transition-colors">{c.d}</a>
                     ) : (

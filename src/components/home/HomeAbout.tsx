@@ -17,7 +17,7 @@ export function HomeAbout() {
           <h2 className="mt-4 sm:mt-5 font-display text-lg font-bold uppercase leading-snug tracking-tight text-gray-900 sm:text-xl md:text-2xl lg:text-[1.85rem] lg:leading-tight">
             Advanced Engineering for Water &amp; Wastewater Treatment System
           </h2>
-          <p className="mt-4 sm:mt-6 text-sm leading-relaxed text-[#757575] sm:text-[15px] sm:leading-7 md:text-base">
+          <p className="mt-4 sm:mt-6 text-sm leading-relaxed text-black sm:text-[15px] sm:leading-7 md:text-base">
             With growing global demand for clean water, advanced water treatment technologies play a vital role in
             ensuring safe drinking water, industrial process water and environmental compliance. Wastewater treatment
             protects ecosystems, supports reuse and helps industries meet regulatory standards. KHM Infra Innovations

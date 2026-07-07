@@ -26,7 +26,7 @@ export function HomeProject() {
           <h2 className="font-display text-xl font-bold uppercase text-[#1a5276] sm:text-2xl lg:text-[1.65rem]">
             KHM Infra Innovations Pvt. Ltd.
           </h2>
-          <p className="mt-5 text-sm leading-relaxed text-gray-600 sm:text-base">
+          <p className="mt-5 text-sm leading-relaxed text-black sm:text-base">
             Our integrated manufacturing and project execution capabilities enable turnkey delivery of water treatment
             plants — from compact housing society STPs to large industrial ETP and ZLD installations with IoT monitoring
             and 24/7 engineering support.

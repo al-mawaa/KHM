@@ -167,7 +167,7 @@ export default function OurServicesPage() {
             <h2 className="text-[42px] font-bold text-[#1a5276] leading-tight">
               Comprehensive Infrastructure Solutions
             </h2>
-            <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="mt-4 text-lg text-black max-w-3xl mx-auto leading-relaxed">
               From concept to commissioning, we deliver end-to-end engineering excellence across multiple sectors.
             </p>
           </motion.div>
@@ -179,7 +179,7 @@ export default function OurServicesPage() {
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                   selectedCategory === "All"
                     ? "bg-[#1a5276] text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "bg-gray-100 text-black hover:bg-gray-200"
                 }`}
               >
                 All
@@ -191,7 +191,7 @@ export default function OurServicesPage() {
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     selectedCategory === category
                       ? "bg-[#1a5276] text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      : "bg-gray-100 text-black hover:bg-gray-200"
                   }`}
                 >
                   {category}
@@ -200,7 +200,7 @@ export default function OurServicesPage() {
             </div>
 
             <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
-              <label htmlFor="service-category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+              <label htmlFor="service-category-filter" className="text-sm font-semibold text-black whitespace-nowrap">
                 Filter by Category
               </label>
               <div className="relative w-full sm:w-56">
@@ -208,7 +208,7 @@ export default function OurServicesPage() {
                   id="service-category-filter"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
                 >
                   <option value="All">All Categories</option>
                   {categoryNames.map((category) => (
@@ -217,17 +217,17 @@ export default function OurServicesPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black" />
               </div>
             </div>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+              <Loader2 className="h-8 w-8 animate-spin text-black" />
             </div>
           ) : filteredServices.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
+            <div className="text-center py-12 text-black">
               No services found in this category.
             </div>
           ) : (
@@ -256,7 +256,7 @@ export default function OurServicesPage() {
             <h2 className="text-[42px] font-bold text-[#1a5276] leading-tight">
               Technical Capabilities
             </h2>
-            <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="mt-4 text-lg text-black max-w-3xl mx-auto leading-relaxed">
               Advanced technical expertise backed by cutting-edge tools and methodologies.
             </p>
           </motion.div>
@@ -283,7 +283,7 @@ export default function OurServicesPage() {
                   {item.items.map((subItem) => (
                     <li
                       key={subItem}
-                      className="flex items-start gap-3 text-[15px] leading-7 text-slate-600"
+                      className="flex items-start gap-3 text-[15px] leading-7 text-black"
                     >
                       <CheckCircle2 className="h-5 w-5 shrink-0 text-[#25a244] mt-0.5" />
                       <span>{subItem}</span>
@@ -312,7 +312,7 @@ export default function OurServicesPage() {
             <h2 className="text-[42px] font-bold text-[#1a5276] leading-tight">
               Advanced Technology Stack
             </h2>
-            <p className="mt-4 text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="mt-4 text-lg text-black max-w-3xl mx-auto leading-relaxed">
               Industry-leading software and tools for precision engineering and analysis.
             </p>
           </motion.div>
@@ -339,7 +339,7 @@ export default function OurServicesPage() {
                   {tech.items.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-3 text-[15px] leading-7 text-slate-600"
+                      className="flex items-start gap-3 text-[15px] leading-7 text-black"
                     >
                       <CheckCircle2 className="h-5 w-5 shrink-0 text-[#25a244] mt-0.5" />
                       <span>{item}</span>

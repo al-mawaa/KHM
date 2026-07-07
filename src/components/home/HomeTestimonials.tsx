@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Quote, MessageCircle, X, Star, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Quote, MessageCircle, X, Star, Loader2, ChevronLeft, ChevronRight, CheckCircle2, MessageSquare } from "lucide-react";
+import { motion, useInView } from "framer-motion";
 
 interface TestimonialItem {
   _id: string;
@@ -17,12 +18,115 @@ interface TestimonialItem {
   createdAt: string;
 }
 
+const brandColors = {
+  blue: "#0B5FA5",
+  green: "#2BA84A",
+  blueLight: "#0B5FA5",
+  greenLight: "#2BA84A",
+};
+
+function TestimonialCard({ testimonial, index }: { testimonial: TestimonialItem; index: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isBlue = index % 2 === 0;
+  const accentColor = isBlue ? brandColors.blue : brandColors.green;
+  const accentGradient = isBlue
+    ? `linear-gradient(135deg, ${brandColors.blue} 0%, ${brandColors.blueLight} 100%)`
+    : `linear-gradient(135deg, ${brandColors.green} 0%, ${brandColors.greenLight} 100%)`;
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  };
+
+  const renderStars = (rating: number = 5) => {
+    return (
+      <div className="flex gap-0.5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star
+            key={i}
+            className={`h-4 w-4 transition-all duration-300 ${i < rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  const sanitizeFeedback = (feedback: string) => {
+    let sanitized = feedback.replace(/https?:\/\/[^\s]+/g, '');
+    sanitized = sanitized.replace(/www\.[^\s]+/g, '');
+    sanitized = sanitized.replace(/\s+/g, ' ').trim();
+    return sanitized;
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+      className="group relative rounded-[18px] bg-white p-5 shadow-[0_4px_16px_rgba(0,0,0,0.06)] border border-[#E5E7EB] transition-all duration-[0.3s] ease-out hover:-translate-y-2 hover:shadow-[0_12px_28px_rgba(0,0,0,0.12)] hover:border-[#0B5FA5] flex flex-col min-h-[250px] max-h-[280px]"
+    >
+      {/* Top Section: Stars Left, Verified Badge Right */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex gap-0.5">
+          {renderStars(testimonial.rating)}
+        </div>
+        <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#0B5FA5]/5 border border-[#0B5FA5]/20">
+          <CheckCircle2 className="h-3 w-3 text-[#0B5FA5]" />
+          <span className="text-[11px] font-medium text-[#0B5FA5]">Verified</span>
+        </div>
+      </div>
+
+      {/* Review Text with Small Quote Icon */}
+      <div className="flex-1 flex items-start gap-2 mb-4">
+        <Quote className="h-4 w-4 text-[#0B5FA5] opacity-30 flex-shrink-0 mt-0.5" />
+        <p className="text-[15px] leading-[1.6] text-[#4B5563] line-clamp-4 flex-1">
+          {sanitizeFeedback(testimonial.feedback)}
+        </p>
+      </div>
+
+      {/* Client Profile */}
+      <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
+        {testimonial.profileImage ? (
+          <img
+            src={testimonial.profileImage}
+            alt={testimonial.name}
+            className="h-10 w-10 rounded-full object-cover ring-2 ring-[#0B5FA5]/10 transition-transform duration-[0.3s] ease-out group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div
+            className="h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-xs transition-transform duration-[0.3s] ease-out group-hover:scale-105"
+            style={{ background: accentGradient }}
+          >
+            {getInitials(testimonial.name)}
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-[#1F2937] text-sm truncate">{testimonial.name}</p>
+          <p className="text-xs text-[#6B7280] truncate">
+            {testimonial.designation || testimonial.industryType}
+            {testimonial.companyName && ` · ${testimonial.companyName}`}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export function HomeTestimonials() {
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -59,6 +163,39 @@ export function HomeTestimonials() {
   useEffect(() => {
     fetchTestimonials();
   }, []);
+
+  // Auto-slide carousel
+  useEffect(() => {
+    if (testimonials.length <= 3 || isPaused) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [testimonials.length, isPaused]);
+
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  // Get visible testimonials for carousel
+  const getVisibleTestimonials = () => {
+    if (testimonials.length === 0) return [];
+    const result = [];
+    for (let i = 0; i < 3; i++) {
+      result.push(testimonials[(currentIndex + i) % testimonials.length]);
+    }
+    return result;
+  };
 
 
 
@@ -124,121 +261,150 @@ export function HomeTestimonials() {
     }
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-  };
-
-  const renderStars = (rating: number = 5) => {
-    return (
-      <div className="flex gap-0.5 text-amber-500">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star
-            key={i}
-            className={`h-4 w-4 ${i < rating ? 'fill-current' : ''}`}
-          />
-        ))}
-      </div>
-    );
-  };
-
-  // Sanitize testimonial content
-  const sanitizeFeedback = (feedback: string) => {
-    // Remove URLs
-    let sanitized = feedback.replace(/https?:\/\/[^\s]+/g, '');
-    // Remove www. URLs
-    sanitized = sanitized.replace(/www\.[^\s]+/g, '');
-    // Remove extra whitespace
-    sanitized = sanitized.replace(/\s+/g, ' ').trim();
-    return sanitized;
-  };
-
-  // Duplicate testimonials for infinite scroll
-  const duplicatedTestimonials = testimonials.length > 0
-    ? [...testimonials, ...testimonials, ...testimonials]
-    : [];
-
   return (
-    <section className="bg-white py-10 lg:py-12 border-t border-b border-gray-100">
-      <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 sm:mb-10">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-1 rounded-full bg-[#25a244]" />
-            <h2 className="font-display text-2xl font-bold uppercase text-[#1a5276] sm:text-3xl tracking-wide">
-              Testimonials
-            </h2>
-          </div>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-2.5 bg-[#1a5276] text-white rounded-lg font-semibold hover:bg-[#1a5276]/90 transition-colors text-sm min-h-[44px]"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Give Feedback
-          </button>
-        </div>
+    <section className="relative overflow-hidden bg-white py-16 lg:py-20">
+      {/* Background Decorations */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Dot pattern in corners */}
+        <div
+          className="absolute top-0 left-0 w-32 h-32 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(${brandColors.blue} 1px, transparent 1px)`,
+            backgroundSize: "16px 16px",
+          }}
+        />
+        <div
+          className="absolute top-0 right-0 w-32 h-32 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(${brandColors.green} 1px, transparent 1px)`,
+            backgroundSize: "16px 16px",
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-32 h-32 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(${brandColors.green} 1px, transparent 1px)`,
+            backgroundSize: "16px 16px",
+          }}
+        />
+        <div
+          className="absolute bottom-0 right-0 w-32 h-32 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(${brandColors.blue} 1px, transparent 1px)`,
+            backgroundSize: "16px 16px",
+          }}
+        />
+
+        {/* Blurred gradient blobs */}
+        <div
+          className="absolute top-20 left-10 w-64 h-64 rounded-full blur-[100px] opacity-[0.04]"
+          style={{ backgroundColor: brandColors.blue }}
+        />
+        <div
+          className="absolute bottom-20 right-10 w-64 h-64 rounded-full blur-[100px] opacity-[0.04]"
+          style={{ backgroundColor: brandColors.green }}
+        />
+      </div>
+
+      <div className="mx-auto max-w-[1400px] px-4 lg:px-6 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10 md:mb-12"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#0B5FA5]">
+            What Our Clients Say
+          </h2>
+          <p className="mt-3 text-base text-[#64748B]">
+            Trusted by industries, municipalities and organizations across India.
+          </p>
+          <div className="mt-4 mx-auto h-1 w-20 bg-gradient-to-r from-[#0B5FA5] to-[#2BA84A] rounded-full" />
+        </motion.div>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-[#1a5276]" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#0B5FA5]" />
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">Failed to load testimonials. Please try again later.</p>
+            <p className="text-[#4B5563]">Failed to load testimonials. Please try again later.</p>
           </div>
         ) : testimonials.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">No testimonials available yet.</p>
+            <p className="text-[#4B5563]">No testimonials available yet.</p>
           </div>
         ) : (
-          <div className="testimonial-container relative overflow-hidden">
-            <div className="testimonial-track flex gap-4 sm:gap-6 will-change-transform">
-              {duplicatedTestimonials.map((t, index) => (
-                <article
-                  key={`${t._id}-${index}`}
-                  className="flex-shrink-0 w-[90%] sm:w-[calc(50%-12px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] min-h-[280px] h-auto rounded-xl border border-gray-100 bg-white p-5 sm:p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
-                >
-                  {t.isFeatured && (
-                    <div className="absolute top-3 right-3 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f5c518]/20 text-[#1a5276]">
-                      <Star className="h-2.5 w-2.5 mr-1 fill-current text-[#f5c518]" /> Featured
-                    </div>
-                  )}
-                  <Quote className="absolute left-4 sm:left-5 top-3 sm:top-4 h-6 w-6 sm:h-7 sm:w-7 text-[#1a5276]/20" fill="currentColor" />
-                  <p className="relative text-[15px] sm:text-sm leading-[1.6] text-gray-600 italic line-clamp-4 mt-3 sm:mt-4 flex-1 overflow-hidden break-words">
-                    "{sanitizeFeedback(t.feedback)}"
-                  </p>
-                  <div className="mt-3 flex gap-0.5">
-                    {renderStars(t.rating)}
-                  </div>
-                  <div className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3 border-t border-gray-100 pt-3 sm:pt-4">
-                    {t.profileImage ? (
-                      <img
-                        src={t.profileImage}
-                        alt={t.name}
-                        className="h-9 w-9 sm:h-10 sm:w-10 rounded-full object-cover ring-2 ring-[#1a5276]/20"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-full bg-[#1a5276] text-xs font-bold text-white shrink-0">
-                        {getInitials(t.name)}
-                      </div>
-                    )}
-                    <div className="min-w-0">
-                      <p className="font-semibold text-[#1a5276] text-[15px] sm:text-sm truncate">{t.name}</p>
-                      <p className="text-[11px] sm:text-xs text-gray-500 truncate">
-                        {t.designation ? t.designation : t.industryType}
-                        {t.companyName ? ` · ${t.companyName}` : ''}
-                      </p>
-                    </div>
-                  </div>
-                </article>
-              ))}
+          <>
+            {/* Carousel Container */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              {/* Cards Grid */}
+              <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+                {getVisibleTestimonials().map((testimonial, index) => (
+                  <TestimonialCard
+                    key={`${testimonial._id}-${index}`}
+                    testimonial={testimonial}
+                    index={index}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+
+            {/* Navigation and Pagination */}
+            {testimonials.length > 3 && (
+              <div className="flex items-center justify-center gap-4 mt-8">
+                <button
+                  onClick={handlePrevious}
+                  className="h-10 w-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center hover:bg-[#0B5FA5] hover:text-white hover:border-[#0B5FA5] transition-all duration-300"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="flex gap-2">
+                  {testimonials.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToSlide(index)}
+                      className={`h-2 w-2 rounded-full transition-all duration-300 ${
+                        index === currentIndex
+                          ? "w-6 bg-[#0B5FA5]"
+                          : "bg-gray-300 hover:bg-gray-400"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <button
+                  onClick={handleNext}
+                  className="h-10 w-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center hover:bg-[#0B5FA5] hover:text-white hover:border-[#0B5FA5] transition-all duration-300"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+          </>
         )}
+
+        {/* Premium CTA Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-center mt-10"
+        >
+          <button
+            onClick={() => setModalOpen(true)}
+            className="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#0B5FA5] text-white rounded-[12px] font-semibold hover:bg-[#2BA84A] transition-all duration-[0.3s] ease-out shadow-[0_4px_12px_rgba(11,95,165,0.2)] hover:shadow-[0_6px-16px_rgba(43,168,74,0.3)] h-[48px]"
+          >
+            <MessageSquare className="h-4 w-4" />
+            <span>Share Your Experience</span>
+          </button>
+        </motion.div>
       </div>
 
       {/* Feedback Modal */}
@@ -262,7 +428,7 @@ export function HomeTestimonials() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="text-gray-700">{successMessage}</p>
+                <p className="text-black">{successMessage}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -273,7 +439,7 @@ export function HomeTestimonials() {
                 )}
                 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-black mb-1.5">
                     Name *
                   </label>
                   <input
@@ -287,7 +453,7 @@ export function HomeTestimonials() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-black mb-1.5">
                     Industry Type *
                   </label>
                   <input
@@ -301,7 +467,7 @@ export function HomeTestimonials() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-black mb-1.5">
                     Company Name (Optional)
                   </label>
                   <input
@@ -315,7 +481,7 @@ export function HomeTestimonials() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-black mb-1.5">
                     Designation (Optional)
                   </label>
                   <input
@@ -329,7 +495,7 @@ export function HomeTestimonials() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-black mb-1.5">
                     City (Optional)
                   </label>
                   <input
@@ -344,10 +510,10 @@ export function HomeTestimonials() {
 
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-black">
                       Feedback * (80 words max)
                     </label>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-black">
                       {formData.feedback.trim().split(/\s+/).filter(w => w).length}/80
                     </span>
                   </div>
@@ -367,7 +533,7 @@ export function HomeTestimonials() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-black mb-1.5">
                     Rating (Optional)
                   </label>
                   <div className="flex gap-1">
@@ -396,7 +562,7 @@ export function HomeTestimonials() {
                     type="button"
                     onClick={() => setModalOpen(false)}
                     disabled={submitting}
-                    className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors text-sm disabled:opacity-50"
+                    className="px-4 py-2 rounded-lg border border-gray-300 text-black font-semibold hover:bg-gray-50 transition-colors text-sm disabled:opacity-50"
                   >
                     Cancel
                   </button>

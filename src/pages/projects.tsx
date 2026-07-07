@@ -81,6 +81,7 @@ export default function ProjectsPage() {
       state: p.state,
       scope: p.scope,
       status: p.status,
+      image: p.image,
     }));
 
   const upcomingProjects = projects
@@ -94,6 +95,7 @@ export default function ProjectsPage() {
       state: p.state,
       scope: p.scope,
       status: p.status,
+      image: p.image,
     }));
 
   const categoryNames = categories.map((c) => c.name);
@@ -115,19 +117,19 @@ export default function ProjectsPage() {
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                   selectedCategory === "All"
                     ? "bg-[#1a5276] text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "bg-gray-100 text-black hover:bg-gray-200"
                 }`}
               >
                 All
               </button>
-              {categoryNames.map((category) => (
+              {categoryNames.slice(0, 5).map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     selectedCategory === category
                       ? "bg-[#1a5276] text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      : "bg-gray-100 text-black hover:bg-gray-200"
                   }`}
                 >
                   {category}
@@ -136,7 +138,7 @@ export default function ProjectsPage() {
             </div>
 
             <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
-              <label htmlFor="category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+              <label htmlFor="category-filter" className="text-sm font-semibold text-black whitespace-nowrap">
                 Filter by Category
               </label>
               <div className="relative w-full sm:w-56">
@@ -144,7 +146,7 @@ export default function ProjectsPage() {
                   id="category-filter"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
                 >
                   <option value="All">All Categories</option>
                   {categoryNames.map((category) => (
@@ -153,7 +155,7 @@ export default function ProjectsPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black" />
               </div>
             </div>
           </div>
@@ -167,7 +169,7 @@ export default function ProjectsPage() {
       )}
 
       {loading ? (
-        <div className="text-center py-12 text-slate-500">Loading projects...</div>
+        <div className="text-center py-12 text-black">Loading projects...</div>
       ) : (
         <>
 
@@ -194,9 +196,13 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 {activeProjects.length === 0 ? (
-                  <div className="text-center py-12 text-slate-500">No active projects found</div>
+                  <div className="text-center py-12 text-black">No active projects found</div>
                 ) : (
-                  <ProjectTable projects={activeProjects} showViewAction />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {activeProjects.map((project, index) => (
+                      <ProjectCard key={project.id} project={project} showViewAction />
+                    ))}
+                  </div>
                 )}
               </motion.div>
             </div>
@@ -225,9 +231,13 @@ export default function ProjectsPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 {upcomingProjects.length === 0 ? (
-                  <div className="text-center py-12 text-slate-500">No upcoming projects found</div>
+                  <div className="text-center py-12 text-black">No upcoming projects found</div>
                 ) : (
-                  <ProjectTable projects={upcomingProjects} />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {upcomingProjects.map((project, index) => (
+                      <ProjectCard key={project.id} project={project} />
+                    ))}
+                  </div>
                 )}
               </motion.div>
             </div>
@@ -235,6 +245,82 @@ export default function ProjectsPage() {
         </>
       )}
     </>
+  );
+}
+
+interface ProjectCardItem {
+  id: string;
+  projectName: string;
+  department: string;
+  state: string;
+  scope: string;
+  status: string;
+  image?: string;
+}
+
+function ProjectCard({ project, showViewAction = false }: { project: ProjectCardItem; showViewAction?: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4 }}
+      className="group relative rounded-xl bg-white border border-gray-200 shadow-sm overflow-hidden hover:shadow-lg hover:border-[#1a5276]/30 transition-all duration-300"
+    >
+      {/* Image Section */}
+      <div className="relative h-48 w-full bg-gray-100">
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={project.projectName}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full w-full bg-gradient-to-br from-[#1a5276]/10 to-[#25a244]/10">
+            <span className="text-4xl font-bold text-[#1a5276]/30">
+              {project.projectName.charAt(0)}
+            </span>
+          </div>
+        )}
+        {showViewAction && project.status === "Active" && (
+          <Link
+            href={`/projects/${project.id}`}
+            className="absolute top-3 right-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#1a5276] shadow-md transition-colors hover:bg-[#1a5276] hover:text-white"
+            title="View project details"
+          >
+            <Eye className="h-4 w-4" />
+          </Link>
+        )}
+      </div>
+
+      {/* Content Section */}
+      <div className="p-4">
+        <h3 className="text-[16px] font-bold text-[#1a5276] mb-2 line-clamp-2">
+          {project.projectName}
+        </h3>
+        
+        <div className="space-y-2">
+          <div className="flex items-start gap-2">
+            <span className="text-[13px] font-semibold text-gray-500 shrink-0">Dept:</span>
+            <span className="text-[13px] text-gray-700 line-clamp-1">{project.department}</span>
+          </div>
+          
+          <div className="flex items-start gap-2">
+            <span className="text-[13px] font-semibold text-gray-500 shrink-0">State:</span>
+            <span className="text-[13px] text-gray-700 line-clamp-1">{project.state}</span>
+          </div>
+          
+          <div className="flex items-start gap-2">
+            <span className="text-[13px] font-semibold text-gray-500 shrink-0">Scope:</span>
+            <span className="text-[13px] text-gray-700 line-clamp-2">{project.scope}</span>
+          </div>
+        </div>
+
+        <div className="mt-3 pt-3 border-t border-gray-100">
+          <StatusBadge status={project.status} />
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -253,98 +339,3 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-interface ProjectTableItem {
-  id: string;
-  srNo: number;
-  projectName: string;
-  department: string;
-  state: string;
-  scope: string;
-  status: string;
-}
-
-function ProjectTable({
-  projects,
-  showViewAction = false,
-}: {
-  projects: ProjectTableItem[];
-  showViewAction?: boolean;
-}) {
-  return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-      <table className="w-full">
-        <thead className="sticky top-0 bg-gradient-to-r from-[#1a5276] to-[#154360] text-white">
-          <tr>
-            <th className="px-6 py-4 text-left text-[15px] font-semibold uppercase tracking-wide">
-              Sr. No.
-            </th>
-            <th className="px-6 py-4 text-left text-[15px] font-semibold uppercase tracking-wide">
-              Project Name
-            </th>
-            <th className="px-6 py-4 text-left text-[15px] font-semibold uppercase tracking-wide">
-              Department / Agency
-            </th>
-            <th className="px-6 py-4 text-left text-[15px] font-semibold uppercase tracking-wide">
-              State
-            </th>
-            <th className="px-6 py-4 text-left text-[15px] font-semibold uppercase tracking-wide">
-              Scope
-            </th>
-            <th className="px-6 py-4 text-left text-[15px] font-semibold uppercase tracking-wide">
-              Status
-            </th>
-            {showViewAction && (
-              <th className="px-6 py-4 text-center text-[15px] font-semibold uppercase tracking-wide">
-                Details
-              </th>
-            )}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {projects.map((project, index) => (
-            <tr
-              key={project.id}
-              className={`transition-all duration-200 hover:bg-gray-50 hover:shadow-md ${
-                index % 2 === 0 ? "bg-white" : "bg-gray-50/50"
-              }`}
-            >
-              <td className="px-6 py-4 text-[14px] leading-6 text-gray-700 font-medium">
-                {project.srNo}
-              </td>
-              <td className="px-6 py-4 text-[14px] leading-6 text-gray-900 font-medium">
-                {project.projectName}
-              </td>
-              <td className="px-6 py-4 text-[14px] leading-6 text-gray-700">
-                {project.department}
-              </td>
-              <td className="px-6 py-4 text-[14px] leading-6 text-gray-700">
-                {project.state}
-              </td>
-              <td className="px-6 py-4 text-[14px] leading-6 text-gray-700">
-                {project.scope}
-              </td>
-              <td className="px-6 py-4">
-                <StatusBadge status={project.status} />
-              </td>
-              {showViewAction && project.status === "Active" && (
-                <td className="px-6 py-4 text-center">
-                  <Link
-                    href={`/projects/${project.id}`}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#1a5276]/10 text-[#1a5276] transition-colors hover:bg-[#1a5276] hover:text-white"
-                    title="View project details"
-                    aria-label={`View details for ${project.projectName}`}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Link>
-                </td>
-              )}
-              {showViewAction && project.status !== "Active" && (
-                <td className="px-6 py-4" />
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}

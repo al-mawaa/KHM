@@ -158,7 +158,7 @@ export default function BlogPage() {
                 placeholder="Search blogs by title, tags, or content..."
                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pl-12 pr-24 text-sm shadow-sm focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20 transition-all"
               />
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-black" />
               <button
                 type="submit"
                 disabled={loading}
@@ -168,8 +168,8 @@ export default function BlogPage() {
               </button>
             </form>
             {searchQuery && !loading && blogs.length === 0 && (
-              <div className="mt-4 text-center text-sm text-gray-500">
-                No results found for "<span className="font-semibold text-gray-700">{searchQuery}</span>"
+              <div className="mt-4 text-center text-sm text-black">
+                No results found for "<span className="font-semibold text-black">{searchQuery}</span>"
               </div>
             )}
           </div>
@@ -183,12 +183,12 @@ export default function BlogPage() {
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                   selectedCategory === "All"
                     ? "bg-[#1a5276] text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "bg-gray-100 text-black hover:bg-gray-200"
                 }`}
               >
                 All
               </button>
-              {categoryNames.map((category) => (
+              {categoryNames.slice(0, 5).map((category) => (
                 <button
                   key={category}
                   type="button"
@@ -196,7 +196,7 @@ export default function BlogPage() {
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     selectedCategory === category
                       ? "bg-[#1a5276] text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      : "bg-gray-100 text-black hover:bg-gray-200"
                   }`}
                 >
                   {category}
@@ -205,7 +205,7 @@ export default function BlogPage() {
             </div>
 
             <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
-              <label htmlFor="blog-category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+              <label htmlFor="blog-category-filter" className="text-sm font-semibold text-black whitespace-nowrap">
                 Filter by Category
               </label>
               <div className="relative w-full sm:w-56">
@@ -213,7 +213,7 @@ export default function BlogPage() {
                   id="blog-category-filter"
                   value={selectedCategory}
                   onChange={(e) => handleCategoryChange(e.target.value)}
-                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
                 >
                   <option value="All">All Categories</option>
                   {categoryNames.map((category) => (
@@ -222,7 +222,7 @@ export default function BlogPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black" />
               </div>
             </div>
           </div>
@@ -237,13 +237,13 @@ export default function BlogPage() {
             </div>
           ) : blogs.length === 0 ? (
             <div className="mt-10 text-center py-12">
-              <FileText className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500 text-lg">
+              <FileText className="h-16 w-16 mx-auto text-black mb-4" />
+              <p className="text-black text-lg">
                 {selectedCategory !== "All"
                   ? `No blog posts found in "${selectedCategory}"`
                   : "No Blog Posts Available"}
               </p>
-              <p className="text-gray-400 text-sm mt-2">Check back later for new content</p>
+              <p className="text-black text-sm mt-2">Check back later for new content</p>
             </div>
           ) : (
             <>
@@ -272,7 +272,7 @@ export default function BlogPage() {
                         {/* Card Content */}
                         <div className="flex flex-1 flex-col p-5">
                           {/* Meta Information */}
-                          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-black">
                             {post.category && (
                               <span className="rounded-full bg-[#1a5276] px-2.5 py-1 font-semibold text-white">
                                 {post.category}
@@ -298,7 +298,7 @@ export default function BlogPage() {
                           </h2>
 
                           {/* Excerpt */}
-                          <p className="mb-4 flex-1 text-sm leading-relaxed text-gray-600 line-clamp-3">
+                          <p className="mb-4 flex-1 text-sm leading-relaxed text-black line-clamp-3">
                             {truncateExcerpt(post.excerpt, 3)}
                           </p>
 
@@ -325,7 +325,7 @@ export default function BlogPage() {
                       trackPagination(Math.max(1, currentPage - 1));
                     }}
                     disabled={currentPage === 1}
-                    className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
@@ -339,7 +339,7 @@ export default function BlogPage() {
                       className={`rounded px-4 py-2 text-sm font-semibold transition-colors ${
                         currentPage === page
                           ? 'bg-[#1a5276] text-white'
-                          : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                          : 'border border-gray-300 bg-white text-black hover:bg-gray-50'
                       }`}
                     >
                       {page}
@@ -351,7 +351,7 @@ export default function BlogPage() {
                       trackPagination(Math.min(pagination.totalPages, currentPage + 1));
                     }}
                     disabled={currentPage === pagination.totalPages}
-                    className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>

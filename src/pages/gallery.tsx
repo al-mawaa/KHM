@@ -452,19 +452,19 @@ export default function GalleryPage() {
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                   selectedCategory === "All"
                     ? "bg-[#1a5276] text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    : "bg-gray-100 text-black hover:bg-gray-200"
                 }`}
               >
                 All
               </button>
-              {categoryNames.map((category) => (
+              {categoryNames.slice(0, 5).map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     selectedCategory === category
                       ? "bg-[#1a5276] text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      : "bg-gray-100 text-black hover:bg-gray-200"
                   }`}
                 >
                   {category}
@@ -473,7 +473,7 @@ export default function GalleryPage() {
             </div>
 
             <div className="flex items-center gap-3 lg:ml-auto lg:shrink-0">
-              <label htmlFor="gallery-category-filter" className="text-sm font-semibold text-gray-700 whitespace-nowrap">
+              <label htmlFor="gallery-category-filter" className="text-sm font-semibold text-black whitespace-nowrap">
                 Filter by Category
               </label>
               <div className="relative w-full sm:w-56">
@@ -481,7 +481,7 @@ export default function GalleryPage() {
                   id="gallery-category-filter"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
+                  className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black shadow-sm transition-colors focus:border-[#1a5276] focus:outline-none focus:ring-2 focus:ring-[#1a5276]/20"
                 >
                   <option value="All">All Categories</option>
                   {categoryNames.map((category) => (
@@ -490,7 +490,7 @@ export default function GalleryPage() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black" />
               </div>
             </div>
           </div>
@@ -641,13 +641,13 @@ export default function GalleryPage() {
 
               <ImageIcon className="h-24 w-24 mx-auto text-gray-300 mb-6" />
 
-              <h3 className="text-2xl font-semibold text-gray-700 mb-2">
+              <h3 className="text-2xl font-semibold text-black mb-2">
 
                 No Gallery Images Available
 
               </h3>
 
-              <p className="text-gray-500 mb-6">
+              <p className="text-black mb-6">
 
                 Check back soon for updates on our latest projects.
 

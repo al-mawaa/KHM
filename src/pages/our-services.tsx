@@ -161,9 +161,9 @@ export default function OurServicesPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#1a5276] bg-[#1a5276]/5 rounded-full mb-4">
+            {/* <span className="inline-block px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#1a5276] bg-[#1a5276]/5 rounded-full mb-4">
               Core Services
-            </span>
+            </span> */}
             <h2 className="text-[42px] font-bold text-[#1a5276] leading-tight">
               Comprehensive Infrastructure Solutions
             </h2>
@@ -254,7 +254,7 @@ export default function OurServicesPage() {
               OUR EXPERTISE
             </span>
             <h2 className="text-[42px] font-bold text-[#1a5276] leading-tight">
-              Technical Capabilities
+End-to-End Solutions
             </h2>
             <p className="mt-4 text-lg text-black max-w-3xl mx-auto leading-relaxed">
               Advanced technical expertise backed by cutting-edge tools and methodologies.

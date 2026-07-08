@@ -199,7 +199,7 @@ function MentorMessageCard() {
         {/* Content Section - Right */}
         <div className="relative w-full lg:w-3/5 xl:w-2/3 p-6 flex flex-col justify-center z-10">
           {/* Main Quote */}
-          <h3 className="text-[24px] font-bold text-black leading-tight mb-3">
+          <h3 className="text-[24px] font-bold text-[#0d3d5c] leading-tight mb-3">
             "If We Cannot Save the Environment,<br />               the Environment Will Not Save Us."
           </h3>
 
@@ -221,7 +221,7 @@ function MentorMessageCard() {
 
           {/* Signature */}
           <div className="mt-4 pt-3 border-t border-[#E5E7EB]">
-            <h4 className="text-[22px] font-bold text-black mb-1" style={{ fontFamily: 'cursive, "Brush Script MT", "Comic Sans MS", serif' }}>
+            <h4 className="text-[32px] font-bold text-[#0B5FA5] leading-tight mb-2">
               Mr. Madhav Kaluskar
             </h4>
             <p className="text-[16px] text-[#6B7280]">
@@ -562,7 +562,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
           {/* Section Header */}
           <div className="mb-10 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0d3d5c] font-display leading-tight">
               Director's Message
             </h2>
             
@@ -611,7 +611,7 @@ export default function AboutPage() {
           {/* Section Header */}
           <div className="mb-10 text-center">
             <div className="mx-auto mb-4 h-1 w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#69B345]" />
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A]">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0d3d5c] font-display leading-tight">
               Our Mentor
             </h2>
             <p className="mt-3 text-base text-[#64748B]">

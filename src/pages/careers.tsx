@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin, MessageSquare } from "lucide-react";
+import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin, MessageSquare, HelpCircle, Award, Plus, Minus, Lightbulb, GraduationCap } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
@@ -23,12 +23,67 @@ interface CareerJob {
   updatedAt?: string;
 }
 
+interface CareerContent {
+  sections: Array<{
+    _id: string;
+    sectionType: string;
+    title: string;
+    description?: string;
+    displayOrder: number;
+  }>;
+  recruitmentProcess: {
+    section?: any;
+    steps: Array<{
+      _id: string;
+      stepNumber: number;
+      title: string;
+      description: string;
+      displayOrder: number;
+    }>;
+  };
+  faqs: {
+    section?: any;
+    items: Array<{
+      _id: string;
+      question: string;
+      answer: string;
+      displayOrder: number;
+    }>;
+  };
+  benefits: {
+    section?: any;
+    items: Array<{
+      _id: string;
+      iconUrl?: string;
+      title: string;
+      description: string;
+      buttonText?: string;
+      buttonLink?: string;
+      displayOrder: number;
+    }>;
+  };
+  generalInfo: {
+    section?: any;
+    items: Array<{
+      _id: string;
+      heading: string;
+      content: string;
+      videoUrl?: string;
+      ctaButton?: string;
+      ctaLink?: string;
+      displayOrder: number;
+    }>;
+  };
+}
+
 export default function CareersPage() {
   useVisitorTracking('Careers');
   
   const [jobs, setJobs] = useState<CareerJob[]>([]);
+  const [careerContent, setCareerContent] = useState<CareerContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
   
   // Application modal state
   const [applicationModalOpen, setApplicationModalOpen] = useState(false);
@@ -96,8 +151,22 @@ export default function CareersPage() {
     }
   };
 
+  const fetchCareerContent = async () => {
+    try {
+      const res = await fetch('/api/career-content');
+      const data = await res.json();
+      
+      if (data.success) {
+        setCareerContent(data.data);
+      }
+    } catch (err) {
+      console.error('Error fetching career content:', err);
+    }
+  };
+
   useEffect(() => {
     fetchJobs();
+    fetchCareerContent();
   }, []);
 
   // Lock body scroll when modal opens
@@ -484,139 +553,397 @@ export default function CareersPage() {
         subtitle="Build your career with a growing engineering organization focused on innovation, sustainability and excellence."
       />
 
-      {/* Open Positions Section */}
-      <section className="py-16 lg:py-24 bg-white">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
-          >
-            <div>
-              <h2 className="text-[32px] font-bold text-[#1a5276]">
-                Open Positions
-              </h2>
-              <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-            </div>
-            <button
-              onClick={openEnquiryModal}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#1a5276] bg-white px-6 py-3 text-sm font-semibold text-[#1a5276] transition-all hover:bg-[#1a5276] hover:text-white"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Job Enquiry
-            </button>
-          </motion.div>
 
-          {error ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center py-16"
-            >
-              <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
-              <p className="text-lg text-red-600 font-medium">{error}</p>
-              <p className="text-sm text-black mt-2">Please try again later or contact support.</p>
-            </motion.div>
-          ) : loading ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center py-16"
-            >
-              <Loader2 className="h-12 w-12 animate-spin text-[#1a5276] mb-4" />
-              <p className="text-lg text-black">Loading open positions...</p>
-            </motion.div>
-          ) : jobs.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center py-16 text-center"
-            >
-              <Briefcase className="h-16 w-16 text-black mb-4" />
-              <h3 className="text-2xl font-semibold text-black mb-2">No Open Positions Available</h3>
-              <p className="text-black mb-6">Please check back later for future opportunities.</p>
-              <button
-                onClick={openEnquiryModal}
-                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-6 py-3 text-sm font-semibold text-white transition-all hover:from-[#25a244] hover:to-[#1a5276]"
-              >
-                <MessageSquare className="h-4 w-4" />
-                Submit Job Enquiry
-              </button>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {jobs.map((job, index) => (
+      {/* Dynamic Career Content Sections */}
+      {careerContent && (
+        <>
+          {/* Recruitment Process Section */}
+          {careerContent.recruitmentProcess.section && careerContent.recruitmentProcess.steps.length > 0 && (
+            <section className="py-16 lg:py-24 bg-slate-50">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
                 <motion.div
-                  key={job._id}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-xl hover:border-[#25a244]/30 transition-all duration-300 hover:-translate-y-1"
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-12"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-[#1a5276] group-hover:text-[#25a244] transition-colors">
-                        {job.title}
-                      </h3>
-                      <p className="text-sm text-black mt-1">{job.department}</p>
-                    </div>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                      Open
-                    </span>
-                  </div>
-
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-black">
-                      <MapPin className="h-4 w-4 text-[#1a5276]" />
-                      <span>{job.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-black">
-                      <Briefcase className="h-4 w-4 text-[#1a5276]" />
-                      <span>{job.employmentType}</span>
-                    </div>
-                    {job.experienceRequired && (
-                      <div className="flex items-center gap-2 text-sm text-black">
-                        <Clock className="h-4 w-4 text-[#1a5276]" />
-                        <span>{job.experienceRequired}</span>
-                      </div>
-                    )}
-                    {job.numberOfOpenings && (
-                      <div className="flex items-center gap-2 text-sm text-black">
-                        <Users className="h-4 w-4 text-[#1a5276]" />
-                        <span>{job.numberOfOpenings} opening{job.numberOfOpenings > 1 ? 's' : ''}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2 text-sm text-black">
-                      <Calendar className="h-4 w-4 text-[#1a5276]" />
-                      <span>Deadline: {formatDate(job.applicationDeadline)}</span>
-                    </div>
-                  </div>
-
-                  {job.description && (
-                    <p className="text-sm text-black line-clamp-2 mb-4">
-                      {job.description}
+                  <h2 className="text-[32px] font-bold text-[#1a5276]">
+                    {careerContent.recruitmentProcess.section.title}
+                  </h2>
+                  {careerContent.recruitmentProcess.section.description && (
+                    <p className="text-slate-600 mt-3 max-w-2xl mx-auto">
+                      {careerContent.recruitmentProcess.section.description}
                     </p>
                   )}
+                  <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full mx-auto" />
+                </motion.div>
 
-                  <button 
-                    onClick={() => openApplicationModal(job)}
-                    className="w-full bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-4 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300 group-hover:shadow-lg"
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {careerContent.recruitmentProcess.steps.map((step, index) => (
+                    <motion.div
+                      key={step._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-[#1a5276] to-[#25a244] text-white flex items-center justify-center font-bold text-lg">
+                          {step.stepNumber}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-[#1a5276] mb-2">{step.title}</h3>
+                          <p className="text-sm text-slate-600 whitespace-pre-wrap">{step.description}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Career Benefits Section */}
+          {careerContent.benefits.section && careerContent.benefits.items.length > 0 && (
+            <section className="py-16 lg:py-24 bg-white">
+              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-12"
+                >
+                  <h2 className="text-[32px] font-bold text-[#1a5276]">
+                    {careerContent.benefits.section.title}
+                  </h2>
+                  {careerContent.benefits.section.description && (
+                    <p className="text-slate-600 mt-3 max-w-2xl mx-auto">
+                      {careerContent.benefits.section.description}
+                    </p>
+                  )}
+                  <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full mx-auto" />
+                </motion.div>
+
+                <div className={`grid gap-6 ${
+                  careerContent.benefits.items.length === 2 ? 'md:grid-cols-2' :
+                  careerContent.benefits.items.length === 3 ? 'md:grid-cols-3' :
+                  'md:grid-cols-2 lg:grid-cols-3'
+                }`}>
+                  {careerContent.benefits.items.map((benefit, index) => (
+                    <motion.div
+                      key={benefit._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      className="bg-slate-50 rounded-2xl p-8 text-center border border-slate-200 flex flex-col h-full"
+                    >
+                      {benefit.iconUrl && (
+                        <div className="mb-6 flex justify-center">
+                          <img src={benefit.iconUrl} alt="" className="w-20 h-20 object-contain" />
+                        </div>
+                      )}
+                      <h3 className="text-xl font-semibold text-[#1a5276] mb-4">{benefit.title}</h3>
+                      <p className="text-sm text-slate-600 mb-6 flex-1 whitespace-pre-wrap">{benefit.description}</p>
+                      {benefit.buttonText && benefit.buttonLink && (
+                        <a
+                          href={benefit.buttonLink}
+                          className="inline-block text-sm font-semibold text-[#1a5276] hover:text-[#25a244] transition-colors mt-auto"
+                        >
+                          {benefit.buttonText} →
+                        </a>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Student Jobs and Internships Section (Static) */}
+          <section className="py-16 lg:py-24 bg-white">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-center mb-12"
+              >
+                <h2 className="text-[32px] font-bold text-[#1a5276]">
+                  Student Jobs and Internships
+                </h2>
+                <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full mx-auto" />
+              </motion.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Card 1 */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                  className="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col h-full hover:shadow-md transition-shadow"
+                >
+                  <div className="mb-6 flex justify-center">
+                    <FileText className="w-16 h-16 text-[#1a5276]" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-[#1a5276] mb-4 text-left">
+                    Collaborate with KHM Infra on your projects
+                  </h3>
+                  <p className="text-sm text-slate-600 text-left flex-1">
+                    Are you working on your engineering project, research, or thesis? We welcome innovative ideas and provide opportunities to collaborate with our experts on real-world infrastructure and wastewater management challenges.
+                  </p>
+                </motion.div>
+
+                {/* Card 2 */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                  className="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col h-full hover:shadow-md transition-shadow"
+                >
+                  <div className="mb-6 flex justify-center">
+                    <Lightbulb className="w-16 h-16 text-[#1a5276]" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-[#1a5276] mb-4 text-left">
+                    Gain Industry Insights and Guidance
+                  </h3>
+                  <p className="text-sm text-slate-600 text-left flex-1">
+                    Work alongside experienced engineers and industry professionals to gain practical knowledge, develop technical skills, and understand real-world project execution.
+                  </p>
+                </motion.div>
+
+                {/* Card 3 */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.3 }}
+                  className="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col h-full hover:shadow-md transition-shadow"
+                >
+                  <div className="mb-6 flex justify-center">
+                    <GraduationCap className="w-16 h-16 text-[#1a5276]" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-[#1a5276] mb-4 text-left">
+                    Career Opportunities for Fresh Graduates
+                  </h3>
+                  <p className="text-sm text-slate-600 text-left flex-1 mb-6">
+                    Kick-start your professional journey with structured learning, mentorship, and exciting career opportunities at KHM Infra.
+                  </p>
+                  <button
+                    onClick={() => document.getElementById('open-positions')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="inline-block text-sm font-semibold text-[#1a5276] hover:text-[#25a244] transition-colors mt-auto text-left"
                   >
-                    Apply Now
+                    View Open Positions →
                   </button>
                 </motion.div>
-              ))}
-            </motion.div>
+              </div>
+            </div>
+          </section>
+
+          {/* Current Openings Section */}
+          <section id="open-positions" className="py-16 lg:py-24 bg-white">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+              >
+                <div>
+                  <h2 className="text-[32px] font-bold text-[#1a5276]">
+                    Current Openings
+                  </h2>
+                  <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
+                </div>
+                <button
+                  onClick={openEnquiryModal}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#1a5276] bg-white px-6 py-3 text-sm font-semibold text-[#1a5276] transition-all hover:bg-[#1a5276] hover:text-white"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Job Enquiry
+                </button>
+              </motion.div>
+
+              {error ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex flex-col items-center justify-center py-16"
+                >
+                  <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
+                  <p className="text-lg text-red-600 font-medium">{error}</p>
+                  <p className="text-sm text-black mt-2">Please try again later or contact support.</p>
+                </motion.div>
+              ) : loading ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex flex-col items-center justify-center py-16"
+                >
+                  <Loader2 className="h-12 w-12 animate-spin text-[#1a5276] mb-4" />
+                  <p className="text-lg text-black">Loading current openings...</p>
+                </motion.div>
+              ) : jobs.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center justify-center py-16 text-center"
+                >
+                  <Briefcase className="h-16 w-16 text-black mb-4" />
+                  <h3 className="text-2xl font-semibold text-black mb-2">No Current Openings Available</h3>
+                  <p className="text-black mb-6">Please check back later for future opportunities.</p>
+                  <button
+                    onClick={openEnquiryModal}
+                    className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-6 py-3 text-sm font-semibold text-white transition-all hover:from-[#25a244] hover:to-[#1a5276]"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    Submit Job Enquiry
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                  {jobs.map((job, index) => (
+                    <motion.div
+                      key={job._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-xl hover:border-[#25a244]/30 transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-[#1a5276] group-hover:text-[#25a244] transition-colors">
+                            {job.title}
+                          </h3>
+                          <p className="text-sm text-black mt-1">{job.department}</p>
+                        </div>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
+                          Open
+                        </span>
+                      </div>
+
+                      <div className="space-y-3 mb-4">
+                        <div className="flex items-center gap-2 text-sm text-black">
+                          <MapPin className="h-4 w-4 text-[#1a5276]" />
+                          <span>{job.location}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-black">
+                          <Briefcase className="h-4 w-4 text-[#1a5276]" />
+                          <span>{job.employmentType}</span>
+                        </div>
+                        {job.experienceRequired && (
+                          <div className="flex items-center gap-2 text-sm text-black">
+                            <Clock className="h-4 w-4 text-[#1a5276]" />
+                            <span>{job.experienceRequired}</span>
+                          </div>
+                        )}
+                        {job.numberOfOpenings && (
+                          <div className="flex items-center gap-2 text-sm text-black">
+                            <Users className="h-4 w-4 text-[#1a5276]" />
+                            <span>{job.numberOfOpenings} opening{job.numberOfOpenings > 1 ? 's' : ''}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2 text-sm text-black">
+                          <Calendar className="h-4 w-4 text-[#1a5276]" />
+                          <span>Deadline: {formatDate(job.applicationDeadline)}</span>
+                        </div>
+                      </div>
+
+                      {job.description && (
+                        <p className="text-sm text-black line-clamp-2 mb-4">
+                          {job.description}
+                        </p>
+                      )}
+
+                      <button 
+                        onClick={() => openApplicationModal(job)}
+                        className="w-full bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-4 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300 group-hover:shadow-lg"
+                      >
+                        Apply Now
+                      </button>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </div>
+          </section>
+
+          {/* FAQ Section */}
+          {careerContent.faqs.section && careerContent.faqs.items.length > 0 && (
+            <section className="py-16 lg:py-24 bg-slate-50">
+              <div className="mx-auto max-w-4xl px-4 lg:px-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center mb-12"
+                >
+                  <h2 className="text-[32px] font-bold text-[#1a5276]">
+                    {careerContent.faqs.section.title}
+                  </h2>
+                  {careerContent.faqs.section.description && (
+                    <p className="text-slate-600 mt-3 max-w-2xl mx-auto">
+                      {careerContent.faqs.section.description}
+                    </p>
+                  )}
+                  <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full mx-auto" />
+                </motion.div>
+
+                <div className="space-y-4">
+                  {careerContent.faqs.items.map((faq, index) => (
+                    <motion.div
+                      key={faq._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden"
+                    >
+                      <button
+                        onClick={() => setExpandedFaq(expandedFaq === faq._id ? null : faq._id)}
+                        className="w-full px-6 py-4 flex items-center justify-between text-left"
+                      >
+                        <h3 className="font-semibold text-[#1a5276]">{faq.question}</h3>
+                        {expandedFaq === faq._id ? (
+                          <Minus className="h-5 w-5 text-slate-400" />
+                        ) : (
+                          <Plus className="h-5 w-5 text-slate-400" />
+                        )}
+                      </button>
+                      <AnimatePresence>
+                        {expandedFaq === faq._id && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="px-6 pb-4"
+                          >
+                            <p className="text-slate-600 whitespace-pre-wrap">{faq.answer}</p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </section>
           )}
-        </div>
-      </section>
+        </>
+      )}
 
       {/* Application Modal */}
       <AnimatePresence>

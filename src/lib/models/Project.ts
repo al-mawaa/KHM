@@ -57,7 +57,7 @@ const ProjectSchema = new Schema<IProject>(
       type: String,
       required: [true, 'Status is required'],
       trim: true,
-      enum: ['Active', 'Upcoming'],
+      enum: ['Active', 'Upcoming', 'Completed'],
     },
     type: {
       type: String,

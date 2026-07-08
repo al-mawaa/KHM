@@ -4,7 +4,7 @@ import { Card, Button, Field, Input, Textarea, Select, Modal, Confirm } from "@/
 import { Plus, Pencil, Trash2, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
-const STATUS_OPTIONS = ["Active", "Upcoming"] as const;
+const STATUS_OPTIONS = ["Active", "Upcoming", "Completed"] as const;
 
 interface ProjectCategory {
   _id: string;

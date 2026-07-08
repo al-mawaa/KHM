@@ -6,6 +6,7 @@ import {
   Linkedin,
   Instagram,
   MessageCircle,
+  Youtube,
   Hash,
 } from "lucide-react";
 import { BrandLogoLink } from "@/components/BrandLogo";
@@ -31,6 +32,7 @@ export function Footer() {
   const SOCIAL = [
     { Icon: Linkedin, href: settings.linkedin || "https://linkedin.com", label: "LinkedIn" },
     { Icon: Instagram, href: settings.instagram || "https://instagram.com", label: "Instagram" },
+    { Icon: Youtube, href: settings.youtube || "https://youtube.com", label: "YouTube" },
     { Icon: MessageCircle, href: whatsappUrl, label: "WhatsApp" },
   ] as const;
 

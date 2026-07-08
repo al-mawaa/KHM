@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === "PUT") {
-      const { name, designation, department, remark, parentId, image, imagePublicId, order, isActive } = req.body;
+      const { name, designation, remark, parentId, image, imagePublicId, order, isActive } = req.body;
 
       if (!name || !designation) {
         return res
@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const member = await TeamMember.findByIdAndUpdate(
         id,
-        { name, designation, department, remark, parentId: parentId || null, image, imagePublicId, order, isActive },
+        { name, designation, remark, parentId: parentId || null, image, imagePublicId, order, isActive },
         { new: true, runValidators: true },
       );
 

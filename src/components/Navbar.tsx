@@ -135,8 +135,11 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
+  const [mediaDropdownOpen, setMediaDropdownOpen] = useState(false);
+  const [mobileMediaOpen, setMobileMediaOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mediaDropdownRef = useRef<HTMLDivElement>(null);
 
   const socialLinks = getSocialLinks(settings);
   const phoneDisplay = getPhoneDisplay(settings.phone);
@@ -249,22 +252,25 @@ export function Navbar() {
     }
   }, [pathname]);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside (About + Media)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setAboutDropdownOpen(false);
       }
+      if (mediaDropdownRef.current && !mediaDropdownRef.current.contains(event.target as Node)) {
+        setMediaDropdownOpen(false);
+      }
     };
 
-    if (aboutDropdownOpen) {
+    if (aboutDropdownOpen || mediaDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [aboutDropdownOpen]);
+  }, [aboutDropdownOpen, mediaDropdownOpen]);
 
   const openQuote = useCallback((service: string) => {
     setQuoteService(service);
@@ -460,12 +466,36 @@ export function Navbar() {
                 >
                   Projects
                 </Link>
-                <Link
-                  to="/gallery"
-                  className={cn("nav-link-3d", isActive("/gallery") && "active")}
-                >
-                  Gallery
-                </Link>
+                <div className="relative" ref={mediaDropdownRef}>
+                  <button
+                    className={cn("nav-link-3d", isActive("/gallery") && "active")}
+                    onClick={() => {
+                      navigate("/media");
+                      setMediaDropdownOpen(true);
+                    }}
+                    onMouseEnter={() => setMediaDropdownOpen(true)}
+                    aria-expanded={mediaDropdownOpen}
+                    aria-haspopup="true"
+                  >
+                    Media
+                  </button>
+
+                  <AnimatePresence>
+                    {mediaDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute left-0 top-full mt-2 min-w-[220px] rounded-[14px] bg-white shadow-[0_10px_40px_rgba(13,61,92,0.15)] border border-[#E5E7EB] p-2 z-50"
+                        onMouseLeave={() => setMediaDropdownOpen(false)}
+                      >
+                        <Link to="/media" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]">Media (Social)</Link>
+                        <Link to="/gallery" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]">Gallery</Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
                 <Link
                   to="/blog"
                   className={cn("nav-link-3d", isActive("/blog") && "active")}
@@ -612,7 +642,35 @@ export function Navbar() {
                   
                   <MobileNavLink to="/our-services" label="Our Services" onNavigate={() => setMobileOpen(false)} active={isActive("/our-services")} />
                   <MobileNavLink to="/projects" label="Projects" onNavigate={() => setMobileOpen(false)} active={isActive("/projects")} />
-                  <MobileNavLink to="/gallery" label="Gallery" onNavigate={() => setMobileOpen(false)} active={isActive("/gallery")} />
+                  <div className="px-5">
+                    <button
+                      onClick={() => { navigate("/media"); setMobileMediaOpen(!mobileMediaOpen); }}
+                      className={cn(
+                        "flex w-full items-center justify-between py-4 text-sm font-medium transition-all duration-200",
+                        isActive("/gallery") ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
+                      )}
+                    >
+                      <span>Media</span>
+                      <ChevronDown className="h-4 w-4 text-gray-400" />
+                    </button>
+
+                    <AnimatePresence>
+                      {mobileMediaOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.18, ease: "easeOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="py-2 pl-4 space-y-1">
+                            <Link to="/media" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c]">Media (Social)</Link>
+                            <Link to="/gallery" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c]">Gallery</Link>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                   <MobileNavLink to="/blog" label="Blog" onNavigate={() => setMobileOpen(false)} active={isActive("/blog")} />
                   <MobileNavLink to="/careers" label="Careers" onNavigate={() => setMobileOpen(false)} active={isActive("/careers")} />
                   <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} cta />

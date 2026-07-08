@@ -19,7 +19,6 @@ interface TeamMember {
   _id?: string;
   name: string;
   designation: string;
-  department?: string;
   remark?: string;
   parentId?: string | null;
   image?: string;
@@ -67,7 +66,6 @@ export default function AdminTeamHierarchyPage() {
   const blank = (): TeamMember => ({
     name: "",
     designation: "",
-    department: "",
     remark: "",
     parentId: null,
     image: "",
@@ -327,8 +325,7 @@ export default function AdminTeamHierarchyPage() {
                   <th className="px-6 py-4">Photo</th>
                   <th className="px-6 py-4">Name</th>
                   <th className="px-6 py-4">Designation</th>
-                  <th className="px-6 py-4">Department</th>
-                  <th className="px-6 py-4">Reports To</th>
+                  <th className="px-6 py-4">Parent</th>
                   <th className="px-6 py-4 text-center">Order</th>
                   <th className="px-6 py-4 text-center">Active</th>
                   <th className="px-6 py-4 text-right">Actions</th>
@@ -354,9 +351,6 @@ export default function AdminTeamHierarchyPage() {
                       {m.name}
                     </td>
                     <td className="px-6 py-4 text-slate-600 whitespace-nowrap">{m.designation}</td>
-                    <td className="px-6 py-4 text-slate-500 whitespace-nowrap">
-                      {m.department || "—"}
-                    </td>
                     <td className="px-6 py-4 text-slate-500 whitespace-nowrap">
                       {getParentName(m.parentId)}
                     </td>
@@ -438,15 +432,7 @@ export default function AdminTeamHierarchyPage() {
               </Field>
             </div>
 
-            <Field label="Department (optional)">
-              <Input
-                value={edit.department || ""}
-                onChange={(e) => setEdit({ ...edit, department: e.target.value })}
-                placeholder="e.g. Engineering, HR"
-              />
-            </Field>
-
-            <Field label="Reports To (optional)">
+            <Field label="Parent (optional)">
               <Select
                 value={edit.parentId || ""}
                 onChange={(e) =>

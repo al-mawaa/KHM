@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, Loader2, FileText, CheckCircle2, ArrowRight, Award, DollarSign, Shield, Leaf, Clock, Users, Wrench } from "lucide-react";
+import { ChevronRight, Loader2, FileText, CheckCircle2, ArrowRight, ArrowLeft, Award, DollarSign, Shield, Leaf, Clock, Users, Wrench } from "lucide-react";
 import Head from "next/head";
 import { PageHero } from "@/components/PageHero";
 import { IService } from "@/lib/models/Service";
@@ -161,6 +161,13 @@ export default function ServiceDetailPage() {
       {/* Overview Section */}
       <section className="py-8 lg:py-16 bg-white">
         <div className="mx-auto max-w-[1400px] px-4 lg:px-6">
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#1a5276] hover:text-[#154360] mb-8"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Projects
+          </Link>
           <div className="grid gap-12 lg:grid-cols-2">
             <div>
               <h2 className="font-display text-3xl font-bold uppercase text-[#1a5276] mb-6">

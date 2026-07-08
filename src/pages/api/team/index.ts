@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === "POST") {
-      const { name, designation, department, remark, parentId, image, imagePublicId, order, isActive } = req.body;
+      const { name, designation, remark, parentId, image, imagePublicId, order, isActive } = req.body;
 
       if (!name || !designation) {
         return res
@@ -54,7 +54,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const newMember = await TeamMember.create({
         name,
         designation,
-        department: department || "",
         remark: remark || "",
         parentId: parentId || null,
         image: image || "",

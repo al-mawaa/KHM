@@ -6,7 +6,6 @@ interface TeamMember {
   _id: string;
   name: string;
   designation: string;
-  department?: string;
   remark?: string;
   parentId?: string | null;
   image?: string;
@@ -106,16 +105,7 @@ function MemberCard({
       >
         {member.name}
       </h4>
-      <p className={`mt-0.5 font-medium text-slate-600 ${subtitle}`}>{member.designation}</p>
-
-      {member.department ? (
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#25a244]/12 px-2.5 py-0.5 text-[10px] font-semibold text-[#1f8a38]">
-            <Building2 className="h-3 w-3 shrink-0" />
-            {member.department}
-          </span>
-        </div>
-      ) : null}
+      <p className={`mt-0.5 font-medium text-emerald-600 ${subtitle}`}>{member.designation}</p>
 
       <span className="mt-3 text-[10px] font-semibold uppercase tracking-wider text-[#1a5276]/50 opacity-0 transition-opacity group-hover:opacity-100">
         View profile
@@ -216,23 +206,10 @@ function RoleModal({ member, onClose }: { member: TeamMember; onClose: () => voi
             )}
           </div>
           <h3 className="mt-3 sm:mt-4 text-lg sm:text-xl font-bold text-[#1a5276]">{member.name}</h3>
-          <p className="mt-1 text-xs sm:text-sm font-semibold text-gray-600">{member.designation}</p>
-          <div className="mt-3 flex flex-wrap justify-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#1a5276]/10 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold text-[#1a5276]">
-              <Briefcase className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-              {member.designation || "Team Member"}
-            </span>
-            {member.department && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#25a244]/10 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold text-[#25a244]">
-                <Building2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                {member.department}
-              </span>
-            )}
-          </div>
+          <p className="mt-1 text-xs sm:text-sm font-semibold text-emerald-600">{member.designation}</p>
           <div className="mt-4 sm:mt-5 rounded-xl bg-slate-50 p-3 sm:p-4 text-left">
             <p className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-slate-700">
-              {member.remark?.trim() ||
-                `${member.name} serves as ${member.designation}${member.department ? ` in ${member.department}` : ""}.`}
+              {member.remark?.trim() || `${member.name} serves as ${member.designation}.`}
             </p>
           </div>
         </div>

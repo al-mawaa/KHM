@@ -140,7 +140,7 @@ export function HomeWhyChoose() {
           className="text-center mb-10 sm:mb-12 md:mb-16"
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#1a5276]">
-            WHY CHOOSE KHM INFRA?
+            What Sets KHM Apart
           </h2>
           <p className="mt-2 sm:mt-3 text-base sm:text-lg text-black">
             Our Differentiators

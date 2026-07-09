@@ -1,5 +1,4 @@
 import { HomeAbout } from "@/components/home/HomeAbout";
-import { HomeCta } from "@/components/home/HomeCta";
 import { HomeGlobal } from "@/components/home/HomeGlobal";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeProject } from "@/components/home/HomeProject";
@@ -16,7 +15,6 @@ export function HomePage() {
       <HomeGlobal />
       <HomeTestimonials />
       <HomeWhyChoose />
-      <HomeCta />
     </>
   );
 }

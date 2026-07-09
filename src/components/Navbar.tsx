@@ -477,7 +477,7 @@ export function Navbar() {
                     aria-expanded={mediaDropdownOpen}
                     aria-haspopup="true"
                   >
-                    Media
+                    Media & Resources
                   </button>
 
                   <AnimatePresence>
@@ -490,8 +490,8 @@ export function Navbar() {
                         className="absolute left-0 top-full mt-2 min-w-[220px] rounded-[14px] bg-white shadow-[0_10px_40px_rgba(13,61,92,0.15)] border border-[#E5E7EB] p-2 z-50"
                         onMouseLeave={() => setMediaDropdownOpen(false)}
                       >
-                        <Link to="/media" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]">Media (Social)</Link>
-                        <Link to="/gallery" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]">Gallery</Link>
+                        <Link to="/media" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]" onClick={() => setMediaDropdownOpen(false)}>Media</Link>
+                        <Link to="/gallery" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]" onClick={() => setMediaDropdownOpen(false)}>Gallery</Link>
                       </motion.div>
                     )}
                   </AnimatePresence>

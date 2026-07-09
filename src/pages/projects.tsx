@@ -98,6 +98,20 @@ export default function ProjectsPage() {
       image: p.image,
     }));
 
+  const completedProjects = projects
+    .filter((p) => p.status === "Completed")
+    .filter((p) => selectedCategory === "All" || p.category === selectedCategory)
+    .map((p, index) => ({
+      id: p._id,
+      srNo: activeProjects.length + upcomingProjects.length + index + 1,
+      projectName: p.title,
+      department: p.department,
+      state: p.state,
+      scope: p.scope,
+      status: p.status,
+      image: p.image,
+    }));
+
   const categoryNames = categories.map((c) => c.name);
 
   return (
@@ -242,6 +256,41 @@ export default function ProjectsPage() {
               </motion.div>
             </div>
           </section>
+
+          {/* Completed Projects Section */}
+          <section className="py-16 lg:py-24 bg-white">
+            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="mb-12"
+              >
+                <h2 className="text-[32px] font-bold text-[#1a5276]">
+                  COMPLETED PROJECTS
+                </h2>
+                <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                {completedProjects.length === 0 ? (
+                  <div className="text-center py-12 text-black">No completed projects found</div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {completedProjects.map((project, index) => (
+                      <ProjectCard key={project.id} project={project} />
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          </section>
         </>
       )}
     </>
@@ -326,11 +375,14 @@ function ProjectCard({ project, showViewAction = false }: { project: ProjectCard
 
 function StatusBadge({ status }: { status: string }) {
   const isActive = status === "Active";
+  const isCompleted = status === "Completed";
   return (
     <span
       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
         isActive
           ? "bg-blue-100 text-blue-800 border border-blue-200"
+          : isCompleted
+          ? "bg-gray-100 text-gray-800 border border-gray-200"
           : "bg-green-100 text-green-800 border border-green-200"
       }`}
     >

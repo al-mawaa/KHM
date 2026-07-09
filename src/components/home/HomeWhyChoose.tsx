@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Shield, Zap, Target, Users, Wrench, DollarSign, Award, Clock } from "lucide-react";
+import { CheckCircle2, Shield, Zap, Target, Users, Wrench, DollarSign, Award, Clock, Leaf, GraduationCap, Cpu, Handshake } from "lucide-react";
 
 const differentiators = [
   {
@@ -85,6 +85,48 @@ const differentiators = [
   },
 ];
 
+const compactDifferentiators = [
+  {
+    number: "10",
+    title: "Sustainable & Future-Ready",
+    content: [
+      "Environment-friendly practices",
+      "Focus on sustainability and resource efficiency",
+    ],
+    icon: Leaf,
+  },
+  {
+    number: "11",
+    title: "Skilled & Experienced Team",
+    content: [
+      "Qualified engineers & domain experts",
+      "Continuous training & upskilling",
+      "Passion, knowledge & commitment",
+    ],
+    icon: GraduationCap,
+  },
+  {
+    number: "12",
+    title: "Advanced Technology Use",
+    content: [
+      "Latest tools, software & equipment",
+      "Data-driven decisions",
+      "Better project outcomes",
+    ],
+    icon: Cpu,
+  },
+  {
+    number: "13",
+    title: "Strong Client Collaboration",
+    content: [
+      "We listen, understand & deliver",
+      "Collaborative approach at every step",
+      "Your goals are our priority",
+    ],
+    icon: Handshake,
+  },
+];
+
 export function HomeWhyChoose() {
   return (
     <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
@@ -165,6 +207,73 @@ export function HomeWhyChoose() {
             );
           })}
         </div>
+
+        {/* Compact Differentiators Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-12 sm:mt-16"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0">
+            {compactDifferentiators.map((item, index) => {
+              const Icon = item.icon;
+              const isOdd = (index + 1) % 2 === 1;
+              const accentColor = isOdd ? "#2BA84A" : "#0B5FA5";
+              const isLast = index === compactDifferentiators.length - 1;
+
+              return (
+                <div
+                  key={item.number}
+                  className={`relative ${!isLast ? 'lg:border-r border-gray-200' : ''} px-4 lg:px-6`}
+                >
+                  {/* Circular Icon and Number */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <div
+                      className="h-10 w-10 rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: accentColor }}
+                    >
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div
+                      className="text-xl font-bold"
+                      style={{ color: accentColor }}
+                    >
+                      {item.number}
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h4
+                    className="text-sm font-bold mb-2 leading-tight"
+                    style={{ color: accentColor }}
+                  >
+                    {item.title}
+                  </h4>
+
+                  {/* Description */}
+                  <ul className="space-y-1">
+                    {item.content.map((line) => (
+                      <li
+                        key={line}
+                        className="text-xs leading-5 text-gray-600"
+                      >
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Bottom Underline */}
+                  <div
+                    className="mt-3 h-0.5 w-12 rounded-full"
+                    style={{ backgroundColor: accentColor }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
 
         {/* Premium Quote Section */}
         <motion.div

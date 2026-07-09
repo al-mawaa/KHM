@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, Button, Field, Input, Textarea, Select, Modal, Confirm } from "@/components/admin/ui";
-import { Plus, Pencil, Trash2, Briefcase, Users, CheckCircle, XCircle, Loader2, Filter, Search, Eye, UserCheck, UserX, Award, Download, FileText, Calendar, MapPin, Phone, Mail, Building, Clock, ChevronRight, ChevronLeft, Save, MessageSquare, Linkedin, FileDown } from "lucide-react";
+import { Plus, Pencil, Trash2, Briefcase, Users, CheckCircle, XCircle, Loader2, Filter, Search, Eye, UserCheck, UserX, Award, Download, FileText, Calendar, MapPin, Phone, Mail, Building, Clock, ChevronRight, ChevronLeft, Save, MessageSquare, Linkedin, FileDown, FileEdit } from "lucide-react";
 import { toast } from "sonner";
+import CareerContentTab from "@/components/admin/CareerContentTab";
 
 interface CareerJob {
   _id?: string;
@@ -55,7 +56,7 @@ interface JobApplication {
 
 type JobStatusFilter = 'all' | 'Open' | 'Closed';
 type ApplicationStatusFilter = 'all' | 'Pending' | 'Shortlisted' | 'Interview Scheduled' | 'Interview Completed' | 'Selected' | 'Hired' | 'Rejected';
-type TabType = 'jobs' | 'applications';
+type TabType = 'jobs' | 'applications' | 'career_content';
 
 interface DashboardStats {
   totalJobs: number;
@@ -687,33 +688,43 @@ export default function AdminCareersPage() {
         >
           <Users className="h-4 w-4" /> Applications
         </Button>
+        <Button
+          variant={activeTab === 'career_content' ? 'primary' : 'ghost'}
+          onClick={() => { setActiveTab('career_content'); setSearchQuery(''); }}
+          className="rounded-b-none"
+        >
+          <FileEdit className="h-4 w-4" /> Career Content
+        </Button>
       </div>
 
       {/* Search */}
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input
-            placeholder={activeTab === 'jobs' ? "Search jobs by title, department..." : "Search applications by name, email, phone, company, designation..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+      {activeTab !== 'career_content' && (
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              placeholder={activeTab === 'jobs' ? "Search jobs by title, department..." : "Search applications by name, email, phone, company, designation..."}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          {activeTab === 'jobs' && (
+            <Button onClick={() => { setEditingJob(null); setJobForm({ title: '', department: '', location: '', employmentType: 'Full Time', experienceRequired: '', salaryRange: '', description: '', responsibilities: '', requirements: '', skills: '', numberOfOpenings: 1, applicationDeadline: '', status: 'Open' }); setJobModalOpen(true); }}>
+              <Plus className="h-4 w-4" /> Add New Job
+            </Button>
+          )}
+          {activeTab === 'applications' && (
+            <Button variant="secondary" onClick={exportToCSV}>
+              <FileDown className="h-4 w-4 mr-2" /> Export CSV
+            </Button>
+          )}
         </div>
-        {activeTab === 'jobs' && (
-          <Button onClick={() => { setEditingJob(null); setJobForm({ title: '', department: '', location: '', employmentType: 'Full Time', experienceRequired: '', salaryRange: '', description: '', responsibilities: '', requirements: '', skills: '', numberOfOpenings: 1, applicationDeadline: '', status: 'Open' }); setJobModalOpen(true); }}>
-            <Plus className="h-4 w-4" /> Add New Job
-          </Button>
-        )}
-        {activeTab === 'applications' && (
-          <Button variant="secondary" onClick={exportToCSV}>
-            <FileDown className="h-4 w-4 mr-2" /> Export CSV
-          </Button>
-        )}
-      </div>
+      )}
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2 mb-6">
+      {activeTab !== 'career_content' && (
+        <div className="flex flex-wrap items-center gap-2 mb-6">
         <Filter className="h-4 w-4 text-slate-500" />
         {activeTab === 'jobs' ? (
           <>
@@ -800,11 +811,14 @@ export default function AdminCareersPage() {
           </>
         )}
       </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
         </div>
+      ) : activeTab === 'career_content' ? (
+        <CareerContentTab />
       ) : activeTab === 'jobs' ? (
         jobs.length === 0 ? (
           <div className="text-center py-12">

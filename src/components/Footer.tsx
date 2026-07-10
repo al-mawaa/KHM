@@ -26,7 +26,7 @@ export function Footer() {
 
   // Parse phone numbers from settings.phone string
   const phoneNumbers = settings.phone.split(',').map(p => p.trim()).filter(p => p);
-  const phoneClean = settings.phone.replace(/\D/g, "").slice(0, 10);
+  const phoneClean = "9511785597";
   const whatsappUrl = `https://wa.me/${phoneClean}`;
 
   const SOCIAL = [

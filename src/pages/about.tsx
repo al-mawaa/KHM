@@ -327,30 +327,167 @@ export default function AboutPage() {
         backgroundImage={heroPlant}
       />
 
-      <section id="about-us" className="scroll-mt-32 py-24">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="overflow-hidden rounded-3xl shadow-elegant">
-            <img
-              src={rainwater}
-              alt="KHM Rainwater Harvesting"
-              className="w-full h-[520px] object-cover hover-zoom"
-              loading="lazy"
-              width={1280}
-              height={960}
-            />
-          </div>
-          <div>
-            <SectionHeader align="left" eyebrow="Company" title={ABOUT_US.title} />
-            <div className="mt-6 space-y-4">
-              {ABOUT_US.paragraphs.map((paragraph) => (
-                <p
-                  key={paragraph.slice(0, 48)}
-                  className="text-sm leading-relaxed text-black sm:text-base"
-                >
-                  {paragraph}
-                </p>
-              ))}
+      {/* Logo Representation Section */}
+      <section id="logo-representation" className="scroll-mt-32 py-16 lg:py-20 bg-white">
+        <div className="mx-auto max-w-[1280px] px-4 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-[36px] font-bold text-[#0D3D5C] mb-4">
+              Logo Representation
+            </h2>
+            <div className="mx-auto h-1 w-24 bg-gradient-to-r from-[#0D3D5C] to-[#22C55E] mb-8" />
+            <div className="flex justify-center">
+              <img
+                src="/images/Logo.png"
+                alt="KHM Infra Logo Representation"
+                className="max-w-full h-auto"
+              />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Life at KHM Infra Section */}
+      <section id="life-at-khm" className="scroll-mt-32 py-16 lg:py-20 bg-white">
+        <div className="mx-auto max-w-[1280px] px-4 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-[36px] font-bold text-[#0D3D5C] mb-4">
+              Life at KHM Infra
+            </h2>
+            <div className="mx-auto h-1 w-24 bg-gradient-to-r from-[#0D3D5C] to-[#22C55E]" />
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-6 text-[18px] leading-[1.8] text-[#111827]">
+              <p>
+                At KHM Infra, we believe that a positive work culture is the foundation of a successful organization. We strive to create an environment where employees feel valued, connected, and motivated to perform at their best.
+              </p>
+              <p>
+                Beyond delivering quality infrastructure solutions, we are committed to building a workplace that encourages collaboration, mutual respect, and a strong sense of belonging.
+              </p>
+              <p>
+                Life at KHM Infra is filled with opportunities to connect, celebrate, and grow together. From festive celebrations, annual gatherings, and team outings to sports events, cultural programs, and employee engagement activities, we ensure that every occasion strengthens the bond among our team members. These moments create lasting memories while fostering teamwork, trust and a vibrant workplace culture.
+              </p>
+              <p>
+                We also encourage employees to participate in social initiatives, community activities and wellness programs that promote personal well-being and a sense of social responsibility.
+              </p>
+              <p>
+                By celebrating achievements, recognizing contributions and creating opportunities for meaningful interactions, we build a workplace where every individual feels appreciated and inspired.
+              </p>
+              <p>
+                At KHM Infra, work is more than just meeting project milestones—it's about being part of a supportive team that celebrates success, embraces new experiences and enjoys the journey together. We believe that when people feel connected and motivated, they create exceptional results.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Image Gallery Section */}
+      <section className="py-16 lg:py-20 bg-white">
+        <div className="mx-auto max-w-[1280px] px-4 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group"
+            >
+              <img
+                src="/images/li-1.jpg"
+                alt="Employee Award Ceremony"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group"
+            >
+              <img
+                src="/images/li-2.jpg"
+                alt="Company Merchandise"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group"
+            >
+              <img
+                src="/images/li-3.jpg"
+                alt="Training Session"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group"
+            >
+              <img
+                src="/images/li-4.jpg"
+                alt="Team Meeting"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group"
+            >
+              <img
+                src="/images/li-5.jpg"
+                alt="Office Workspace"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group"
+            >
+              <img
+                src="/images/li-6.jpg"
+                alt="Team Group Photo"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group sm:col-span-2 lg:col-span-1"
+            >
+              <img
+                src="/images/li-7.jpg"
+                alt="Open Office Workspace"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.7 }}
+              className="relative rounded-2xl overflow-hidden shadow-lg group sm:col-span-2 lg:col-span-1"
+            >
+              <img
+                src="/images/li-8.jpg"
+                alt="Team Event"
+                className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </motion.div>
           </div>
         </div>
       </section>

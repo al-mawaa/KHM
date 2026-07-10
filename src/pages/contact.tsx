@@ -26,7 +26,7 @@ export default function ContactPage() {
   const [error, setError] = useState<string | null>(null);
   const { settings } = useWebsiteSettings();
   const phones = getPhoneNumbers(settings.phone);
-  const whatsappUrl = `https://wa.me/${settings.phone.replace(/\D/g, "").slice(0, 10)}`;
+  const whatsappUrl = `https://wa.me/9511785597`;
   const mapsEmbedUrl = getMapsEmbedUrl(settings.address);
 
   return (

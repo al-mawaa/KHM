@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 
 function getSocialLinks(settings: ReturnType<typeof useWebsiteSettings>["settings"]) {
-  const phoneClean = settings.phone.replace(/\D/g, "").slice(0, 10);
+  const phoneClean = "9511785597";
   const whatsappUrl = `https://wa.me/${phoneClean}`;
 
   return [
@@ -137,9 +137,12 @@ export function Navbar() {
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [mediaDropdownOpen, setMediaDropdownOpen] = useState(false);
   const [mobileMediaOpen, setMobileMediaOpen] = useState(false);
+  const [careersDropdownOpen, setCareersDropdownOpen] = useState(false);
+  const [mobileCareersOpen, setMobileCareersOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mediaDropdownRef = useRef<HTMLDivElement>(null);
+  const careersDropdownRef = useRef<HTMLDivElement>(null);
 
   const socialLinks = getSocialLinks(settings);
   const phoneDisplay = getPhoneDisplay(settings.phone);
@@ -187,12 +190,16 @@ export function Navbar() {
 
   // Dropdown menu items for About Us
   const aboutDropdownItems = [
-    { id: "our-vision", label: "Our Vision", icon: Eye },
-    { id: "our-mission", label: "Our Mission", icon: Target },
-    { id: "what-we-stand-for", label: "What We Stand For", icon: Shield },
-    { id: "directors-message", label: "Director's Message", icon: User },
-    { id: "our-mentor", label: "Our Mentor", icon: GraduationCap },
-    { id: "management-team", label: "Meet Our Management Team", icon: Users },
+    { id: "logo-representation", label: "Logo Representation" },
+    { id: "life-at-khm", label: "Life at KHM Infra" },
+    { id: "our-vision", label: "Our Vision, Our Mission, Meet Our Team" },
+  ];
+
+  // Dropdown menu items for Careers
+  const careersDropdownItems = [
+    { id: "career-opportunities", label: "CAREER OPPORTUNITIES" },
+    { id: "learn-beyond-work", label: "LEARN BEYOND WORK" },
+    { id: "recruitment-process", label: "Recruitment Process" },
   ];
 
   // Handle dropdown item click with smooth scrolling
@@ -226,6 +233,37 @@ export function Navbar() {
     }
   };
 
+  // Handle careers dropdown item click with smooth scrolling
+  const handleCareersDropdownItemClick = (sectionId: string) => {
+    setCareersDropdownOpen(false);
+    
+    if (pathname === "/careers") {
+      // Already on Careers page, just scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const navbarHeight = headerRef.current?.offsetHeight || 90;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+          
+          // Optional: Add highlight animation
+          element.classList.add("ring-2", "ring-[#69B345]", "ring-offset-2");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-[#69B345]", "ring-offset-2");
+          }, 1500);
+        }
+      }, 100);
+    } else {
+      // Navigate to Careers page with hash
+      navigate(`/careers#${sectionId}`);
+    }
+  };
+
   // Handle scroll to section when hash is present
   useEffect(() => {
     if (pathname === "/about" && window.location.hash) {
@@ -252,7 +290,33 @@ export function Navbar() {
     }
   }, [pathname]);
 
-  // Close dropdown when clicking outside (About + Media)
+  // Handle scroll to careers section when hash is present
+  useEffect(() => {
+    if (pathname === "/careers" && window.location.hash) {
+      const sectionId = window.location.hash.replace("#", "");
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const navbarHeight = headerRef.current?.offsetHeight || 90;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+          
+          // Optional: Add highlight animation
+          element.classList.add("ring-2", "ring-[#69B345]", "ring-offset-2");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-[#69B345]", "ring-offset-2");
+          }, 1500);
+        }
+      }, 300);
+    }
+  }, [pathname]);
+
+  // Close dropdown when clicking outside (About + Media + Careers)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -261,16 +325,19 @@ export function Navbar() {
       if (mediaDropdownRef.current && !mediaDropdownRef.current.contains(event.target as Node)) {
         setMediaDropdownOpen(false);
       }
+      if (careersDropdownRef.current && !careersDropdownRef.current.contains(event.target as Node)) {
+        setCareersDropdownOpen(false);
+      }
     };
 
-    if (aboutDropdownOpen || mediaDropdownOpen) {
+    if (aboutDropdownOpen || mediaDropdownOpen || careersDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [aboutDropdownOpen, mediaDropdownOpen]);
+  }, [aboutDropdownOpen, mediaDropdownOpen, careersDropdownOpen]);
 
   const openQuote = useCallback((service: string) => {
     setQuoteService(service);
@@ -442,11 +509,10 @@ export function Navbar() {
                             onClick={() => handleDropdownItemClick(item.id)}
                             className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
                           >
-                            <item.icon className="h-5 w-5 text-gray-500 transition-transform duration-200 group-hover:scale-110 group-hover:text-[#69B345]" />
+                            <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
                             <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
                               {item.label}
                             </span>
-                            <div className="ml-auto h-1 w-0 rounded-full bg-[#69B345] transition-all duration-200 group-hover:w-8" />
                           </button>
                         ))}
                       </motion.div>
@@ -490,8 +556,14 @@ export function Navbar() {
                         className="absolute left-0 top-full mt-2 min-w-[220px] rounded-[14px] bg-white shadow-[0_10px_40px_rgba(13,61,92,0.15)] border border-[#E5E7EB] p-2 z-50"
                         onMouseLeave={() => setMediaDropdownOpen(false)}
                       >
-                        <Link to="/media" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]" onClick={() => setMediaDropdownOpen(false)}>Media</Link>
-                        <Link to="/gallery" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium hover:bg-[#F0FDF4]" onClick={() => setMediaDropdownOpen(false)}>Gallery</Link>
+                        <Link to="/media" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group" onClick={() => setMediaDropdownOpen(false)}>
+                          <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                          <span>Media</span>
+                        </Link>
+                        <Link to="/gallery" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group" onClick={() => setMediaDropdownOpen(false)}>
+                          <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                          <span>Gallery</span>
+                        </Link>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -502,12 +574,52 @@ export function Navbar() {
                 >
                   Blog
                 </Link>
-                <Link
-                  to="/careers"
-                  className={cn("nav-link-3d", isActive("/careers") && "active")}
-                >
-                  Careers
-                </Link>
+                
+                {/* Careers with Dropdown */}
+                <div className="relative" ref={careersDropdownRef}>
+                  <button
+                    className={cn(
+                      "nav-link-3d",
+                      isActive("/careers") && "active"
+                    )}
+                    onClick={() => {
+                      navigate("/careers");
+                      setCareersDropdownOpen(true);
+                    }}
+                    onMouseEnter={() => setCareersDropdownOpen(true)}
+                    aria-expanded={careersDropdownOpen}
+                    aria-haspopup="true"
+                  >
+                    Careers
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  <AnimatePresence>
+                    {careersDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                        className="absolute left-0 top-full mt-2 min-w-[280px] rounded-[12px] bg-white shadow-[0_10px_40px_rgba(13,61,92,0.15)] border border-[#E5E7EB] p-3 z-50"
+                        onMouseLeave={() => setCareersDropdownOpen(false)}
+                      >
+                        {careersDropdownItems.map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() => handleCareersDropdownItemClick(item.id)}
+                            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
+                          >
+                            <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:rotate-0 group-hover:text-[#69B345]" />
+                            <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
+                              {item.label}
+                            </span>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </nav>
             </div>
 
@@ -628,7 +740,7 @@ export function Navbar() {
                                 }}
                                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
                               >
-                                <item.icon className="h-5 w-5 text-gray-500 transition-transform duration-200 group-hover:scale-110 group-hover:text-[#69B345]" />
+                                <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
                                 <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
                                   {item.label}
                                 </span>
@@ -664,15 +776,75 @@ export function Navbar() {
                           className="overflow-hidden"
                         >
                           <div className="py-2 pl-4 space-y-1">
-                            <Link to="/media" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c]">Media (Social)</Link>
-                            <Link to="/gallery" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c]">Gallery</Link>
+                            <Link to="/media" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
+                              <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                              <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">Media (Social)</span>
+                            </Link>
+                            <Link to="/gallery" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
+                              <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                              <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">Gallery</span>
+                            </Link>
                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
                   <MobileNavLink to="/blog" label="Blog" onNavigate={() => setMobileOpen(false)} active={isActive("/blog")} />
-                  <MobileNavLink to="/careers" label="Careers" onNavigate={() => setMobileOpen(false)} active={isActive("/careers")} />
+                  
+                  {/* Careers with Accordion */}
+                  <div className="px-5">
+                    <button
+                      onClick={() => {
+                        navigate("/careers");
+                        setMobileCareersOpen(!mobileCareersOpen);
+                      }}
+                      className={cn(
+                        "flex w-full items-center justify-between py-4 text-sm font-medium transition-all duration-200",
+                        isActive("/careers") ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
+                      )}
+                      style={
+                        isActive("/careers")
+                          ? { background: "linear-gradient(90deg, rgba(26,82,118,0.06) 0%, transparent 100%)", borderLeft: "3px solid #1a5276", paddingLeft: "14px", marginLeft: "-17px" }
+                          : { borderLeft: "3px solid transparent", paddingLeft: "14px", marginLeft: "-17px" }
+                      }
+                    >
+                      <span>Careers</span>
+                      <ChevronDown className="h-4 w-4 text-gray-400" />
+                    </button>
+                    
+                    <AnimatePresence>
+                      {mobileCareersOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="py-2 pl-4 space-y-1">
+                            {careersDropdownItems.map((item) => (
+                              <Link
+                                key={item.id}
+                                to={`/careers#${item.id}`}
+                                onClick={() => {
+                                  setMobileOpen(false);
+                                  setMobileCareersOpen(false);
+                                  handleCareersDropdownItemClick(item.id);
+                                }}
+                                className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
+                              >
+                                <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                                <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
+                                  {item.label}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  
                   <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} cta />
                 </div>
 

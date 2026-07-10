@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin, MessageSquare, HelpCircle, Award, Plus, Minus, Lightbulb, GraduationCap } from "lucide-react";
+import { Briefcase, MapPin, Clock, Users, Calendar, Loader2, AlertCircle, X, Upload, CheckCircle, FileText, Linkedin, MessageSquare, HelpCircle, Award, Plus, Minus, Lightbulb, GraduationCap, Check, Mail, Monitor, AlertTriangle, Shield } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
@@ -553,13 +553,314 @@ export default function CareersPage() {
         subtitle="Build your career with a growing engineering organization focused on innovation, sustainability and excellence."
       />
 
+      {/* Career Opportunities Section */}
+      <section id="career-opportunities" className="py-24 lg:py-28 pb-4 bg-white">
+        <div className="mx-auto max-w-5xl px-4 lg:px-8">
+          {/* Full-width Image */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 overflow-hidden rounded-2xl shadow-lg"
+          >
+            <img
+              src="/images/Oppor.jpeg"
+              alt="Career Opportunities"
+              className="w-full h-[480px] object-cover hover:scale-105 transition-transform duration-300"
+            />
+          </motion.div>
+
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="max-w-5xl text-left"
+          >
+            <h2 className="text-[30px] md:text-[36px] lg:text-[48px] font-bold text-[#0D3D5C] tracking-wide mb-4">
+              CAREER OPPORTUNITIES
+            </h2>
+            <div className="h-[4px] w-[80px] bg-[#22C55E] rounded-full mb-8" />
+            
+            <div className="space-y-6">
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                At KHM Infra, our people are our greatest strength. Whether you're beginning your career or bringing years of experience, you'll find opportunities to grow, contribute, and make a meaningful impact.
+              </p>
+              
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                We believe in fostering a collaborative, innovative, and supportive work environment where every team member's ideas are valued.
+              </p>
+              
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                Join KHM Infra and be part of a team that's shaping sustainable infrastructure and delivering excellence through dedication, expertise, and teamwork.
+              </p>
+
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                KHM Infra welcomes passionate, skilled, and committed professionals who are ready to grow with us and contribute to building a better future.
+              </p>
+            </div>
+
+            {/* Highlighted Card */}
+            <div className="mt-10 max-w-full w-full bg-gray-50 rounded-2xl p-7 shadow-md hover:shadow-lg transition-all duration-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="w-6 h-6 text-[#22C55E]" />
+                  </div>
+                  <span className="text-[#4B5563] text-lg font-medium">Collaborative Work Culture</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="w-6 h-6 text-[#22C55E]" />
+                  </div>
+                  <span className="text-[#4B5563] text-lg font-medium">Career Growth Opportunities</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="w-6 h-6 text-[#22C55E]" />
+                  </div>
+                  <span className="text-[#4B5563] text-lg font-medium">Learning & Development</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="w-6 h-6 text-[#22C55E]" />
+                  </div>
+                  <span className="text-[#4B5563] text-lg font-medium">Innovation & Teamwork</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Current Openings Section */}
+      <section id="open-positions" className="pt-4 py-16 lg:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+          >
+            <div>
+              <h2 className="text-[32px] font-bold text-[#1a5276]">
+                Current Openings
+              </h2>
+              <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
+            </div>
+            <button
+              onClick={openEnquiryModal}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#1a5276] bg-white px-6 py-3 text-sm font-semibold text-[#1a5276] transition-all hover:bg-[#1a5276] hover:text-white"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Job Enquiry
+            </button>
+          </motion.div>
+
+          {error ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center py-16"
+            >
+              <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
+              <p className="text-lg text-red-600 font-medium">{error}</p>
+              <p className="text-sm text-black mt-2">Please try again later or contact support.</p>
+            </motion.div>
+          ) : loading ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center py-16"
+            >
+              <Loader2 className="h-12 w-12 animate-spin text-[#1a5276] mb-4" />
+              <p className="text-lg text-black">Loading current openings...</p>
+            </motion.div>
+          ) : jobs.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center py-16 text-center"
+            >
+              <Briefcase className="h-16 w-16 text-black mb-4" />
+              <h3 className="text-2xl font-semibold text-black mb-2">No Current Openings Available</h3>
+              <p className="text-black mb-6">Please check back later for future opportunities.</p>
+              <button
+                onClick={openEnquiryModal}
+                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-6 py-3 text-sm font-semibold text-white transition-all hover:from-[#25a244] hover:to-[#1a5276]"
+              >
+                <MessageSquare className="h-4 w-4" />
+                Submit Job Enquiry
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {jobs.map((job, index) => (
+                <motion.div
+                  key={job._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-xl hover:border-[#25a244]/30 transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-[#1a5276] group-hover:text-[#25a244] transition-colors">
+                        {job.title}
+                      </h3>
+                      <p className="text-sm text-black mt-1">{job.department}</p>
+                    </div>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
+                      Open
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center gap-2 text-sm text-black">
+                      <MapPin className="h-4 w-4 text-[#1a5276]" />
+                      <span>{job.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-black">
+                      <Briefcase className="h-4 w-4 text-[#1a5276]" />
+                      <span>{job.employmentType}</span>
+                    </div>
+                    {job.experienceRequired && (
+                      <div className="flex items-center gap-2 text-sm text-black">
+                        <Clock className="h-4 w-4 text-[#1a5276]" />
+                        <span>{job.experienceRequired}</span>
+                      </div>
+                    )}
+                    {job.numberOfOpenings && (
+                      <div className="flex items-center gap-2 text-sm text-black">
+                        <Users className="h-4 w-4 text-[#1a5276]" />
+                        <span>{job.numberOfOpenings} opening{job.numberOfOpenings > 1 ? 's' : ''}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 text-sm text-black">
+                      <Calendar className="h-4 w-4 text-[#1a5276]" />
+                      <span>Deadline: {formatDate(job.applicationDeadline)}</span>
+                    </div>
+                  </div>
+
+                  {job.description && (
+                    <p className="text-sm text-black line-clamp-2 mb-4">
+                      {job.description}
+                    </p>
+                  )}
+
+                  <button 
+                    onClick={() => openApplicationModal(job)}
+                    className="w-full bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-4 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300 group-hover:shadow-lg"
+                  >
+                    Apply Now
+                  </button>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* Learn Beyond Work Section */}
+      <section id="learn-beyond-work" className="py-24 lg:py-28 bg-white">
+        <div className="mx-auto max-w-5xl px-4 lg:px-8">
+          {/* Images Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+          >
+            <div className="overflow-hidden rounded-2xl shadow-lg">
+              <img
+                src="/images/desk.jpeg"
+                alt="Work Environment"
+                className="w-full h-[450px] object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="overflow-hidden rounded-2xl shadow-lg">
+              <img
+                src="/images/pres.jpeg"
+                alt="Team Collaboration"
+                className="w-full h-[450px] object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </motion.div>
+
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="max-w-5xl text-left"
+          >
+            <h2 className="text-[30px] md:text-[36px] lg:text-[48px] font-bold text-[#0D3D5C] tracking-wide mb-4">
+              LEARN BEYOND WORK
+            </h2>
+            <div className="h-[4px] w-[80px] bg-[#22C55E] rounded-full mb-8" />
+            
+            <h3 className="text-[26px] font-semibold text-[#0D3D5C] mb-6">
+              A Special Place to Learn and Grow
+            </h3>
+            
+            <div className="space-y-6">
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                At KHM Infra, we believe that our employees are our greatest asset. We are committed to creating a supportive and inspiring workplace where every individual has the opportunity to learn, grow, and build a rewarding career.
+              </p>
+              
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                When you join KHM Infra, you become a valued member of our team. We encourage continuous learning, professional development, and career growth by providing opportunities to enhance your skills and take on new challenges.
+              </p>
+
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                Our goal is to help every employee reach their full potential while contributing to the success of our organization.
+              </p>
+
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                We foster a culture of collaboration, innovation, and excellence, where your ideas and dedication are recognized and appreciated.
+              </p>
+
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                If you're passionate about building a successful career with KHM Infra, we'd love to hear from you.
+              </p>
+
+              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+                For career opportunities and more information, please contact us at:
+              </p>
+            </div>
+
+            {/* Contact Card */}
+            <div className="mt-10 flex justify-start">
+              <a
+                href="mailto:hr@khminfra.com"
+                className="inline-flex items-center gap-4 bg-blue-50 hover:bg-blue-100 rounded-2xl px-8 py-5 transition-all duration-300 group shadow-md hover:shadow-lg"
+              >
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Mail className="w-6 h-6 text-[#1a5276]" />
+                </div>
+                <span className="text-[#1a5276] font-semibold text-lg">hr@khminfra.com</span>
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Dynamic Career Content Sections */}
       {careerContent && (
         <>
           {/* Recruitment Process Section */}
           {careerContent.recruitmentProcess.section && careerContent.recruitmentProcess.steps.length > 0 && (
-            <section className="py-16 lg:py-24 bg-slate-50">
+            <section id="recruitment-process" className="py-16 lg:py-24 bg-slate-50">
               <div className="mx-auto max-w-7xl px-4 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -577,6 +878,21 @@ export default function CareersPage() {
                     </p>
                   )}
                   <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full mx-auto" />
+                </motion.div>
+
+                {/* Interview Image */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="mb-12 overflow-hidden rounded-2xl shadow-lg"
+                >
+                  <img
+                    src="/images/intv.jpeg"
+                    alt="Interview Process"
+                    className="w-full h-[450px] object-cover hover:scale-105 transition-transform duration-300"
+                  />
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -663,220 +979,99 @@ export default function CareersPage() {
             </section>
           )}
 
-          {/* Student Jobs and Internships Section (Static) */}
-          <section className="py-16 lg:py-24 bg-white">
+          {/* Protect Yourself from Recruitment Fraud Section */}
+          <section className="py-24 lg:py-28 bg-white">
             <div className="mx-auto max-w-7xl px-4 lg:px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="text-center mb-12"
-              >
-                <h2 className="text-[32px] font-bold text-[#1a5276]">
-                  Student Jobs and Internships
-                </h2>
-                <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full mx-auto" />
-              </motion.div>
+              <h2 className="text-[36px] font-semibold text-[#0D3D5C] mb-[60px]">
+                Protect Yourself from Recruitment Fraud
+              </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Card 1 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Item 1 */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.1 }}
-                  className="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col h-full hover:shadow-md transition-shadow"
+                  className="bg-white rounded-[20px] p-6 border-t-4 border-t-[#0D3D5C] border border-gray-200 shadow-lg hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col h-[500px] overflow-hidden"
                 >
-                  <div className="mb-6 flex justify-center">
-                    <FileText className="w-16 h-16 text-[#1a5276]" />
+                  <div className="w-[64px] h-[64px] bg-blue-50 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <Mail className="w-[30px] h-[30px] text-[#0D3D5C]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-[#1a5276] mb-4 text-left">
-                    Collaborate with KHM Infra on your projects
+                  <h3 className="text-[24px] font-bold text-[#0D3D5C] mb-4">
+                    Official Communication Channels
                   </h3>
-                  <p className="text-sm text-slate-600 text-left flex-1">
-                    Are you working on your engineering project, research, or thesis? We welcome innovative ideas and provide opportunities to collaborate with our experts on real-world infrastructure and wastewater management challenges.
+                  <p className="text-[16px] leading-[1.6] text-[#4B5563] mb-4">
+                    KHM recruiters may contact candidates on professional networks (e.g., LinkedIn) to share opportunities. Formal recruitment and data requests will use official KHM channels:
                   </p>
+                  <ul className="text-[15px] leading-[1.6] text-[#4B5563] space-y-[10px] flex-1">
+                    <li className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
+                      <span>email (@khminfra.com / @khminfra.[country code])</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
+                      <span>Teams</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-[#22C55E] flex-shrink-0" />
+                      <span>Phone</span>
+                    </li>
+                  </ul>
+                  <div className="mt-5 pt-4 border-t border-gray-200 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-gray-400" />
+                    <span className="text-[14px] text-gray-500">Official KHM Recruitment</span>
+                  </div>
                 </motion.div>
 
-                {/* Card 2 */}
+                {/* Item 2 */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.2 }}
-                  className="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col h-full hover:shadow-md transition-shadow"
+                  className="bg-white rounded-[20px] p-6 border-t-4 border-t-[#0D3D5C] border border-gray-200 shadow-lg hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col h-[500px] overflow-hidden"
                 >
-                  <div className="mb-6 flex justify-center">
-                    <Lightbulb className="w-16 h-16 text-[#1a5276]" />
+                  <div className="w-[64px] h-[64px] bg-blue-50 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <Monitor className="w-[30px] h-[30px] text-[#0D3D5C]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-[#1a5276] mb-4 text-left">
-                    Gain Industry Insights and Guidance
+                  <h3 className="text-[24px] font-bold text-[#0D3D5C] mb-4">
+                    Secure Job Offers
                   </h3>
-                  <p className="text-sm text-slate-600 text-left flex-1">
-                    Work alongside experienced engineers and industry professionals to gain practical knowledge, develop technical skills, and understand real-world project execution.
+                  <p className="text-[16px] leading-[1.6] text-[#4B5563] mb-4">
+                    Formal job offers from KHM are shared through our secure candidate portal. You will receive a unique link and login details to access and review your offer and related documents.
                   </p>
+                  <div className="flex-1"></div>
+                  <div className="mt-5 pt-4 border-t border-gray-200 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-gray-400" />
+                    <span className="text-[14px] text-gray-500">Official KHM Recruitment</span>
+                  </div>
                 </motion.div>
 
-                {/* Card 3 */}
+                {/* Item 3 */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.3 }}
-                  className="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col h-full hover:shadow-md transition-shadow"
+                  className="bg-white rounded-[20px] p-6 border-t-4 border-t-[#0D3D5C] border border-gray-200 shadow-lg hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col h-[500px] overflow-hidden"
                 >
-                  <div className="mb-6 flex justify-center">
-                    <GraduationCap className="w-16 h-16 text-[#1a5276]" />
+                  <div className="w-[64px] h-[64px] bg-blue-50 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <AlertTriangle className="w-[30px] h-[30px] text-[#0D3D5C]" />
                   </div>
-                  <h3 className="text-xl font-semibold text-[#1a5276] mb-4 text-left">
-                    Career Opportunities for Fresh Graduates
+                  <h3 className="text-[24px] font-bold text-[#0D3D5C] mb-4">
+                    No Payment Required
                   </h3>
-                  <p className="text-sm text-slate-600 text-left flex-1 mb-6">
-                    Kick-start your professional journey with structured learning, mentorship, and exciting career opportunities at KHM Infra.
+                  <p className="text-[16px] leading-[1.6] text-[#4B5563] mb-4">
+                    KHM will never ask you to pay any money at any point during the recruitment process or to secure equipment when joining.
                   </p>
-                  <button
-                    onClick={() => document.getElementById('open-positions')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="inline-block text-sm font-semibold text-[#1a5276] hover:text-[#25a244] transition-colors mt-auto text-left"
-                  >
-                    View Open Positions →
-                  </button>
+                  <div className="flex-1"></div>
+                  <div className="mt-5 pt-4 border-t border-gray-200 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-gray-400" />
+                    <span className="text-[14px] text-gray-500">Official KHM Recruitment</span>
+                  </div>
                 </motion.div>
               </div>
-            </div>
-          </section>
-
-          {/* Current Openings Section */}
-          <section id="open-positions" className="py-16 lg:py-24 bg-white">
-            <div className="mx-auto max-w-7xl px-4 lg:px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
-              >
-                <div>
-                  <h2 className="text-[32px] font-bold text-[#1a5276]">
-                    Current Openings
-                  </h2>
-                  <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-                </div>
-                <button
-                  onClick={openEnquiryModal}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#1a5276] bg-white px-6 py-3 text-sm font-semibold text-[#1a5276] transition-all hover:bg-[#1a5276] hover:text-white"
-                >
-                  <MessageSquare className="h-4 w-4" />
-                  Job Enquiry
-                </button>
-              </motion.div>
-
-              {error ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex flex-col items-center justify-center py-16"
-                >
-                  <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
-                  <p className="text-lg text-red-600 font-medium">{error}</p>
-                  <p className="text-sm text-black mt-2">Please try again later or contact support.</p>
-                </motion.div>
-              ) : loading ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex flex-col items-center justify-center py-16"
-                >
-                  <Loader2 className="h-12 w-12 animate-spin text-[#1a5276] mb-4" />
-                  <p className="text-lg text-black">Loading current openings...</p>
-                </motion.div>
-              ) : jobs.length === 0 ? (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-col items-center justify-center py-16 text-center"
-                >
-                  <Briefcase className="h-16 w-16 text-black mb-4" />
-                  <h3 className="text-2xl font-semibold text-black mb-2">No Current Openings Available</h3>
-                  <p className="text-black mb-6">Please check back later for future opportunities.</p>
-                  <button
-                    onClick={openEnquiryModal}
-                    className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#1a5276] to-[#154360] px-6 py-3 text-sm font-semibold text-white transition-all hover:from-[#25a244] hover:to-[#1a5276]"
-                  >
-                    <MessageSquare className="h-4 w-4" />
-                    Submit Job Enquiry
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  {jobs.map((job, index) => (
-                    <motion.div
-                      key={job._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
-                      className="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-xl hover:border-[#25a244]/30 transition-all duration-300 hover:-translate-y-1"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-[#1a5276] group-hover:text-[#25a244] transition-colors">
-                            {job.title}
-                          </h3>
-                          <p className="text-sm text-black mt-1">{job.department}</p>
-                        </div>
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                          Open
-                        </span>
-                      </div>
-
-                      <div className="space-y-3 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-black">
-                          <MapPin className="h-4 w-4 text-[#1a5276]" />
-                          <span>{job.location}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-black">
-                          <Briefcase className="h-4 w-4 text-[#1a5276]" />
-                          <span>{job.employmentType}</span>
-                        </div>
-                        {job.experienceRequired && (
-                          <div className="flex items-center gap-2 text-sm text-black">
-                            <Clock className="h-4 w-4 text-[#1a5276]" />
-                            <span>{job.experienceRequired}</span>
-                          </div>
-                        )}
-                        {job.numberOfOpenings && (
-                          <div className="flex items-center gap-2 text-sm text-black">
-                            <Users className="h-4 w-4 text-[#1a5276]" />
-                            <span>{job.numberOfOpenings} opening{job.numberOfOpenings > 1 ? 's' : ''}</span>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-2 text-sm text-black">
-                          <Calendar className="h-4 w-4 text-[#1a5276]" />
-                          <span>Deadline: {formatDate(job.applicationDeadline)}</span>
-                        </div>
-                      </div>
-
-                      {job.description && (
-                        <p className="text-sm text-black line-clamp-2 mb-4">
-                          {job.description}
-                        </p>
-                      )}
-
-                      <button 
-                        onClick={() => openApplicationModal(job)}
-                        className="w-full bg-gradient-to-r from-[#1a5276] to-[#154360] text-white py-3 px-4 rounded-lg font-semibold hover:from-[#25a244] hover:to-[#1a5276] transition-all duration-300 group-hover:shadow-lg"
-                      >
-                        Apply Now
-                      </button>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
             </div>
           </section>
 

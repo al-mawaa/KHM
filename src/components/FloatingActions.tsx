@@ -3,7 +3,7 @@ import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 
 export function FloatingActions() {
   const { settings } = useWebsiteSettings();
-  const phoneClean = settings.phone.replace(/\D/g, "").slice(0, 10);
+  const phoneClean = "9511785597";
   const whatsappUrl = `https://wa.me/${phoneClean}`;
   const phoneTel = `tel:${phoneClean}`;
 

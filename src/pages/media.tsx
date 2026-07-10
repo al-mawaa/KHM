@@ -11,9 +11,7 @@ export default function MediaPage() {
   const instagram = settings.instagram || "https://www.instagram.com";
   const youtube = settings.youtube || "";
 
-  const phone = settings.phone || "";
-  const phoneClean = phone.replace(/\D/g, "").slice(0, 15);
-  const whatsapp = `https://wa.me/${phoneClean}`;
+  const whatsapp = "https://wa.me/9511785597";
 
   return (
     <>
@@ -67,7 +65,8 @@ export default function MediaPage() {
               </div>
             </a>
 
-            <a
+            {/* YouTube Card - Commented Out */}
+            {/* <a
               href={youtube || "#"}
               target="_blank"
               rel="noreferrer"
@@ -81,9 +80,10 @@ export default function MediaPage() {
                 <h3 className="mt-8 text-2xl font-semibold text-slate-900">YouTube</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-700">{youtube ? "Subscribe to our channel for videos and updates." : "YouTube channel coming soon."}</p>
               </div>
-            </a>
+            </a> */}
 
-            <a
+            {/* WhatsApp Card - Commented Out */}
+            {/* <a
               href={whatsapp}
               target="_blank"
               rel="noreferrer"
@@ -97,10 +97,11 @@ export default function MediaPage() {
                 <h3 className="mt-8 text-2xl font-semibold text-slate-900">WhatsApp</h3>
                 <p className="mt-3 text-sm leading-7 text-slate-700">Join our WhatsApp channel for fast updates and direct company contact.</p>
               </div>
-            </a>
+            </a> */}
           </div>
         </div>
       </section>
     </>
   );
 }
+// 

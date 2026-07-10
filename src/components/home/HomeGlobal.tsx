@@ -159,7 +159,7 @@ export function HomeGlobal() {
             className="text-center mb-12 md:mb-16"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#0B5FA5]">
-              KEY ASSETS OF KHM
+              Driving Infrastructure Growth
             </h2>
             <p className="mt-3 sm:mt-4 text-base sm:text-lg text-[#64748B] max-w-2xl mx-auto">
               Delivering Excellence Through Innovation, Engineering & Global Trust

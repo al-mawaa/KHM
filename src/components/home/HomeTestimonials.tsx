@@ -316,7 +316,7 @@ export function HomeTestimonials() {
           className="text-center mb-10 md:mb-12"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#0B5FA5]">
-            What Our Clients Say
+            Voice of Our Clients
           </h2>
           <p className="mt-3 text-base text-[#64748B]">
             Trusted by industries, municipalities and organizations across India.

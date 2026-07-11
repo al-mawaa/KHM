@@ -115,10 +115,10 @@ function DirectorMessageCard({ image, name, qualification, role, message }: {
 
       <div className="flex flex-col h-full">
         {/* Image Section - Top */}
-        <div className="relative w-full h-[300px]">
+        <div className="relative w-full h-[250px] sm:h-[300px]">
           {/* Blue-green gradient border around image */}
           <div className="absolute inset-3 rounded-[20px] bg-gradient-to-br from-[#0B5FA5]/5 to-[#2BA84A]/5" />
-          
+
           {/* Image container with proper aspect ratio */}
           <div className="relative h-full w-full p-3">
             <div className="relative h-full w-full rounded-[20px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
@@ -134,24 +134,24 @@ function DirectorMessageCard({ image, name, qualification, role, message }: {
         </div>
 
         {/* Content Section - Bottom */}
-        <div className="relative w-full p-6 flex flex-col justify-center z-10">
+        <div className="relative w-full p-5 sm:p-6 flex flex-col justify-center z-10">
           {/* Name */}
-          <h3 className="text-[32px] font-bold text-[#0B5FA5] leading-tight mb-2">
+          <h3 className="text-[24px] sm:text-[28px] lg:text-[32px] font-bold text-[#0B5FA5] leading-tight mb-2">
             {name}
           </h3>
 
           {/* Designation */}
-          <p className="text-[20px] font-medium text-[#4B5563] mb-3">
+          <p className="text-[16px] sm:text-[18px] lg:text-[20px] font-medium text-[#4B5563] mb-3">
             {role}
           </p>
 
           {/* Qualifications */}
-          <p className="text-[16px] text-[#6B7280] mb-4 leading-relaxed">
+          <p className="text-[14px] sm:text-[16px] text-[#6B7280] mb-4 leading-relaxed">
             {qualification}
           </p>
 
           {/* Message */}
-          <p className={`${textSize} leading-[1.7] text-[#4B5563]`}>
+          <p className={`${textSize} leading-[1.7] text-[#4B5563] text-[14px] sm:text-[16px] lg:text-[18px]`}>
             {message}
           </p>
         </div>
@@ -180,12 +180,12 @@ function MentorMessageCard() {
 
       <div className="flex flex-col lg:flex-row h-full">
         {/* Image Section - Left */}
-        <div className="relative w-full lg:w-2/5 xl:w-1/3 p-6 flex items-center justify-center">
+        <div className="relative w-full lg:w-2/5 xl:w-1/3 p-4 sm:p-6 flex items-center justify-center">
           {/* Blue-green gradient border around image */}
           <div className="absolute inset-3 rounded-[20px] bg-gradient-to-br from-[#0B5FA5]/5 to-[#2BA84A]/5" />
-          
+
           {/* Image container with square aspect ratio */}
-          <div className="relative w-full pb-[100%] lg:pb-0 lg:h-full rounded-[20px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
+          <div className="relative w-full max-w-[300px] sm:max-w-full pb-[100%] lg:pb-0 lg:h-full rounded-[20px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
             <motion.img
               src="/images/mentor.png"
               alt="Mr. Madhav Kaluskar"
@@ -197,14 +197,14 @@ function MentorMessageCard() {
         </div>
 
         {/* Content Section - Right */}
-        <div className="relative w-full lg:w-3/5 xl:w-2/3 p-6 flex flex-col justify-center z-10">
+        <div className="relative w-full lg:w-3/5 xl:w-2/3 p-5 sm:p-6 flex flex-col justify-center z-10">
           {/* Main Quote */}
-          <h3 className="text-[24px] font-bold text-[#0d3d5c] leading-tight mb-3">
+          <h3 className="text-[20px] sm:text-[22px] lg:text-[24px] font-bold text-[#0d3d5c] leading-tight mb-3">
             "If We Cannot Save the Environment,<br />               the Environment Will Not Save Us."
           </h3>
 
           {/* Body Messages */}
-          <div className="space-y-3 text-[15px] leading-[1.7] text-[#4B5563]">
+          <div className="space-y-3 text-[14px] sm:text-[15px] leading-[1.7] text-[#4B5563]">
             <p>
               This powerful vision, embraced by M/s. KHM INFRA Innovations Pvt. Ltd. is both timely and deeply meaningful. In an era of mounting environmental challenges, it is truly heartening to witness a team of seasoned professionals and energetic young engineers unite with a shared purpose—to deliver sustainable solutions in water supply, wastewater management, solid waste management, river rejuvenation, and environmental monitoring.
             </p>
@@ -221,10 +221,10 @@ function MentorMessageCard() {
 
           {/* Signature */}
           <div className="mt-4 pt-3 border-t border-[#E5E7EB]">
-            <h4 className="text-[32px] font-bold text-[#0B5FA5] leading-tight mb-2">
+            <h4 className="text-[24px] sm:text-[28px] lg:text-[32px] font-bold text-[#0B5FA5] leading-tight mb-2">
               Mr. Madhav Kaluskar
             </h4>
-            <p className="text-[16px] text-[#6B7280]">
+            <p className="text-[14px] sm:text-[16px] text-[#6B7280]">
               Senior Board Member
             </p>
           </div>
@@ -329,17 +329,17 @@ export default function AboutPage() {
 
       {/* Logo Representation Section */}
       <section id="logo-representation" className="scroll-mt-32 py-16 lg:py-20 bg-white">
-        <div className="mx-auto max-w-[1280px] px-4 lg:px-8">
+        <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-[36px] font-bold text-[#0D3D5C] mb-4">
+            <h2 className="text-[28px] sm:text-[32px] lg:text-[36px] font-bold text-[#0D3D5C] mb-4 break-words">
               Logo Representation
             </h2>
-            <div className="mx-auto h-1 w-24 bg-gradient-to-r from-[#0D3D5C] to-[#22C55E] mb-8" />
-            <div className="flex justify-center">
+            <div className="mx-auto h-1 w-20 sm:w-24 bg-gradient-to-r from-[#0D3D5C] to-[#22C55E] mb-8" />
+            <div className="flex justify-center overflow-hidden">
               <img
                 src="/images/Logo.png"
                 alt="KHM Infra Logo Representation"
-                className="max-w-full h-auto"
+                className="max-w-full h-auto w-full sm:w-auto"
               />
             </div>
           </div>
@@ -378,16 +378,16 @@ export default function AboutPage() {
           </svg>
         </div>
         
-        <div className="mx-auto max-w-[1200px] px-4 lg:px-8 relative z-10">
+        <div className="mx-auto max-w-[1200px] px-5 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-[36px] font-bold text-[#0D3D5C] mb-4">
+            <h2 className="text-[28px] sm:text-[32px] lg:text-[36px] font-bold text-[#0D3D5C] mb-4 break-words">
               Life at KHM Infra
             </h2>
-            <div className="mx-auto h-1 w-24 bg-gradient-to-r from-[#0D3D5C] to-[#22C55E]" />
+            <div className="mx-auto h-1 w-20 sm:w-24 bg-gradient-to-r from-[#0D3D5C] to-[#22C55E]" />
           </div>
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto w-full">
             <div 
-              className="p-8 lg:p-10 space-y-6 text-[18px] leading-[1.8] text-[#4B5563] rounded-[20px]"
+              className="p-6 sm:p-8 lg:p-10 space-y-6 text-[16px] sm:text-[18px] leading-[1.9] text-[#4B5563] rounded-[20px] w-full"
               style={{
                 background: 'rgba(255,255,255,0.75)',
                 backdropFilter: 'blur(10px)',
@@ -420,8 +420,8 @@ export default function AboutPage() {
 
       {/* Image Gallery Section */}
       <section className="py-16 lg:py-20 bg-white">
-        <div className="mx-auto max-w-[1200px] px-4 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mx-auto max-w-[1200px] px-5 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -532,10 +532,10 @@ export default function AboutPage() {
 
       <section
         id="our-vision"
-        className="scroll-mt-32 border-t border-border bg-[#f8fafc] py-20 lg:py-24"
+        className="scroll-mt-32 border-t border-border bg-[#f8fafc] py-16 sm:py-20 lg:py-24"
       >
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+          <div className="grid items-start gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <SectionHeader align="left" eyebrow="Company" title={OUR_VISION.title} />
               <p className="mt-6 text-base font-medium leading-relaxed text-foreground">
@@ -552,7 +552,7 @@ export default function AboutPage() {
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-card">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card w-full">
               <h3 className="font-display text-lg font-semibold text-[#1a5276]">
                 What we work toward
               </h3>
@@ -572,10 +572,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="our-mission" className="scroll-mt-32 border-t border-border bg-white py-20 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-card">
+      <section id="our-mission" className="scroll-mt-32 border-t border-border bg-white py-16 sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+          <div className="grid items-start gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-card w-full">
               <h3 className="font-display text-lg font-semibold text-[#1a5276]">What we deliver</h3>
               <ul className="mt-6 space-y-4">
                 {OUR_MISSION.highlights.map((item) => (
@@ -599,15 +599,15 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section 
-        id="what-we-stand-for" 
-        className="scroll-mt-32 border-t border-border py-20 lg:py-24 relative overflow-hidden"
+      <section
+        id="what-we-stand-for"
+        className="scroll-mt-32 border-t border-border py-16 sm:py-20 lg:py-24 relative overflow-hidden"
         style={{
           background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)'
         }}
       >
         {/* Subtle grid pattern overlay */}
-        <div 
+        <div
           className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
             backgroundImage: `
@@ -617,11 +617,11 @@ export default function AboutPage() {
             backgroundSize: '40px 40px'
           }}
         />
-        
-        <div className="mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
+
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10">
           {/* Enhanced Section Header */}
-          <div className="mb-16 text-center">
-            <div className="mx-auto mb-4 h-1 w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#6aa84f]" />
+          <div className="mb-12 sm:mb-16 text-center">
+            <div className="mx-auto mb-4 h-1 w-20 sm:w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#6aa84f]" />
             <h2 className="mb-3 text-sm font-bold tracking-[0.2em] uppercase text-[#64748b]">
               Core Values
             </h2>
@@ -630,7 +630,7 @@ export default function AboutPage() {
             </h3>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 icon: Star,
@@ -714,35 +714,35 @@ export default function AboutPage() {
       </section>
 
       {/* Director Message Section */}
-      <section 
-        id="directors-message" 
-        className="scroll-mt-36 py-20 relative overflow-hidden"
+      <section
+        id="directors-message"
+        className="scroll-mt-36 py-16 sm:py-20 relative overflow-hidden"
         style={{
           background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)'
         }}
       >
         {/* Subtle dotted pattern overlay */}
-        <div 
+        <div
           className="absolute inset-0 pointer-events-none opacity-[0.04]"
           style={{
             backgroundImage: 'radial-gradient(circle, #0B5FA5 1px, transparent 1px)',
             backgroundSize: '32px 32px'
           }}
         />
-        
+
         {/* Soft blue-green radial gradients */}
         <div className="absolute top-0 left-0 w-96 h-96 bg-[#0B5FA5]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#2BA84A]/5 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
+
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10">
           {/* Section Header */}
           <div className="mb-10 text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0d3d5c] font-display leading-tight">
               Director's Message
             </h2>
-            
+
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1400px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-[1400px] mx-auto">
             <DirectorMessageCard
               image="/images/der-1.png"
               name="Mr. Hrishikesh Kaluskar"
@@ -762,30 +762,30 @@ export default function AboutPage() {
       </section>
 
       {/* Our Mentor Section */}
-      <section 
-        id="our-mentor" 
-        className="scroll-mt-36 py-20 relative overflow-hidden"
+      <section
+        id="our-mentor"
+        className="scroll-mt-36 py-16 sm:py-20 relative overflow-hidden"
         style={{
           background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)'
         }}
       >
         {/* Subtle dotted pattern overlay */}
-        <div 
+        <div
           className="absolute inset-0 pointer-events-none opacity-[0.04]"
           style={{
             backgroundImage: 'radial-gradient(circle, #2BA84A 1px, transparent 1px)',
             backgroundSize: '32px 32px'
           }}
         />
-        
+
         {/* Soft blue-green radial gradients */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#0B5FA5]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#2BA84A]/5 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
+
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10">
           {/* Section Header */}
           <div className="mb-10 text-center">
-            <div className="mx-auto mb-4 h-1 w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#69B345]" />
+            <div className="mx-auto mb-4 h-1 w-20 sm:w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#69B345]" />
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0d3d5c] font-display leading-tight">
               Our Mentor
             </h2>
@@ -800,8 +800,8 @@ export default function AboutPage() {
       <DirectorsSection />
 
       {/* Team Hierarchy — managed in Admin → Team Hierarchy */}
-      <section id="management-team" className="scroll-mt-32 py-20 bg-white">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <section id="management-team" className="scroll-mt-32 py-16 sm:py-20 bg-white">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <SectionHeader  title="Meet Our Management Team" />
           <p className="mx-auto mt-3 mb-6 max-w-xl text-center text-sm text-slate-600">
             Click on any member&apos;s photo or name to view their message and role details.

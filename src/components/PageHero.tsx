@@ -30,12 +30,12 @@ export function PageHero({ title, subtitle, breadcrumb, backgroundImage = "/imag
       />
 
       {/* Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-5 sm:px-6 md:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-4xl"
+          className="max-w-4xl px-2 sm:px-0"
         >
           {/* Breadcrumb */}
           {breadcrumb && (
@@ -45,12 +45,12 @@ export function PageHero({ title, subtitle, breadcrumb, backgroundImage = "/imag
           )}
 
           {/* Title */}
-          <h1 className="font-bold leading-[1.1] text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[60px]">
+          <h1 className="font-bold leading-[1.1] text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[60px] break-words">
             {title}
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-4 max-w-[800px] leading-[1.7] text-sm sm:text-base md:text-lg lg:text-xl text-white/90">
+          <p className="mt-4 max-w-[800px] leading-[1.7] text-sm sm:text-base md:text-lg lg:text-xl text-white/90 break-words">
             {subtitle}
           </p>
         </motion.div>

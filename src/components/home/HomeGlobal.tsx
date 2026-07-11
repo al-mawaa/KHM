@@ -40,11 +40,11 @@ function StatCard({ stat, index }: { stat: typeof KEY_ASSETS[number]; index: num
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-      className="group relative rounded-[16px] bg-white p-4 md:p-5 shadow-[0_6px_20px_rgba(0,0,0,0.05)] border border-gray-100 transition-all duration-[0.4s] ease-out hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.1)] hover:scale-[1.01] hover:border-[#0B5FA5]"
+      className="group relative rounded-[16px] bg-white p-5 sm:p-4 md:p-5 shadow-[0_6px_20px_rgba(0,0,0,0.05)] border border-gray-100 transition-all duration-[0.4s] ease-out hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(0,0,0,0.1)] hover:scale-[1.01] hover:border-[#0B5FA5] w-full max-w-full mx-auto mb-5 sm:mb-0 h-full flex flex-col justify-between items-start text-left"
     >
       {/* Decorative Accent Shape - extends outside card for dynamic effect */}
       <div
-        className="absolute -left-6 top-1/2 -translate-y-1/2 w-24 h-24 rounded-2xl opacity-15 group-hover:opacity-25 transition-all duration-[0.4s] group-hover:scale-105"
+        className="absolute -left-6 top-1/2 -translate-y-1/2 w-24 h-24 rounded-2xl opacity-15 group-hover:opacity-25 transition-all duration-[0.4s] group-hover:scale-105 hidden sm:block"
         style={{
           background: accentGradient,
           transform: "rotate(-12deg) translateY(-50%)",
@@ -58,7 +58,7 @@ function StatCard({ stat, index }: { stat: typeof KEY_ASSETS[number]; index: num
 
       {/* Number */}
       <div
-        className="text-[32px] sm:text-[36px] md:text-[40px] font-extrabold leading-none"
+        className="text-[38px] leading-tight font-extrabold sm:text-[32px] sm:leading-none md:text-[40px]"
         style={{ color: accentColor }}
       >
         <Counter to={stat.value} suffix={stat.suffix} />
@@ -71,7 +71,7 @@ function StatCard({ stat, index }: { stat: typeof KEY_ASSETS[number]; index: num
       />
 
       {/* Description */}
-      <p className="mt-3 text-[14px] sm:text-[16px] md:text-[18px] font-semibold text-[#1F2937] leading-tight">
+      <p className="mt-3 text-[15px] leading-relaxed font-semibold text-[#1F2937] sm:text-[14px] sm:leading-tight md:text-[18px]">
         {stat.label}
       </p>
     </motion.div>
@@ -168,7 +168,7 @@ export function HomeGlobal() {
           </motion.div>
 
           {/* Cards Grid */}
-          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {KEY_ASSETS.map((stat, index) => (
               <StatCard key={stat.label} stat={stat} index={index} />
             ))}

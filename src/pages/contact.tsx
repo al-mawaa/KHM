@@ -33,8 +33,8 @@ export default function ContactPage() {
     <>
       <PageHero title="Let's engineer your project" subtitle="Tell us about your site and goals — we'll respond within one business day." backgroundImage="/images/hero-plant.jpg" />
 
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8 grid lg:grid-cols-5 gap-10">
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 grid lg:grid-cols-5 gap-8 sm:gap-10">
           <div className="lg:col-span-3 rounded-3xl border border-border bg-card p-7 sm:p-10 shadow-card">
             <SectionHeader align="left" eyebrow="Request Consultation" title="Send us a message" />
             {sent ? (

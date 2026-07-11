@@ -555,7 +555,7 @@ export default function CareersPage() {
 
       {/* Career Opportunities Section */}
       <section id="career-opportunities" className="py-24 lg:py-28 pb-4 bg-white">
-        <div className="mx-auto max-w-5xl px-4 lg:px-8">
+        <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
           {/* Full-width Image */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -637,7 +637,7 @@ export default function CareersPage() {
 
       {/* Current Openings Section */}
       <section id="open-positions" className="pt-4 py-16 lg:py-24 bg-white">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -771,7 +771,7 @@ export default function CareersPage() {
 
       {/* Learn Beyond Work Section */}
       <section id="learn-beyond-work" className="py-24 lg:py-28 bg-white">
-        <div className="mx-auto max-w-5xl px-4 lg:px-8">
+        <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
           {/* Images Grid */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -861,7 +861,7 @@ export default function CareersPage() {
           {/* Recruitment Process Section */}
           {careerContent.recruitmentProcess.section && careerContent.recruitmentProcess.steps.length > 0 && (
             <section id="recruitment-process" className="py-16 lg:py-24 bg-slate-50">
-              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -891,7 +891,7 @@ export default function CareersPage() {
                   <img
                     src="/images/intv.jpeg"
                     alt="Interview Process"
-                    className="w-full h-[450px] object-cover hover:scale-105 transition-transform duration-300"
+                    className="w-full h-[750px] object-cover hover:scale-105 transition-transform duration-300"
                   />
                 </motion.div>
 
@@ -924,7 +924,7 @@ export default function CareersPage() {
           {/* Career Benefits Section */}
           {careerContent.benefits.section && careerContent.benefits.items.length > 0 && (
             <section className="py-16 lg:py-24 bg-white">
-              <div className="mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -981,7 +981,7 @@ export default function CareersPage() {
 
           {/* Protect Yourself from Recruitment Fraud Section */}
           <section className="py-24 lg:py-28 bg-white">
-            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
               <h2 className="text-[36px] font-semibold text-[#0D3D5C] mb-[60px]">
                 Protect Yourself from Recruitment Fraud
               </h2>
@@ -1078,7 +1078,7 @@ export default function CareersPage() {
           {/* FAQ Section */}
           {careerContent.faqs.section && careerContent.faqs.items.length > 0 && (
             <section className="py-16 lg:py-24 bg-slate-50">
-              <div className="mx-auto max-w-4xl px-4 lg:px-8">
+              <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}

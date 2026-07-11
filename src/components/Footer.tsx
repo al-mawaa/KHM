@@ -40,9 +40,9 @@ export function Footer() {
 
   return (
     <footer className="relative mt-0 bg-[#0d3d5c] text-white">
-      <div className="mx-auto max-w-[1400px] gap-10 px-4 py-16 lg:px-6 grid sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto max-w-[1400px] gap-8 sm:gap-10 px-5 sm:px-6 lg:px-8 py-12 sm:py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <div className="sm:col-span-2 lg:col-span-1">
-          <BrandLogoLink imageClassName="h-16 w-auto max-w-[300px] sm:h-20" withBackground />
+          <BrandLogoLink imageClassName="h-14 sm:h-16 w-auto max-w-[280px] sm:max-w-[300px]" withBackground />
           <p className="mt-4 max-w-[460px] text-sm leading-relaxed text-white/75">
             {settings.tagline}
           </p>
@@ -100,7 +100,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-2 px-4 py-5 text-center text-xs text-white/55 sm:flex-row lg:px-6">
+        <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-2 px-5 sm:px-6 lg:px-8 py-4 sm:py-5 text-center text-xs text-white/55 sm:flex-row">
           <p className="sm:flex-1 sm:text-left">© {new Date().getFullYear()} {settings.companyName}. All rights reserved.</p>
 
           <p className="sm:flex-1 text-center">

@@ -123,7 +123,7 @@ export default function ProjectsPage() {
 
       {/* Category Filter Section */}
       <section className="py-8 bg-white">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap gap-2">
               <button
@@ -189,7 +189,7 @@ export default function ProjectsPage() {
 
           {/* Active Projects Section */}
           <section className="py-16 lg:py-24 bg-white">
-            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -224,7 +224,7 @@ export default function ProjectsPage() {
 
           {/* Upcoming Projects Section */}
           <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
-            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -259,7 +259,7 @@ export default function ProjectsPage() {
 
           {/* Completed Projects Section */}
           <section className="py-16 lg:py-24 bg-white">
-            <div className="mx-auto max-w-7xl px-4 lg:px-8">
+            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

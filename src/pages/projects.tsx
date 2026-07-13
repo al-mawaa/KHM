@@ -198,7 +198,7 @@ export default function ProjectsPage() {
                 className="mb-12"
               >
                 <h2 className="text-[32px] font-bold text-[#1a5276]">
-                  ACTIVE PROJECTS
+                  ON-GOING PROJECTS
                 </h2>
                 <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
               </motion.div>

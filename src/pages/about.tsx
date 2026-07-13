@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Counter } from "@/components/Counter";
 import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { rainwater, heroPlant } from "@/lib/images";
-import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin, Star, Recycle, Zap, Shield, Diamond, Triangle, Quote } from "lucide-react";
+import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin, Quote } from "lucide-react";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 import { TeamTree } from "@/components/TeamTree";
 import { useAdminCollection } from "@/lib/admin-store";
@@ -20,69 +20,6 @@ interface TeamMember {
   linkedinUrl?: string;
   displayOrder: number;
   status: string;
-}
-
-interface CoreValueCardProps {
-  icon: any;
-  title: string;
-  points: string[];
-  accentColor: string;
-  gradient: string;
-  index: number;
-}
-
-function CoreValueCard({ icon: Icon, title, points, accentColor, gradient, index }: CoreValueCardProps) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-      className="group relative rounded-[18px] bg-white p-8 shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[rgba(13,61,92,0.08)] transition-all duration-[0.35s] ease-out hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(13,61,92,0.15)] hover:border-[#0d3d5c]"
-    >
-      {/* Top Accent Bar */}
-      <div 
-        className="absolute left-0 right-0 top-0 h-1.5 rounded-t-[18px]"
-        style={{ backgroundColor: accentColor }}
-      />
-
-      {/* Premium Icon Container */}
-      <div 
-        className="relative mb-6 flex h-[68px] w-[68px] items-center justify-center rounded-full shadow-lg transition-transform duration-[0.35s] ease-out group-hover:scale-110"
-        style={{
-          background: `linear-gradient(135deg, ${accentColor} 0%, ${accentColor}dd 100%)`,
-          boxShadow: `0 8px 24px ${accentColor}40`
-        }}
-      >
-        <Icon className="h-8 w-8 text-white" />
-      </div>
-
-      {/* Enhanced Typography */}
-      <h3 
-        className="mb-4 text-[24px] font-bold text-[#0d3d5c] font-display leading-tight"
-      >
-        {title}
-      </h3>
-
-      <ul className="space-y-3">
-        {points.map((point) => (
-          <li
-            key={point}
-            className="flex items-start gap-3 text-[16px] leading-[1.8] text-[#64748b]"
-          >
-            <span 
-              className="mt-2 h-2 w-2 shrink-0 rounded-full"
-              style={{ backgroundColor: accentColor }}
-            />
-            {point}
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
 }
 
 function DirectorMessageCard({ image, name, qualification, role, message }: {
@@ -430,7 +367,7 @@ export default function AboutPage() {
               className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
             >
               <img
-                src="/images/li-1.jpg"
+                src="/images/li-1.png"
                 alt="Employee Award Ceremony"
                 className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
               />
@@ -456,7 +393,7 @@ export default function AboutPage() {
               className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
             >
               <img
-                src="/images/li-3.jpg"
+                src="/images/li-3.png"
                 alt="Training Session"
                 className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
               />
@@ -595,120 +532,6 @@ export default function AboutPage() {
                 {OUR_MISSION.lead}
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="what-we-stand-for"
-        className="scroll-mt-32 border-t border-border py-16 sm:py-20 lg:py-24 relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)'
-        }}
-      >
-        {/* Subtle grid pattern overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(#0d3d5c 1px, transparent 1px),
-              linear-gradient(90deg, #0d3d5c 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px'
-          }}
-        />
-
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10">
-          {/* Enhanced Section Header */}
-          <div className="mb-12 sm:mb-16 text-center">
-            <div className="mx-auto mb-4 h-1 w-20 sm:w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#6aa84f]" />
-            <h2 className="mb-3 text-sm font-bold tracking-[0.2em] uppercase text-[#64748b]">
-              Core Values
-            </h2>
-            <h3 className="text-4xl sm:text-5xl font-bold text-[#0d3d5c] font-display leading-tight">
-              What We Stand For
-            </h3>
-          </div>
-
-          <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                icon: Star,
-                title: "Quality Excellence",
-                points: [
-                  "Technically rigorous solutions",
-                  "Precision in every deliverable",
-                  "International standards compliance",
-                ],
-                accentColor: "#0d3d5c",
-                gradient: "from-[#0d3d5c] to-[#1e88e5]",
-              },
-              {
-                icon: Recycle,
-                title: "Sustainability",
-                points: [
-                  "Eco-friendly infrastructure design",
-                  "Long-term environmental impact",
-                  "Water security focus",
-                ],
-                accentColor: "#6aa84f",
-                gradient: "from-[#6aa84f] to-[#4a8c3a]",
-              },
-              {
-                icon: Zap,
-                title: "Innovation",
-                points: [
-                  "Drone surveys & GIS mapping",
-                  "Hydraulic modelling tools",
-                  "Advanced engineering technologies",
-                ],
-                accentColor: "#0d3d5c",
-                gradient: "from-[#0d3d5c] to-[#1e88e5]",
-              },
-              {
-                icon: Shield,
-                title: "Integrity",
-                points: [
-                  "Highest ethical standards",
-                  "Transparent engagements",
-                  "Accountable project delivery",
-                ],
-                accentColor: "#6aa84f",
-                gradient: "from-[#6aa84f] to-[#4a8c3a]",
-              },
-              {
-                icon: Diamond,
-                title: "Client Trust",
-                points: [
-                  "Long-term partnerships",
-                  "Consistent delivery record",
-                  "Open & honest communication",
-                ],
-                accentColor: "#0d3d5c",
-                gradient: "from-[#0d3d5c] to-[#1e88e5]",
-              },
-              {
-                icon: Triangle,
-                title: "Technical Expertise",
-                points: [
-                  "Multi-sector domain depth",
-                  "Experienced core team",
-                  "Cross-disciplinary capability",
-                ],
-                accentColor: "#6aa84f",
-                gradient: "from-[#6aa84f] to-[#4a8c3a]",
-              },
-            ].map((value, index) => (
-              <CoreValueCard
-                key={value.title}
-                icon={value.icon}
-                title={value.title}
-                points={value.points}
-                accentColor={value.accentColor}
-                gradient={value.gradient}
-                index={index}
-              />
-            ))}
           </div>
         </div>
       </section>

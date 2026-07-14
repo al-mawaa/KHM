@@ -583,91 +583,91 @@ export default function AdminCareersPage() {
               <Briefcase className="h-5 w-5 text-slate-600" />
               <div className="text-2xl font-bold text-slate-900">{stats.totalJobs}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Total Jobs</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Total Jobs</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-green-600" />
               <div className="text-2xl font-bold text-green-600">{stats.openJobs}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Open Jobs</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Open Jobs</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <XCircle className="h-5 w-5 text-red-600" />
               <div className="text-2xl font-bold text-red-600">{stats.closedJobs}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Closed Jobs</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Closed Jobs</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-blue-600" />
               <div className="text-2xl font-bold text-blue-600">{stats.totalApplications}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Total Applications</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Total Applications</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-yellow-600" />
               <div className="text-2xl font-bold text-yellow-600">{stats.pendingApplications}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Pending</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Pending</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Award className="h-5 w-5 text-blue-600" />
               <div className="text-2xl font-bold text-blue-600">{stats.shortlistedApplications}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Shortlisted</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Shortlisted</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-purple-600" />
               <div className="text-2xl font-bold text-purple-600">{stats.interviewScheduled}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Interview Scheduled</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Interview Scheduled</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-emerald-600" />
               <div className="text-2xl font-bold text-emerald-600">{stats.selectedCandidates}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Selected</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Selected</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-green-600" />
               <div className="text-2xl font-bold text-green-600">{stats.hiredCandidates}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Hired</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Hired</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <XCircle className="h-5 w-5 text-red-600" />
               <div className="text-2xl font-bold text-red-600">{stats.rejectedCandidates}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Rejected</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Rejected</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-orange-600" />
               <div className="text-2xl font-bold text-orange-600">{stats.applicationsToday}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">Today</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">Today</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-indigo-600" />
               <div className="text-2xl font-bold text-indigo-600">{stats.applicationsThisWeek}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">This Week</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">This Week</div>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-teal-600" />
               <div className="text-2xl font-bold text-teal-600">{stats.applicationsThisMonth}</div>
             </div>
-            <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">This Month</div>
+            <div className="text-xs text-slate-500 tracking-wider mt-1">This Month</div>
           </Card>
         </div>
       )}

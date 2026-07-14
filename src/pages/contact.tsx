@@ -142,7 +142,7 @@ export default function ContactPage() {
                 href: `tel:${phone.tel}`,
               })),
               { I: Mail, t: "Email", d: settings.email, href: `mailto:${settings.email}` },
-              { I: Building2, t: "Industry", d: "Architectural & Engineering Activities · Waste Water Management" },
+              { I: Building2, t: "Industry", d: "Civil Infrastructure Consultancy" },
             ].map((c) => (
               <div key={`${c.t}-${c.d}`} className="rounded-2xl border border-border bg-card p-5 shadow-card hover-lift">
                 <div className="flex items-start gap-3">

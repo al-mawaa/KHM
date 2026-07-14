@@ -555,7 +555,7 @@ export default function CareersPage() {
 
       {/* Career Opportunities Section */}
       <section id="career-opportunities" className="py-24 lg:py-28 pb-4 bg-white">
-        <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-6">
           {/* Full-width Image */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -636,7 +636,7 @@ export default function CareersPage() {
       </section>
 
       {/* Current Openings Section */}
-      <section id="open-positions" className="pt-4 py-16 lg:py-24 bg-white">
+      <section id="open-positions" className="pt-4 py-16 lg:py-10 bg-white">
         <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -770,8 +770,19 @@ export default function CareersPage() {
       </section>
 
       {/* Learn Beyond Work Section */}
-      <section id="learn-beyond-work" className="py-24 lg:py-28 bg-white">
-        <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+      <section id="learn-beyond-work" className="py-24 lg:py-10 bg-white">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-[30px] md:text-[36px] lg:text-[48px] font-bold text-[#0D3D5C] tracking-wide mb-4">
+              LEARN BEYOND WORK
+            </h2>
+          </motion.div>
           {/* Images Grid */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -780,6 +791,7 @@ export default function CareersPage() {
             transition={{ duration: 0.6 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
           >
+            
             <div className="overflow-hidden rounded-2xl shadow-lg">
               <img
                 src="/images/desk.jpeg"
@@ -804,46 +816,44 @@ export default function CareersPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="max-w-5xl text-left"
           >
-            <h2 className="text-[30px] md:text-[36px] lg:text-[48px] font-bold text-[#0D3D5C] tracking-wide mb-4">
-              LEARN BEYOND WORK
-            </h2>
+            
             <div className="h-[4px] w-[80px] bg-[#22C55E] rounded-full mb-8" />
             
             <h3 className="text-[26px] font-semibold text-[#0D3D5C] mb-6">
               A Special Place to Learn and Grow
             </h3>
             
-            <div className="space-y-6">
-              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+            <div className="space-y-3">
+              <p className="text-[#09090B] text-lg leading-relaxed font-normal">
                 At KHM Infra, we believe that our employees are our greatest asset. We are committed to creating a supportive and inspiring workplace where every individual has the opportunity to learn, grow, and build a rewarding career.
               </p>
               
-              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+              <p className="text-[#09090B] text-lg leading-relaxed font-normal">
                 When you join KHM Infra, you become a valued member of our team. We encourage continuous learning, professional development, and career growth by providing opportunities to enhance your skills and take on new challenges.
               </p>
 
-              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+              <p className="text-[#09090B] text-lg leading-relaxed font-normal">
                 Our goal is to help every employee reach their full potential while contributing to the success of our organization.
               </p>
 
-              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+              <p className="text-[#09090B] text-lg leading-relaxed font-normal">
                 We foster a culture of collaboration, innovation, and excellence, where your ideas and dedication are recognized and appreciated.
               </p>
 
-              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+              <p className="text-[#09090B] text-lg leading-relaxed font-normal">
                 If you're passionate about building a successful career with KHM Infra, we'd love to hear from you.
               </p>
 
-              <p className="text-[#4B5563] text-lg leading-relaxed font-normal">
+              <p className="text-[#09090B] text-lg leading-relaxed font-normal">
                 For career opportunities and more information, please contact us at:
               </p>
             </div>
 
             {/* Contact Card */}
-            <div className="mt-10 flex justify-start">
+            <div className="mt-5 flex justify-start">
               <a
                 href="mailto:hr@khminfra.com"
-                className="inline-flex items-center gap-4 bg-blue-50 hover:bg-blue-100 rounded-2xl px-8 py-5 transition-all duration-300 group shadow-md hover:shadow-lg"
+                className="inline-flex items-center gap-4 bg-blue-50 hover:bg-blue-100 rounded-2xl px-4 py-2 transition-all duration-300 group shadow-md hover:shadow-lg"
               >
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Mail className="w-6 h-6 text-[#1a5276]" />
@@ -860,7 +870,7 @@ export default function CareersPage() {
         <>
           {/* Recruitment Process Section */}
           {careerContent.recruitmentProcess.section && careerContent.recruitmentProcess.steps.length > 0 && (
-            <section id="recruitment-process" className="py-16 lg:py-24 bg-slate-50">
+            <section id="recruitment-process" className="py-16 lg:py-10 bg-slate-50">
               <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -980,7 +990,7 @@ export default function CareersPage() {
           )}
 
           {/* Protect Yourself from Recruitment Fraud Section */}
-          <section className="py-24 lg:py-28 bg-white">
+          <section className="py-24 lg:py-10 bg-white">
             <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
               <h2 className="text-[36px] font-semibold text-[#0D3D5C] mb-[60px]">
                 Protect Yourself from Recruitment Fraud
@@ -1077,7 +1087,7 @@ export default function CareersPage() {
 
           {/* FAQ Section */}
           {careerContent.faqs.section && careerContent.faqs.items.length > 0 && (
-            <section className="py-16 lg:py-24 bg-slate-50">
+            <section className="py-16 lg:py-10 bg-slate-50">
               <div className="mx-auto max-w-4xl px-5 sm:px-6 lg:px-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

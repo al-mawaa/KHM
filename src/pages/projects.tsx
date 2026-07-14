@@ -223,74 +223,70 @@ export default function ProjectsPage() {
           </section>
 
           {/* Upcoming Projects Section */}
-          <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
-            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="mb-12"
-              >
-                <h2 className="text-[32px] font-bold text-[#1a5276]">
-                  UPCOMING PROJECTS
-                </h2>
-                <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-              </motion.div>
+          {upcomingProjects.length > 0 && (
+            <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
+              <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="mb-12"
+                >
+                  <h2 className="text-[32px] font-bold text-[#1a5276]">
+                    UPCOMING PROJECTS
+                  </h2>
+                  <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
+                </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                {upcomingProjects.length === 0 ? (
-                  <div className="text-center py-12 text-black">No upcoming projects found</div>
-                ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {upcomingProjects.map((project, index) => (
                       <ProjectCard key={project.id} project={project} />
                     ))}
                   </div>
-                )}
-              </motion.div>
-            </div>
-          </section>
+                </motion.div>
+              </div>
+            </section>
+          )}
 
           {/* Completed Projects Section */}
-          <section className="py-16 lg:py-24 bg-white">
-            <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="mb-12"
-              >
-                <h2 className="text-[32px] font-bold text-[#1a5276]">
-                  COMPLETED PROJECTS
-                </h2>
-                <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
-              </motion.div>
+          {completedProjects.length > 0 && (
+            <section className="py-16 lg:py-24 bg-white">
+              <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="mb-12"
+                >
+                  <h2 className="text-[32px] font-bold text-[#1a5276]">
+                    COMPLETED PROJECTS
+                  </h2>
+                  <div className="mt-3 h-1 w-16 bg-gradient-to-r from-[#25a244] to-[#1a5276] rounded-full" />
+                </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                {completedProjects.length === 0 ? (
-                  <div className="text-center py-12 text-black">No completed projects found</div>
-                ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {completedProjects.map((project, index) => (
                       <ProjectCard key={project.id} project={project} />
                     ))}
                   </div>
-                )}
-              </motion.div>
-            </div>
-          </section>
+                </motion.div>
+              </div>
+            </section>
+          )}
         </>
       )}
     </>

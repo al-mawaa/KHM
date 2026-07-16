@@ -265,7 +265,7 @@ export default function AboutPage() {
       />
 
       {/* Logo Representation Section */}
-      <section id="logo-representation" className="scroll-mt-32 py-16 lg:py-20 bg-white">
+      <section id="logo-representation" className="scroll-mt-32 py-16 lg:py-10 bg-white">
         <div className="mx-auto max-w-[1280px] px-5 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-[28px] sm:text-[32px] lg:text-[36px] font-bold text-[#0D3D5C] mb-4 break-words">
@@ -315,16 +315,16 @@ export default function AboutPage() {
           </svg>
         </div>
         
-        <div className="mx-auto max-w-[1200px] px-5 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-12">
+        <div className="mx-auto max-w-[1200px] px-5 sm:px-6 lg:px-5 relative z-10">
+          <div className="text-center mb-5">
             <h2 className="text-[28px] sm:text-[32px] lg:text-[36px] font-bold text-[#0D3D5C] mb-4 break-words">
               Life at KHM Infra
             </h2>
             <div className="mx-auto h-1 w-20 sm:w-24 bg-gradient-to-r from-[#0D3D5C] to-[#22C55E]" />
           </div>
-          <div className="max-w-4xl mx-auto w-full">
+          <div className="max-w-6xl mx-auto w-full">
             <div 
-              className="p-6 sm:p-8 lg:p-10 space-y-6 text-[16px] sm:text-[18px] leading-[1.9] text-[#4B5563] rounded-[20px] w-full"
+              className="p-6 sm:p-8 lg:p-10 space-y-1 text-[16px] sm:text-[18px] leading-[1.9] text-[#09090B] rounded-[20px] w-full"
               style={{
                 background: 'rgba(255,255,255,0.75)',
                 backdropFilter: 'blur(10px)',
@@ -333,22 +333,10 @@ export default function AboutPage() {
               }}
             >
               <p>
-                At KHM Infra, we believe that a positive work culture is the foundation of a successful organization. We strive to create an environment where employees feel valued, connected, and motivated to perform at their best.
+                At KHM Infra, we believe that a positive work culture is the foundation of a successful organization. We strive to create an environment where employees feel valued, connected, and motivated to perform at their best. Beyond delivering quality infrastructure solutions, we are committed to building a workplace that encourages collaboration, mutual respect, and a strong sense of belonging. Life at KHM Infra is filled with opportunities to connect, celebrate, and grow together. From festive celebrations, annual gatherings, and team outings to sports events, cultural programs, and employee engagement activities, we ensure that every occasion strengthens the bond among our team members. These moments create lasting memories while fostering teamwork, trust, and a vibrant workplace culture.
               </p>
               <p>
-                Beyond delivering quality infrastructure solutions, we are committed to building a workplace that encourages collaboration, mutual respect, and a strong sense of belonging.
-              </p>
-              <p>
-                Life at KHM Infra is filled with opportunities to connect, celebrate, and grow together. From festive celebrations, annual gatherings, and team outings to sports events, cultural programs, and employee engagement activities, we ensure that every occasion strengthens the bond among our team members. These moments create lasting memories while fostering teamwork, trust and a vibrant workplace culture.
-              </p>
-              <p>
-                We also encourage employees to participate in social initiatives, community activities and wellness programs that promote personal well-being and a sense of social responsibility.
-              </p>
-              <p>
-                By celebrating achievements, recognizing contributions and creating opportunities for meaningful interactions, we build a workplace where every individual feels appreciated and inspired.
-              </p>
-              <p>
-                At KHM Infra, work is more than just meeting project milestones—it's about being part of a supportive team that celebrates success, embraces new experiences and enjoys the journey together. We believe that when people feel connected and motivated, they create exceptional results.
+                        We also encourage employees to participate in social initiatives, community activities, and wellness programs that promote personal well-being and a sense of social responsibility. By celebrating achievements, recognizing contributions, and creating opportunities for meaningful interactions, we build a workplace where every individual feels appreciated and inspired. At KHM Infra, work is more than just meeting project milestones—it's about being part of a supportive team that celebrates success, embraces new experiences, and enjoys the journey together. We believe that when people feel connected and motivated, they create exceptional results.
               </p>
             </div>
           </div>
@@ -605,7 +593,7 @@ export default function AboutPage() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#0B5FA5]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#2BA84A]/5 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 relative z-10">
+        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-4 relative z-10">
           {/* Section Header */}
           <div className="mb-10 text-center">
             <div className="mx-auto mb-4 h-1 w-20 sm:w-24 bg-gradient-to-r from-[#0d3d5c] via-[#1e88e5] to-[#69B345]" />

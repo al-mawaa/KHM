@@ -187,6 +187,7 @@ export function Navbar() {
   };
 
   const isCompanyActive = pathname.startsWith("/about");
+  const isMediaActive = pathname === "/media-and-resources";
 
   // Dropdown menu items for About Us
   const aboutDropdownItems = [
@@ -264,6 +265,37 @@ export function Navbar() {
     }
   };
 
+  // Handle media dropdown item click with smooth scrolling
+  const handleMediaDropdownItemClick = (sectionId: string) => {
+    setMediaDropdownOpen(false);
+    
+    if (pathname === "/media-and-resources") {
+      // Already on Media & Resources page, just scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const navbarHeight = headerRef.current?.offsetHeight || 90;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+          
+          // Optional: Add highlight animation
+          element.classList.add("ring-2", "ring-[#69B345]", "ring-offset-2");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-[#69B345]", "ring-offset-2");
+          }, 1500);
+        }
+      }, 100);
+    } else {
+      // Navigate to Media & Resources page with hash
+      navigate(`/media-and-resources#${sectionId}`);
+    }
+  };
+
   // Handle scroll to section when hash is present
   useEffect(() => {
     if (pathname === "/about" && window.location.hash) {
@@ -293,6 +325,32 @@ export function Navbar() {
   // Handle scroll to careers section when hash is present
   useEffect(() => {
     if (pathname === "/careers" && window.location.hash) {
+      const sectionId = window.location.hash.replace("#", "");
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const navbarHeight = headerRef.current?.offsetHeight || 90;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+          
+          // Optional: Add highlight animation
+          element.classList.add("ring-2", "ring-[#69B345]", "ring-offset-2");
+          setTimeout(() => {
+            element.classList.remove("ring-2", "ring-[#69B345]", "ring-offset-2");
+          }, 1500);
+        }
+      }, 300);
+    }
+  }, [pathname]);
+
+  // Handle scroll to media section when hash is present
+  useEffect(() => {
+    if (pathname === "/media-and-resources" && window.location.hash) {
       const sectionId = window.location.hash.replace("#", "");
       setTimeout(() => {
         const element = document.getElementById(sectionId);
@@ -534,9 +592,9 @@ export function Navbar() {
                 </Link>
                 <div className="relative" ref={mediaDropdownRef}>
                   <button
-                    className={cn("nav-link-3d", isActive("/gallery") && "active")}
+                    className={cn("nav-link-3d", isMediaActive && "active")}
                     onClick={() => {
-                      navigate("/media");
+                      navigate("/media-and-resources");
                       setMediaDropdownOpen(true);
                     }}
                     onMouseEnter={() => setMediaDropdownOpen(true)}
@@ -556,14 +614,14 @@ export function Navbar() {
                         className="absolute left-0 top-full mt-2 min-w-[220px] rounded-[14px] bg-white shadow-[0_10px_40px_rgba(13,61,92,0.15)] border border-[#E5E7EB] p-2 z-50"
                         onMouseLeave={() => setMediaDropdownOpen(false)}
                       >
-                        <Link to="/media" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group" onClick={() => setMediaDropdownOpen(false)}>
-                          <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
-                          <span>Media</span>
-                        </Link>
-                        <Link to="/gallery" className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group" onClick={() => setMediaDropdownOpen(false)}>
+                        <button onClick={() => handleMediaDropdownItemClick("gallery")} className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
                           <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
                           <span>Gallery</span>
-                        </Link>
+                        </button>
+                        <button onClick={() => handleMediaDropdownItemClick("media")} className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
+                          <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                          <span>Media</span>
+                        </button>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -756,13 +814,13 @@ export function Navbar() {
                   <MobileNavLink to="/projects" label="Projects" onNavigate={() => setMobileOpen(false)} active={isActive("/projects")} />
                   <div className="px-5">
                     <button
-                      onClick={() => { navigate("/media"); setMobileMediaOpen(!mobileMediaOpen); }}
+                      onClick={() => { navigate("/media-and-resources"); setMobileMediaOpen(!mobileMediaOpen); }}
                       className={cn(
                         "flex w-full items-center justify-between py-4 text-sm font-medium transition-all duration-200",
-                        isActive("/gallery") ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
+                        isMediaActive ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
                       )}
                     >
-                      <span>Media</span>
+                      <span>Media & Resources</span>
                       <ChevronDown className="h-4 w-4 text-gray-400" />
                     </button>
 
@@ -776,13 +834,13 @@ export function Navbar() {
                           className="overflow-hidden"
                         >
                           <div className="py-2 pl-4 space-y-1">
-                            <Link to="/media" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
-                              <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
-                              <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">Media (Social)</span>
-                            </Link>
-                            <Link to="/gallery" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
+                            <Link to="/media-and-resources#gallery" onClick={() => { setMobileOpen(false); setMobileMediaOpen(false); handleMediaDropdownItemClick("gallery"); }} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
                               <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
                               <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">Gallery</span>
+                            </Link>
+                            <Link to="/media-and-resources#media" onClick={() => { setMobileOpen(false); setMobileMediaOpen(false); handleMediaDropdownItemClick("media"); }} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
+                              <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                              <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">Media</span>
                             </Link>
                           </div>
                         </motion.div>

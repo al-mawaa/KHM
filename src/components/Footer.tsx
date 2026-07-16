@@ -16,7 +16,7 @@ const QUICK_LINKS = [
   ["/", "Home"],
   ["/services", "Services"],
   ["/projects", "Projects"],
-  ["/gallery", "Gallery"],
+  ["/media-and-resources", "Media & Resources"],
   ["/blog", "Blog"],
   ["/contact", "Contact Us"],
 ] as const;
@@ -32,7 +32,7 @@ export function Footer() {
   const SOCIAL = [
     { Icon: Linkedin, href: settings.linkedin || "https://linkedin.com", label: "LinkedIn" },
     { Icon: Instagram, href: settings.instagram || "https://instagram.com", label: "Instagram" },
-    { Icon: Youtube, href: settings.youtube || "https://youtube.com", label: "YouTube" },
+    // { Icon: Youtube, href: settings.youtube || "https://youtube.com", label: "YouTube" },
     { Icon: MessageCircle, href: whatsappUrl, label: "WhatsApp" },
   ] as const;
 

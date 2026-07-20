@@ -198,8 +198,8 @@ export function Navbar() {
 
   // Dropdown menu items for Careers
   const careersDropdownItems = [
-    { id: "career-opportunities", label: "CAREER OPPORTUNITIES" },
-    { id: "learn-beyond-work", label: "LEARN BEYOND WORK" },
+    { id: "career-opportunities", label: "Career Opportunities" },
+    { id: "learn-beyond-work", label: "Learn Beyond Work" },
     { id: "recruitment-process", label: "Recruitment Process" },
   ];
 

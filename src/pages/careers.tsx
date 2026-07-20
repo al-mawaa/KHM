@@ -580,7 +580,7 @@ export default function CareersPage() {
             className="max-w-5xl text-left"
           >
             <h2 className="text-[30px] md:text-[36px] lg:text-[48px] font-bold text-[#0D3D5C] tracking-wide mb-4">
-              CAREER OPPORTUNITIES
+              Career Opportunities
             </h2>
             <div className="h-[4px] w-[80px] bg-[#22C55E] rounded-full mb-8" />
             
@@ -780,7 +780,7 @@ export default function CareersPage() {
             className="text-center mb-12"
           >
             <h2 className="text-[30px] md:text-[36px] lg:text-[48px] font-bold text-[#0D3D5C] tracking-wide mb-4">
-              LEARN BEYOND WORK
+              Learn Beyond Work
             </h2>
           </motion.div>
           {/* Images Grid */}

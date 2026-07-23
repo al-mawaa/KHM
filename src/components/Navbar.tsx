@@ -23,6 +23,7 @@ import { BrandLogoLink } from "@/components/BrandLogo";
 import { addLead } from "@/lib/admin-store";
 import { useWebsiteSettings } from "@/hooks/useWebsiteSettings";
 import { cn } from "@/lib/utils";
+import { MobileMenuProvider } from "@/contexts/MobileMenuContext";
 
 
 function getSocialLinks(settings: ReturnType<typeof useWebsiteSettings>["settings"]) {
@@ -403,7 +404,8 @@ export function Navbar() {
   }, []);
 
   return (
-    <>
+    <MobileMenuProvider isMobileMenuOpen={mobileOpen}>
+      <>
       {/* ── Scoped styles for 3D nav effects ── */}
       <style>{`
         /* ── Nav link base ── */
@@ -728,10 +730,9 @@ export function Navbar() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "tween", duration: 0.25 }}
-                className="absolute right-0 top-0 flex h-full w-[min(100%,320px)] flex-col shadow-2xl"
+                className="absolute right-0 top-0 flex h-full w-full flex-col shadow-2xl"
                 style={{
                   background: "linear-gradient(160deg, #f8fafc 0%, #ffffff 100%)",
-                  borderLeft: "1px solid rgba(26,82,118,0.1)",
                 }}
               >
                 {/* Drawer header */}
@@ -758,23 +759,24 @@ export function Navbar() {
                   <MobileNavLink to="/" label="Home" onNavigate={() => setMobileOpen(false)} active={isActive("/")} />
                   
                   {/* About Us with Accordion */}
-                  <div className="px-5">
+                  <div className="px-4 py-2">
                     <button
                       onClick={() => {
                         navigate("/about");
                         setMobileAboutOpen(!mobileAboutOpen);
                       }}
                       className={cn(
-                        "flex w-full items-center justify-between py-4 text-sm font-medium transition-all duration-200",
-                        isCompanyActive ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
+                        "flex w-full items-center justify-between px-5 py-4 text-sm font-medium transition-all duration-200 rounded-xl",
+                        isCompanyActive ? "text-[#1a5276] font-semibold bg-white shadow-md" : "text-gray-700 hover:text-[#1a5276] hover:bg-white hover:shadow-md"
                       )}
                       style={
                         isCompanyActive
-                          ? { background: "linear-gradient(90deg, rgba(26,82,118,0.06) 0%, transparent 100%)", borderLeft: "3px solid #1a5276", paddingLeft: "14px", marginLeft: "-17px" }
-                          : { borderLeft: "3px solid transparent", paddingLeft: "14px", marginLeft: "-17px" }
+                          ? { borderLeft: "4px solid #1a5276" }
+                          : { borderLeft: "4px solid transparent" }
                       }
                     >
                       <span>About Us</span>
+                      <ChevronDown className={cn("h-4 w-4 text-gray-600 transition-transform duration-200", mobileAboutOpen && "rotate-180")} />
                     </button>
                     
                     <AnimatePresence>
@@ -786,7 +788,7 @@ export function Navbar() {
                           transition={{ duration: 0.2, ease: "easeOut" }}
                           className="overflow-hidden"
                         >
-                          <div className="py-2 pl-4 space-y-1">
+                          <div className="py-2 pl-4 space-y-2">
                             {aboutDropdownItems.map((item) => (
                               <Link
                                 key={item.id}
@@ -796,9 +798,9 @@ export function Navbar() {
                                   setMobileAboutOpen(false);
                                   handleDropdownItemClick(item.id);
                                 }}
-                                className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
+                                className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-white hover:shadow-md group"
                               >
-                                <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                                <ChevronDown className="h-4 w-4 text-gray-600 transition-transform duration-200 group-hover:text-[#69B345]" />
                                 <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
                                   {item.label}
                                 </span>
@@ -812,16 +814,21 @@ export function Navbar() {
                   
                   <MobileNavLink to="/our-services" label="Our Services" onNavigate={() => setMobileOpen(false)} active={isActive("/our-services")} />
                   <MobileNavLink to="/projects" label="Projects" onNavigate={() => setMobileOpen(false)} active={isActive("/projects")} />
-                  <div className="px-5">
+                  <div className="px-4 py-2">
                     <button
                       onClick={() => { navigate("/media-and-resources"); setMobileMediaOpen(!mobileMediaOpen); }}
                       className={cn(
-                        "flex w-full items-center justify-between py-4 text-sm font-medium transition-all duration-200",
-                        isMediaActive ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
+                        "flex w-full items-center justify-between px-5 py-4 text-sm font-medium transition-all duration-200 rounded-xl",
+                        isMediaActive ? "text-[#1a5276] font-semibold bg-white shadow-md" : "text-gray-700 hover:text-[#1a5276] hover:bg-white hover:shadow-md"
                       )}
+                      style={
+                        isMediaActive
+                          ? { borderLeft: "4px solid #1a5276" }
+                          : { borderLeft: "4px solid transparent" }
+                      }
                     >
                       <span>Media & Resources</span>
-                      <ChevronDown className="h-4 w-4 text-gray-400" />
+                      <ChevronDown className={cn("h-4 w-4 text-gray-600 transition-transform duration-200", mobileMediaOpen && "rotate-180")} />
                     </button>
 
                     <AnimatePresence>
@@ -833,13 +840,13 @@ export function Navbar() {
                           transition={{ duration: 0.18, ease: "easeOut" }}
                           className="overflow-hidden"
                         >
-                          <div className="py-2 pl-4 space-y-1">
-                            <Link to="/media-and-resources#gallery" onClick={() => { setMobileOpen(false); setMobileMediaOpen(false); handleMediaDropdownItemClick("gallery"); }} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
-                              <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                          <div className="py-2 pl-4 space-y-2">
+                            <Link to="/media-and-resources#gallery" onClick={() => { setMobileOpen(false); setMobileMediaOpen(false); handleMediaDropdownItemClick("gallery"); }} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-white hover:shadow-md group">
+                              <ChevronDown className="h-4 w-4 text-gray-600 transition-transform duration-200 group-hover:text-[#69B345]" />
                               <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">Gallery</span>
                             </Link>
-                            <Link to="/media-and-resources#media" onClick={() => { setMobileOpen(false); setMobileMediaOpen(false); handleMediaDropdownItemClick("media"); }} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group">
-                              <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                            <Link to="/media-and-resources#media" onClick={() => { setMobileOpen(false); setMobileMediaOpen(false); handleMediaDropdownItemClick("media"); }} className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-white hover:shadow-md group">
+                              <ChevronDown className="h-4 w-4 text-gray-600 transition-transform duration-200 group-hover:text-[#69B345]" />
                               <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">Media</span>
                             </Link>
                           </div>
@@ -850,24 +857,24 @@ export function Navbar() {
                   <MobileNavLink to="/blog" label="Blog" onNavigate={() => setMobileOpen(false)} active={isActive("/blog")} />
                   
                   {/* Careers with Accordion */}
-                  <div className="px-5">
+                  <div className="px-4 py-2">
                     <button
                       onClick={() => {
                         navigate("/careers");
                         setMobileCareersOpen(!mobileCareersOpen);
                       }}
                       className={cn(
-                        "flex w-full items-center justify-between py-4 text-sm font-medium transition-all duration-200",
-                        isActive("/careers") ? "text-[#1a5276] font-semibold" : "text-gray-700 hover:text-[#1a5276]"
+                        "flex w-full items-center justify-between px-5 py-4 text-sm font-medium transition-all duration-200 rounded-xl",
+                        isActive("/careers") ? "text-[#1a5276] font-semibold bg-white shadow-md" : "text-gray-700 hover:text-[#1a5276] hover:bg-white hover:shadow-md"
                       )}
                       style={
                         isActive("/careers")
-                          ? { background: "linear-gradient(90deg, rgba(26,82,118,0.06) 0%, transparent 100%)", borderLeft: "3px solid #1a5276", paddingLeft: "14px", marginLeft: "-17px" }
-                          : { borderLeft: "3px solid transparent", paddingLeft: "14px", marginLeft: "-17px" }
+                          ? { borderLeft: "4px solid #1a5276" }
+                          : { borderLeft: "4px solid transparent" }
                       }
                     >
                       <span>Careers</span>
-                      <ChevronDown className="h-4 w-4 text-gray-400" />
+                      <ChevronDown className={cn("h-4 w-4 text-gray-600 transition-transform duration-200", mobileCareersOpen && "rotate-180")} />
                     </button>
                     
                     <AnimatePresence>
@@ -879,7 +886,7 @@ export function Navbar() {
                           transition={{ duration: 0.2, ease: "easeOut" }}
                           className="overflow-hidden"
                         >
-                          <div className="py-2 pl-4 space-y-1">
+                          <div className="py-2 pl-4 space-y-2">
                             {careersDropdownItems.map((item) => (
                               <Link
                                 key={item.id}
@@ -889,9 +896,9 @@ export function Navbar() {
                                   setMobileCareersOpen(false);
                                   handleCareersDropdownItemClick(item.id);
                                 }}
-                                className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-[#F0FDF4] hover:text-[#0d3d5c] group"
+                                className="flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200 hover:bg-white hover:shadow-md group"
                               >
-                                <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:text-[#69B345]" />
+                                <ChevronDown className="h-4 w-4 text-gray-600 transition-transform duration-200 group-hover:text-[#69B345]" />
                                 <span className="text-sm font-medium text-gray-700 group-hover:text-[#0d3d5c]">
                                   {item.label}
                                 </span>
@@ -905,38 +912,6 @@ export function Navbar() {
                   
                   <MobileNavLink to="/contact" label="Contact Us" onNavigate={() => setMobileOpen(false)} active={isActive("/contact")} cta />
                 </div>
-
-                {/* Drawer footer */}
-                <div
-                  className="space-y-3 p-5"
-                  style={{ borderTop: "1px solid rgba(26,82,118,0.08)", background: "rgba(248,250,252,0.8)" }}
-                >
-                  <a href={phoneTel} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
-                    <div
-                      className="flex h-9 w-9 items-center justify-center rounded-lg"
-                      style={{ background: "linear-gradient(135deg, #1a5276 0%, #0d3d5c 100%)", boxShadow: "0 2px 6px rgba(13,61,92,0.3)" }}
-                    >
-                      <Phone className="h-4 w-4 text-white" />
-                    </div>
-                    {phoneDisplay}
-                  </a>
-                  <a href={`mailto:${settings.email}`} className="flex items-center gap-3 text-sm text-gray-600 hover:text-[#1a5276] transition-colors">
-                    <div
-                      className="flex h-9 w-9 items-center justify-center rounded-lg"
-                      style={{ background: "linear-gradient(135deg, #25a244 0%, #1a7032 100%)", boxShadow: "0 2px 6px rgba(37,162,68,0.3)" }}
-                    >
-                      <Mail className="h-4 w-4 text-white" />
-                    </div>
-                    {settings.email}
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => { setMobileOpen(false); openQuote("Consultation"); }}
-                    className="cta-btn-3d mt-3 w-full justify-center py-3"
-                  >
-                    Get Free Consultation
-                  </button>
-                </div>
               </motion.div>
             </motion.div>
           )}
@@ -944,7 +919,8 @@ export function Navbar() {
 
         <QuoteInquiryDialog open={quoteOpen} onOpenChange={setQuoteOpen} initialService={quoteService} />
       </header>
-    </>
+      </>
+    </MobileMenuProvider>
   );
 }
 
@@ -962,28 +938,30 @@ function MobileNavLink({
   cta?: boolean;
 }) {
   return (
-    <Link
-      to={to}
-      onClick={onNavigate}
-      className={cn(
-        "block px-5 py-4 text-sm font-medium transition-all duration-200",
-        cta
-          ? "mx-3 mt-2 mb-1 rounded-xl text-white text-center"
-          : "text-gray-700 hover:text-[#1a5276]",
-        active && !cta && "text-[#1a5276] font-semibold",
-      )}
-      style={
-        cta
-          ? {
-              background: "linear-gradient(135deg, #1a5276 0%, #0d3d5c 100%)",
-              boxShadow: "0 4px 14px rgba(13,61,92,0.4), inset 0 1px 0 rgba(255,255,255,0.18)",
-            }
-          : active
-          ? { background: "linear-gradient(90deg, rgba(26,82,118,0.06) 0%, transparent 100%)", borderLeft: "3px solid #1a5276", paddingLeft: "17px" }
-          : { borderLeft: "3px solid transparent" }
-      }
-    >
-      {label}
-    </Link>
+    <div className="px-4 py-2">
+      <Link
+        to={to}
+        onClick={onNavigate}
+        className={cn(
+          "block px-5 py-4 text-sm font-medium transition-all duration-200 rounded-xl",
+          cta
+            ? "text-white text-center"
+            : "text-gray-700 hover:text-[#1a5276] hover:bg-white hover:shadow-md",
+          active && !cta && "text-[#1a5276] font-semibold bg-white shadow-md",
+        )}
+        style={
+          cta
+            ? {
+                background: "linear-gradient(135deg, #1a5276 0%, #0d3d5c 100%)",
+                boxShadow: "0 4px 14px rgba(13,61,92,0.4), inset 0 1px 0 rgba(255,255,255,0.18)",
+              }
+            : active
+            ? { borderLeft: "4px solid #1a5276" }
+            : { borderLeft: "4px solid transparent" }
+        }
+      >
+        {label}
+      </Link>
+    </div>
   );
 }

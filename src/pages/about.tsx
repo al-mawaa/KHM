@@ -6,7 +6,6 @@ import { ABOUT_US, OUR_VISION, OUR_MISSION } from "@/lib/about-content";
 import { rainwater, heroPlant } from "@/lib/images";
 import { Award, CheckCircle2, Leaf, Target, Users, Eye, Sparkles, Linkedin, Quote } from "lucide-react";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
-import { TeamTree } from "@/components/TeamTree";
 import { useAdminCollection } from "@/lib/admin-store";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
@@ -354,7 +353,7 @@ export default function AboutPage() {
           </div>
           <div className="max-w-full mx-auto w-full">
             <div 
-              className="p-4 sm:p-8 lg:p-10 space-y-1 text-[13px] sm:text-[18px] leading-[1.7] text-[#09090B] rounded-[20px] w-full"
+              className="p-4 sm:p-8 lg:p-10 rounded-[20px] w-full"
               style={{
                 background: 'rgba(255,255,255,0.75)',
                 backdropFilter: 'blur(10px)',
@@ -362,12 +361,36 @@ export default function AboutPage() {
                 boxShadow: '0 12px 30px rgba(13,61,92,0.06)'
               }}
             >
-              <p>
-                At KHM Infra, we believe that a positive work culture is the foundation of a successful organization. We strive to create an environment where employees feel valued, connected, and motivated to perform at their best. Beyond delivering quality infrastructure solutions, we are committed to building a workplace that encourages collaboration, mutual respect, and a strong sense of belonging. Life at KHM Infra is filled with opportunities to connect, celebrate, and grow together. From festive celebrations, annual gatherings, and team outings to sports events, cultural programs, and employee engagement activities, we ensure that every occasion strengthens the bond among our team members. These moments create lasting memories while fostering teamwork, trust, and a vibrant workplace culture.
-              </p>
-              <p>
-                        We also encourage employees to participate in social initiatives, community activities, and wellness programs that promote personal well-being and a sense of social responsibility. By celebrating achievements, recognizing contributions, and creating opportunities for meaningful interactions, we build a workplace where every individual feels appreciated and inspired. At KHM Infra, work is more than just meeting project milestones—it's about being part of a supportive team that celebrates success, embraces new experiences, and enjoys the journey together. We believe that when people feel connected and motivated, they create exceptional results.
-              </p>
+              <div className="mb-6 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-[#0D3D5C] sm:text-base">
+                <span className="rounded-full bg-[#0D3D5C]/10 px-3 py-1">Culture that connects</span>
+                <span className="rounded-full bg-[#22C55E]/10 px-3 py-1">Growth that inspires</span>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                {[
+                  "At KHM Infra, we believe that a positive work culture is the foundation of a successful organization.",
+                  "We strive to create an environment where employees feel valued, connected, and motivated to perform at their best.",
+                  "Beyond delivering quality infrastructure solutions, we are committed to building a workplace that encourages collaboration, mutual respect, and a strong sense of belonging.",
+                  "Life at KHM Infra is filled with opportunities to connect, celebrate, and grow together through festive celebrations, annual gatherings, team outings, sports events, cultural programs, and employee engagement activities.",
+                  "We also encourage employees to participate in social initiatives, community activities, and wellness programs that promote personal well-being and a sense of social responsibility.",
+                  "By celebrating achievements, recognizing contributions, and creating opportunities for meaningful interactions, we build a workplace where every individual feels appreciated and inspired.",
+                  "At KHM Infra, work is more than just meeting project milestones—it's about being part of a supportive team that celebrates success, embraces new experiences, and enjoys the journey together.",
+                  "We believe that when people feel connected and motivated, they create exceptional results."
+                ].map((point, index) => (
+                  <div
+                    key={`${point.slice(0, 20)}-${index}`}
+                    className="rounded-2xl border border-[#E5E7EB] bg-white/80 p-4 shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 rounded-full bg-[#22C55E]/10 p-2">
+                        <CheckCircle2 className="h-4 w-4 text-[#22C55E]" />
+                      </div>
+                      <p className="text-[13px] sm:text-[16px] leading-[1.7] text-[#09090B]">
+                        {point}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -554,17 +577,6 @@ export default function AboutPage() {
       </section>
 
       <DirectorsSection />
-
-      {/* Team Hierarchy — managed in Admin → Team Hierarchy */}
-      <section id="management-team" className="scroll-mt-32 py-12 lg:py-16 bg-white overflow-x-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
-          <SectionHeader  title="Meet Our Management Team" />
-          <p className="mx-auto mt-2 mb-4 max-w-xl text-center text-sm text-slate-600">
-            Click on any member&apos;s photo or name to view their message and role details.
-          </p>
-          <TeamTree />
-        </div>
-      </section>
 
       {/* Management Team Banner — managed in Admin → Management Team Banner */}
       {managementBanner && managementBanner.imageUrl && (

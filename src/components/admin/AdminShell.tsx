@@ -15,6 +15,7 @@ import {
   X,
   Image,
   Briefcase,
+  ImageIcon,
 } from "lucide-react";
 import { BrandLogoLink } from "@/components/BrandLogo";
 import { isAuthed, logout } from "@/lib/admin-store";
@@ -30,6 +31,7 @@ const menu = [
   { to: "/admin/job-enquiries", label: "Job Enquiries", icon: MessageSquare },
   { to: "/admin/leads", label: "Contact Leads", icon: Users },
   { to: "/admin/team-hierarchy", label: "Team Hierarchy", icon: UsersRound },
+  { to: "/admin/management-team-banner", label: "Management Team Banner", icon: ImageIcon },
   { to: "/admin/settings", label: "Website Settings", icon: SettingsIcon },
 ] as const;
 

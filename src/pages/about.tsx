@@ -124,7 +124,7 @@ function MentorMessageCard() {
           {/* Image container with square aspect ratio */}
           <div className="relative w-full pb-[100%] lg:pb-0 lg:h-full rounded-[20px] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
             <motion.img
-              src="/images/mentor.png"
+              src="/images/Kaluskar Sir.png"
               alt="Mr. Madhav Kaluskar"
               className="absolute inset-0 w-full h-full object-cover object-top rounded-[20px]"
               whileHover={{ scale: 1.03 }}
@@ -221,6 +221,7 @@ export default function AboutPage() {
   useVisitorTracking("About");
 
   const [directors, setDirectors] = useState<TeamMember[]>([]);
+  const [managementBanner, setManagementBanner] = useState<{ imageUrl: string } | null>(null);
 
   useEffect(() => {
     // Fetch active team members sorted by displayOrder
@@ -235,6 +236,20 @@ export default function AboutPage() {
       })
       .catch(() => {
         // Silently fail – section will simply show empty
+      });
+  }, []);
+
+  useEffect(() => {
+    // Fetch Management Team Banner
+    fetch("/api/management-team-banner")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          setManagementBanner(data.data);
+        }
+      })
+      .catch(() => {
+        // Silently fail – banner will simply not show
       });
   }, []);
 
@@ -620,6 +635,28 @@ export default function AboutPage() {
           <TeamTree />
         </div>
       </section>
+
+      {/* Management Team Banner — managed in Admin → Management Team Banner */}
+      {managementBanner && managementBanner.imageUrl && (
+        <section className="py-12 lg:py-16 bg-white overflow-x-hidden">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="w-full"
+            >
+              <img
+                src={managementBanner.imageUrl}
+                alt="Management Team Banner"
+                className="w-full h-auto rounded-2xl shadow-lg"
+                loading="lazy"
+              />
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       <section className="py-12 bg-gradient-deep text-primary-foreground overflow-x-hidden">
         <div className="mx-auto max-w-7xl px-4 lg:px-8 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center w-full">

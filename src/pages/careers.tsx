@@ -899,7 +899,7 @@ export default function CareersPage() {
                   className="mb-12 overflow-hidden rounded-2xl shadow-lg"
                 >
                   <img
-                    src="/images/intv.jpeg"
+                    src="/images/recruitment_img.jpeg"
                     alt="Interview Process"
                     className="w-full h-[750px] object-cover hover:scale-105 transition-transform duration-300"
                   />

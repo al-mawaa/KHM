@@ -222,6 +222,7 @@ export default function AboutPage() {
 
   const [directors, setDirectors] = useState<TeamMember[]>([]);
   const [managementBanner, setManagementBanner] = useState<{ imageUrl: string } | null>(null);
+  const [lifeAtKHMImages, setLifeAtKHMImages] = useState<{ image: string }[]>([]);
 
   useEffect(() => {
     // Fetch active team members sorted by displayOrder
@@ -250,6 +251,20 @@ export default function AboutPage() {
       })
       .catch(() => {
         // Silently fail – banner will simply not show
+      });
+  }, []);
+
+  useEffect(() => {
+    // Fetch Life at KHM gallery images
+    fetch("/api/life-at-khm")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          setLifeAtKHMImages(data.data);
+        }
+      })
+      .catch(() => {
+        // Silently fail – gallery will simply not show
       });
   }, []);
 
@@ -359,116 +374,31 @@ export default function AboutPage() {
       </section>
 
       {/* Image Gallery Section */}
-      <section className="py-12 lg:py-16 bg-white overflow-x-hidden">
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-2.jpg"
-                alt="Company Merchandise"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-3.png"
-                alt="Training Session"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-4.jpg"
-                alt="Team Meeting"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-6.jpg"
-                alt="Team Group Photo"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-1.png"
-                alt="Employee Award Ceremony"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.5 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-8.png"
-                alt="Team Event"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.6 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-5.jpg"
-                alt="Office Workspace"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.7 }}
-              className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
-            >
-              <img
-                src="/images/li-7.jpg"
-                alt="Open Office Workspace"
-                className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
-              />
-            </motion.div>
+      {lifeAtKHMImages.length > 0 && (
+        <section className="py-12 lg:py-16 bg-white overflow-x-hidden">
+          <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {lifeAtKHMImages.map((img, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className="relative rounded-[16px] overflow-hidden shadow-[0_8px_24px_rgba(13,61,92,0.12)] group"
+                >
+                  <img
+                    src={img.image}
+                    alt={`Life at KHM ${index + 1}`}
+                    className="w-full h-64 object-cover transition-transform duration-[0.3s] ease-out group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section
         id="our-vision"
